@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2457076C-F013-3F8C-84F9-6EC61D4A974B}</ProjectGuid>
+    <RootNamespace>QtMainWidget</RootNamespace>
+    <Keyword>QtVS_v302</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PlatformToolset>v140</PlatformToolset>
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>QtMainWidget</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <PlatformToolset>v140</PlatformToolset>
+    <OutputDirectory>debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>QtMainWidget</PrimaryOutput>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">
+    <QtMsBuild>$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>msvc2015_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>msvc2015_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QtMainWidget</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">QtMainWidget</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Program Files\opencv3.4.6\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Program Files\opencv3.4.6\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtWidgets;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtGui;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtANGLE;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtCore;release;\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opencv_world346.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\QT\QT5.12.0\5.12.0\MSVC2015_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\QtMainWidget.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtWidgets;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtGui;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtANGLE;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtCore;debug;\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DEPRECATED_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>opencv_world346d.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\QT\QT5.12.0\5.12.0\MSVC2015_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\QtMainWidget.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\dahua.cpp" />
+    <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\mainwindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Src\mainwindow.h">
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;debug\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_predefs.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;release\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_predefs.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="mainwindow.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
+    <ClInclude Include="Include\GenICam\AnalogControl.h" />
+    <ClInclude Include="Include\GenICam\Camera.h" />
+    <ClInclude Include="Include\GenICam\CAPI\IntTypes.h" />
+    <ClInclude Include="Include\GenICam\CAPI\SDK.h" />
+    <ClInclude Include="Include\GenICam\Defs.h" />
+    <ClInclude Include="Include\GenICam\DeviceControl.h" />
+    <ClInclude Include="Include\GenICam\DigitalIOControl.h" />
+    <ClInclude Include="Include\GenICam\ErrorCode.h" />
+    <ClInclude Include="Include\GenICam\EventSubscribe.h" />
+    <ClInclude Include="Include\GenICam\Frame.h" />
+    <ClInclude Include="Include\GenICam\GigE\GigECamera.h" />
+    <ClInclude Include="Include\GenICam\GigE\GigEInterface.h" />
+    <ClInclude Include="Include\GenICam\ImageFormatControl.h" />
+    <ClInclude Include="Include\GenICam\ISPControl.h" />
+    <ClInclude Include="Include\GenICam\ParameterNode.h" />
+    <ClInclude Include="Include\GenICam\PixelType.h" />
+    <ClInclude Include="Include\GenICam\StreamSource.h" />
+    <ClInclude Include="Include\GenICam\System.h" />
+    <ClInclude Include="Include\GenICam\TransportLayerControl.h" />
+    <ClInclude Include="Include\GenICam\Usb\UsbCamera.h" />
+    <ClInclude Include="Include\GenICam\Usb\UsbInterface.h" />
+    <ClInclude Include="Include\GenICam\UserSetControl.h" />
+    <ClInclude Include="Include\Infra\Allocator.h" />
+    <ClInclude Include="Include\Infra\Assert.h" />
+    <ClInclude Include="Include\Infra\AtomicCount.h" />
+    <ClInclude Include="Include\Infra\CString.h" />
+    <ClInclude Include="Include\Infra\Defs.h" />
+    <ClInclude Include="Include\Infra\Detail\allocatorstringstorage.h" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_gcc.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_gcc_x86.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_pthreads.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_solaris.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_sync.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_win32.hpp" />
+    <ClInclude Include="Include\Infra\Detail\atomic_count_win64.hpp" />
+    <ClInclude Include="Include\Infra\Detail\construct.h" />
+    <ClInclude Include="Include\Infra\Detail\cowstringopt.h" />
+    <ClInclude Include="Include\Infra\Detail\flex_string.h" />
+    <ClInclude Include="Include\Infra\Detail\flex_string_details.h" />
+    <ClInclude Include="Include\Infra\Detail\flex_string_shell.h" />
+    <ClInclude Include="Include\Infra\Detail\ministringstorage.h" />
+    <ClInclude Include="Include\Infra\Detail\pp.hpp" />
+    <ClInclude Include="Include\Infra\Detail\pp_gcc.hpp" />
+    <ClInclude Include="Include\Infra\Detail\pp_msvc.hpp" />
+    <ClInclude Include="Include\Infra\Detail\simplestringstorage.h" />
+    <ClInclude Include="Include\Infra\Detail\smallstringopt.h" />
+    <ClInclude Include="Include\Infra\Detail\vectorstringstorage.h" />
+    <ClInclude Include="Include\Infra\Error.h" />
+    <ClInclude Include="Include\Infra\File.h" />
+    <ClInclude Include="Include\Infra\Function.h" />
+    <ClInclude Include="Include\Infra\FunctionTemplate.h" />
+    <ClInclude Include="Include\Infra\Guard.h" />
+    <ClInclude Include="Include\Infra\IntTypes.h" />
+    <ClInclude Include="Include\Infra\Mutex.h" />
+    <ClInclude Include="Include\Infra\PreProcessor.h" />
+    <ClInclude Include="Include\Infra\PrintLog.h" />
+    <ClInclude Include="Include\Infra\ReadWriteMutex.h" />
+    <ClInclude Include="Include\Infra\RecursiveMutex.h" />
+    <ClInclude Include="Include\Infra\Semaphore.h" />
+    <ClInclude Include="Include\Infra\Signal.h" />
+    <ClInclude Include="Include\Infra\SignalTemplate.h" />
+    <ClInclude Include="Include\Infra\StaticAssert.h" />
+    <ClInclude Include="Include\Infra\String.h" />
+    <ClInclude Include="Include\Infra\System.h" />
+    <ClInclude Include="Include\Infra\Thread.h" />
+    <ClInclude Include="Include\Infra\ThreadSpecific.h" />
+    <ClInclude Include="Include\Infra\Time.h" />
+    <ClInclude Include="Include\Infra\Timer.h" />
+    <ClInclude Include="Include\Infra\Types.h" />
+    <ClInclude Include="Include\Infra\Types\IntTypes.h" />
+    <ClInclude Include="Include\Infra\Types\Types.h" />
+    <ClInclude Include="Include\Infra\Vector.h" />
+    <ClInclude Include="Include\Infra\Version.h" />
+    <ClInclude Include="Include\Media\Defs.h" />
+    <ClInclude Include="Include\Media\ImageConvert.h" />
+    <ClInclude Include="Include\Media\VideoRender.h" />
+    <ClInclude Include="Include\Memory\Block.h" />
+    <ClInclude Include="Include\Memory\Buffer.h" />
+    <ClInclude Include="Include\Memory\Defs.h" />
+    <ClInclude Include="Include\Memory\Detail\checked_delete.hpp" />
+    <ClInclude Include="Include\Memory\Detail\MemPool.h" />
+    <ClInclude Include="Include\Memory\Detail\shared_count.h" />
+    <ClInclude Include="Include\Memory\Detail\singleton.h" />
+    <ClInclude Include="Include\Memory\Detail\singleton_pool.h" />
+    <ClInclude Include="Include\Memory\Detail\smartptr_detail.h" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base.hpp" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base.h" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_gcc_ia64.hpp" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_gcc_x86.hpp" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_impl.hpp" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_w32.hpp" />
+    <ClInclude Include="Include\Memory\Detail\sp_counted_impl.hpp" />
+    <ClInclude Include="Include\Memory\EnableSharedFromThis.h" />
+    <ClInclude Include="Include\Memory\Packet.h" />
+    <ClInclude Include="Include\Memory\PoolAllocator.h" />
+    <ClInclude Include="Include\Memory\RefCount.h" />
+    <ClInclude Include="Include\Memory\ScopedPtr.h" />
+    <ClInclude Include="Include\Memory\SharedPtr.h" />
+    <ClInclude Include="Include\Memory\SharePacketHelper.h" />
+    <ClInclude Include="Include\Memory\SmartObjectPtr.h" />
+    <ClInclude Include="Include\Memory\WeakPtr.h" />
+    <QtMoc Include="Src\Dahua.h" />
+    <ClInclude Include="Src\MessageQue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
