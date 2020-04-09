@@ -43,7 +43,13 @@
     <ClCompile Include="Src\mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\dahua.cpp">
+    <ClCompile Include="Src\parameterssetting.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MySerialport.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Config.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,12 +65,15 @@
     <QtUic Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="parameterssetting.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Src\mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Src\Dahua.h">
+    <QtMoc Include="Src\parameterssetting.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -381,8 +390,23 @@
     <ClInclude Include="Src\MessageQue.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\readconf.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\MySerialport.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Config.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Img\1.png" />
   </ItemGroup>
 </Project>

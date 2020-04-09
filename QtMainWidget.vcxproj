@@ -192,9 +192,11 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\dahua.cpp" />
+    <ClCompile Include="Src\Config.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\mainwindow.cpp" />
+    <ClCompile Include="Src\MySerialport.cpp" />
+    <ClCompile Include="Src\parameterssetting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Src\mainwindow.h">
@@ -221,8 +223,12 @@
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
     </QtUic>
+    <QtUic Include="parameterssetting.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h" />
+    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\readconf.h" />
+    <ClInclude Include="Src\Config.h" />
     <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
     <ClInclude Include="Include\GenICam\AnalogControl.h" />
     <ClInclude Include="Include\GenICam\Camera.h" />
@@ -326,11 +332,15 @@
     <ClInclude Include="Include\Memory\SharePacketHelper.h" />
     <ClInclude Include="Include\Memory\SmartObjectPtr.h" />
     <ClInclude Include="Include\Memory\WeakPtr.h" />
-    <QtMoc Include="Src\Dahua.h" />
+    <ClInclude Include="Src\MySerialport.h" />
+    <QtMoc Include="Src\parameterssetting.h" />
     <ClInclude Include="Src\MessageQue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Img\1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

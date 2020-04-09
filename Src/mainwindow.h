@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <qmessagebox.h>
+#include <qsettings.h>
 
 #include "GenICam/System.h"
 #include "Media/VideoRender.h"
@@ -19,6 +20,10 @@
 #include <ShellAPI.h>
 #include <tchar.h>
 #include <time.h>
+
+#include <Src\parameterssetting.h>
+#include <Src\MySerialport.h>
+#include <Src\Config.h>
 
 using namespace cv;
 using namespace dnn;
@@ -68,6 +73,16 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+	//设置拟合的直线的斜率、截距和相关系数
+	double k, b, s;
+	//黑色标志的数量
+	int Num_of_blocks = 0;
+	//图书的位置
+	QRect rect_of_image;
+
+	MyCSerialPort mycserialport;
+	//bool revFlag = false;
+
 	bool Mode_of_trig = false;
 	//枚举触发方式
 	enum ETrigType
@@ -99,6 +114,10 @@ public:
 	/// \retval false  显示成功 
 	bool ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWidth, int nHeight, uint64_t pixelFormat);
 
+
+signals:
+	void sendData(double, double, double);
+
 private slots:
     void on_pushButton_clicked();
 
@@ -118,8 +137,15 @@ private slots:
 
     void on_actionOpenCutWindow_triggered();
 
+    void on_actionPara_triggered();
+
+	void recevieDataFromSubWin(double, double, double, int);
+
+    void on_actionCut_triggered();
+
 private:
     Ui::MainWindow *ui;
+	ParametersSetting *para;
 
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	
@@ -153,7 +179,7 @@ private:
 
 	//图书检测
 	bool bookdetection(Mat image_in);
-	void setLabelText(QString s);
+
 	void testRun();
 	/**
 	* @brief 将 QImage 的类型图像转换为 cv::Mat 类型
@@ -191,6 +217,8 @@ private:
 	void run_train();
 	Mat read_mask();
 	Rect mask_boundingRect(Mat mask);
+
+	void init_parameters();
 
 	VR_HWND		m_hWnd;
 };

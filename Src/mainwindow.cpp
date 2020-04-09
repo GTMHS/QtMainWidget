@@ -4,6 +4,7 @@
 
 #define DEFAULT_SHOW_RATE (30)
 #define TIMESTAMPFREQUENCY 125000000	//大华相机的时间戳频率固定为125,000,000Hz
+bool revFlag = false;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -39,6 +40,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->pushButton_2->setEnabled(false);
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(false);
+
+	ui->splitter->setStretchFactor(0, 4);
+	ui->splitter->setStretchFactor(1, 1);	
+
+	init_parameters();
+
 }
 
 MainWindow::~MainWindow()
@@ -66,9 +73,11 @@ void MainWindow::on_pushButton_clicked()
 	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
 	//	return;
 	//}
+
 	ui->pushButton->setEnabled(false);
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
+	//testRun();
 	//try {
 	//	CameraCheck();
 	//	bool camera_open = CameraOpen();
@@ -176,8 +185,24 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
 			if (!bookdetection(out))//识别判断
 			{
-				//QMessageBox::information(NULL, "Wrong", "Book order is wrong!");
-				//ui->textEdit->append("Wrong");
+				Beep(1000, 1000);
+				cout << "不合格" << endl << endl;
+				//output file
+				//imwrite(wrong_filename, src_mat);
+				//run_database(current_time, "不合格");
+				unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+				int count = 0;
+				while (revFlag != true) {
+					revFlag = mycserialport.WriteData(uc, 6);
+					Sleep(50);
+					count++;
+					if (count >= 3) {
+						count = 0;
+						//cout << "未收到下位机确认信息!" << endl;
+						break;
+					}
+				}
+				revFlag = false;
 			}
 			else {
 				//ui->textEdit->setText("Correct!");
@@ -198,7 +223,7 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "G:\\Pic\\Pic (";
+	string imagefile = "D:\\Pic\\Pic (";
 	try
 	{
 		string outfile;
@@ -415,7 +440,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 		//cout << "文件写入：" + outfile << endl;
 		run_database(get_datetime(), "正常");
 		//emit SendUpdateLCDMsg(1);
-		return LinearFitting(points, -0.34, 0, 0.98);
+		return LinearFitting(points,k, b, s);
 	case 12:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
 		cout << "黑色标志点数为12" << endl;
@@ -426,7 +451,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 		ui->label_3->setText("12");
 		run_database(get_datetime(), "正常");
 		//emit SendUpdateLCDMsg(1);
-		return LinearFitting(points, -0.34, 0, 0.98);
+		return LinearFitting(points, k, b, s);
 	case 10:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
 		cout << "黑色标志点数为10" << endl;
@@ -437,7 +462,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 		//cout << "文件写入：" + outfile << endl;
 		run_database(get_datetime(), "异常");
 		//emit SendUpdateLCDMsg(2);
-		return LinearFitting(points, -0.34, 0, 0.98) && 0;
+		return LinearFitting(points, k,b,s) && 0;
 	default:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
 		cout << "黑色标志数量错误：  " << this_block_nums << endl;
@@ -772,10 +797,6 @@ vector<String> MainWindow::getOutputsNames(const Net& net)
 			names[i] = layersNames[outLayers[i] - 1];
 	}
 	return names;
-}
-
-void MainWindow::setLabelText(QString s) {
-	ui->label_3->setText(s);
 }
 
 wstring MainWindow::string2tchar(const string& s)
@@ -1423,7 +1444,6 @@ void MainWindow::setDisplayFPS(int nFPS)
 	}
 }
 
-
 void MainWindow::on_actionOpenCutWindow_triggered()
 {
 	SHELLEXECUTEINFO  ShExecInfo;
@@ -1438,4 +1458,60 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	ShExecInfo.nShow = SW_MAXIMIZE;                // 全屏显示这个程序 
 	ShExecInfo.hInstApp = NULL;
 	ShellExecuteEx(&ShExecInfo);
+}
+
+void MainWindow::on_actionPara_triggered()
+{
+	para = new ParametersSetting;
+	//connect(this, SIGNAL(sendData(double, double, double, int)), para, SLOT(recevieData(double, double, double)));	
+	//emit sendData(k, b, s);
+	connect(para, SIGNAL(sendDataToMainWidget(double, double, double)), this, SLOT(recevieDataFromSubWin(double, double, double, int)));
+	para->show();
+}
+
+void MainWindow::recevieDataFromSubWin(double rk, double rb, double rs, int rn)
+{
+	k = rk;
+	b = rb;
+	s = rs;
+	Num_of_blocks = rn;
+	stringstream ss;
+	ss << 'k' << k << "  b" << b << "  s" << s << " n" << Num_of_blocks;
+	string str;
+	ss >> str;
+	ui->label->setText(QString::fromStdString(str));	
+}
+
+void MainWindow::init_parameters() {
+
+	//QString fileName;
+	////fileName = QCoreApplication::applicationDirPath();
+	////fileName = "../Config/conf.ini";
+	//fileName = "conf.ini";
+
+	//QSettings settings(fileName, QSettings::IniFormat);
+	//settings.setIniCodec("UTF-8");
+	//settings.setValue("systemCfg/mode", mode);
+	//settings.setValue("server/ip", "10.10.64.115");
+	//Config().Set("user", "name", "test");
+	//QString qstrname = Config().Get("user", "name").toString();
+	//Config().Set("systemCfg", "mode", 1);
+	//Config().Set("server", "ip", "10.10.64.115");
+	//Config().Set("server", "netmask", "255.255.255.0");
+
+	s = Config().Get("Line Fitting", "s").toDouble();
+	b = Config().Get("Line Fitting", "b").toDouble();
+	k = Config().Get("Line Fitting", "k").toDouble();
+	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
+
+	Mat mask = read_mask();
+	Rect reck_mask = mask_boundingRect(mask);
+
+	rect_of_image = Config().Get("Rect of Image", "r").toRect();
+
+
+}
+void MainWindow::on_actionCut_triggered()
+{
+
 }
