@@ -227,7 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h" />
-    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\readconf.h" />
     <ClInclude Include="Src\Config.h" />
     <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
     <ClInclude Include="Include\GenICam\AnalogControl.h" />
