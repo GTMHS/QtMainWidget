@@ -52,6 +52,9 @@
     <ClCompile Include="Src\Config.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\takephoto.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -68,12 +71,18 @@
     <QtUic Include="parameterssetting.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="takephoto.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Src\mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Src\parameterssetting.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Src\takephoto.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -402,8 +411,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
+    <None Include="介绍文档.md" />
+    <None Include="sum.exe" />
+    <None Include="database.exe" />
+    <None Include="database.db" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
+    <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
 </Project>

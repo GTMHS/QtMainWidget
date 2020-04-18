@@ -41,8 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(false);
 
-	ui->splitter->setStretchFactor(0, 4);
+	ui->splitter->setStretchFactor(0, 9);
 	ui->splitter->setStretchFactor(1, 1);	
+	ui->splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
 
 	init_parameters();
 
@@ -51,102 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-	////打开相机
-	//ICameraPtr cameraSptr;
-	////发现设备
-	//CSystem &systemObj = CSystem::getInstance();
-	//TVector<ICameraPtr> vCameraPtrList;
-	//bool bRet = systemObj.discovery(vCameraPtrList);
-
-	//if (!bRet)
-	//{
-	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	//	return;
-	//}
-
-	//if (0 == vCameraPtrList.size())
-	//{
-	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-	//	return;
-	//}
-
-	ui->pushButton->setEnabled(false);
-	ui->pushButton_2->setEnabled(true);
-	ui->pushButton_3->setEnabled(true);
-	//testRun();
-	//try {
-	//	CameraCheck();
-	//	bool camera_open = CameraOpen();
-	//	CameraStart();
-	//	//SetExposeTime(10000);
-	//	//SetAdjustPlus(5);
-	//	CameraChangeTrig(trigContinous);
-	//}
-	//catch (Exception e) {
-	//	QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	//}
-	//QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-	//关闭相机
-	CameraStop();
-	CameraClose();
-	ui->pushButton->setEnabled(true);
-	ui->pushButton_2->setEnabled(false);
-	ui->pushButton_3->setEnabled(false);
-	ui->pushButton_4->setEnabled(false);
-}
-
-void MainWindow::on_pushButton_3_clicked()
-{
-	//开始 识别
-	ui->pushButton->setEnabled(false);
-	ui->pushButton_2->setEnabled(false);
-	ui->pushButton_3->setEnabled(false);
-	ui->pushButton_4->setEnabled(true);
-	//将相机改为硬件触发，每触发一次执行一次判断
-	CameraChangeTrig(trigLine);
-}
-
-void MainWindow::on_pushButton_4_clicked()
-{
-	//停止识别
-	ui->pushButton->setEnabled(false);
-	ui->pushButton_2->setEnabled(true);
-	ui->pushButton_3->setEnabled(true);
-	ui->pushButton_4->setEnabled(false);
-	//恢复相机为持续拉流
-	CameraChangeTrig(trigContinous);
-}
-
-void MainWindow::on_actionSavePic_triggered()
-{
-	//打开相机
-}
-
-void MainWindow::on_actionCut_2_triggered()
-{
-	//图书裁剪
-	run_cut();
-
-}
-
-void MainWindow::on_actionLabel_triggered()
-{
-	//图书标记
-	run_labelImg();
-}
-
-void MainWindow::on_actionTrain_triggered()
-{
-	//图书训练
-
 }
 
 bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWidth, int nHeight, uint64_t pixelFormat)
@@ -177,7 +82,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		try
 		{
 			Mat img = QImage2cvMat(image);
-			img = img(Rect(89, 897, 2633, 521)); //裁剪
+			img = img(rect_of_image); //裁剪
 			cv::Mat out;
 			cv::Mat in[] = { img, img, img };
 			cv::merge(in, 3, out);
@@ -214,6 +119,28 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			return true;
 		}
 	}
+	else
+	{
+		if (true == Mode_of_trig_soft) {
+			try
+			{				
+				Mat img = QImage2cvMat(image);
+				cv::Mat out;
+				cv::Mat in[] = { img, img, img };
+				cv::merge(in, 3, out);
+				ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+				//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+				imwrite("Train/image/Pic.bmp", img);
+				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+			}
+			catch (const std::exception& e)
+			{
+				QMessageBox::information(NULL, "识别部分出错", e.what());
+				return true;
+			}
+			Mode_of_trig_soft = false;
+		}
+	}
 	return true;
 }
 
@@ -246,9 +173,8 @@ void MainWindow::testRun() {
 			}
 			ui->label->setPixmap(QPixmap::fromImage(*img));
 			cout << infile << endl;
-			image_for_write = imread(infile);
-			Rect rect = Rect(125, 1309, 2837, 517);
-			image_for_write = image_for_write(rect);
+			image_for_write = imread(infile);			
+			image_for_write = image_for_write(rect_of_image);
 			QImage Img;
 			cv::Mat Rgb;
 			if (image_for_write.channels() == 3)//RGB Img
@@ -283,10 +209,8 @@ void MainWindow::testRun() {
 }
 
 bool MainWindow::bookdetection(Mat imagefile) {
-	//outfile = "F:\\图书\\20191214\\20191217\\" + get_datetime() + ".bmp";
 	string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
-	//String model_label_Weights = "D:/yolov3-voc_last1024.weights";
 	String model_label_Weights = "D:/yolov3-voc_9000.weights";
 
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
@@ -884,7 +808,6 @@ void MainWindow::run_cut()
 	//ss << " \"" << time << "\" \"" << result << "\"";
 	//std::string params = ss.str();
 	//run_exe(filename,"");
-
 	Mat mask = read_mask();
 	Mat img = imread("Pic.bmp");
 	Rect reck_mask = mask_boundingRect(mask);	
@@ -1444,22 +1367,180 @@ void MainWindow::setDisplayFPS(int nFPS)
 	}
 }
 
-void MainWindow::on_actionOpenCutWindow_triggered()
-{
-	SHELLEXECUTEINFO  ShExecInfo;
-	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	ShExecInfo.fMask = NULL;
-	ShExecInfo.hwnd = NULL;
-	ShExecInfo.lpVerb = NULL;
-	//ShExecInfo.lpFile = _T("D:\Code\QtMainWidget\labelImg\labelImg.exe");        // 执行的程序名 
-	ShExecInfo.lpFile = _T("TemplateEditor\\TemplateEditor.exe");        // 执行的程序名 
-	ShExecInfo.lpParameters = NULL;
-	ShExecInfo.lpDirectory = NULL;
-	ShExecInfo.nShow = SW_MAXIMIZE;                // 全屏显示这个程序 
-	ShExecInfo.hInstApp = NULL;
-	ShellExecuteEx(&ShExecInfo);
+void MainWindow::set_Mode_of_trig_soft() {
+	Mode_of_trig_soft = true;
 }
 
+void MainWindow::on_pushButton_clicked()
+{
+	////打开相机
+	//ICameraPtr cameraSptr;
+	////发现设备
+	//CSystem &systemObj = CSystem::getInstance();
+	//TVector<ICameraPtr> vCameraPtrList;
+	//bool bRet = systemObj.discovery(vCameraPtrList);
+
+	//if (!bRet)
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//	return;
+	//}
+
+	//if (0 == vCameraPtrList.size())
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+	//	return;
+	//}
+
+	ui->pushButton->setEnabled(false);
+	ui->pushButton_2->setEnabled(true);
+	ui->pushButton_3->setEnabled(true);
+	//testRun();
+	//try {
+	//	CameraCheck();
+	//	bool camera_open = CameraOpen();
+	//	CameraStart();
+	//	//SetExposeTime(10000);
+	//	//SetAdjustPlus(5);
+	//	CameraChangeTrig(trigContinous);
+	//}
+	//catch (Exception e) {
+	//	QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//}
+	//QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+	//关闭相机
+	CameraStop();
+	CameraClose();
+	ui->pushButton->setEnabled(true);
+	ui->pushButton_2->setEnabled(false);
+	ui->pushButton_3->setEnabled(false);
+	ui->pushButton_4->setEnabled(false);
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+	//开始 识别
+	ui->pushButton->setEnabled(false);
+	ui->pushButton_2->setEnabled(false);
+	ui->pushButton_3->setEnabled(false);
+	ui->pushButton_4->setEnabled(true);
+	//将相机改为硬件触发，每触发一次执行一次判断
+	CameraChangeTrig(trigLine);
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+	//停止识别
+	ui->pushButton->setEnabled(false);
+	ui->pushButton_2->setEnabled(true);
+	ui->pushButton_3->setEnabled(true);
+	ui->pushButton_4->setEnabled(false);
+	//恢复相机为持续拉流
+	CameraChangeTrig(trigContinous);
+}
+
+//保存新照片
+void MainWindow::on_actionSavePic_triggered()
+{
+	//打开相机
+	/*
+	设置为软件触发方式，并触发拍照
+	弹窗一个按钮？然后点击拍照？
+	*/
+	takephoto = new TakePhoto;
+	connect(takephoto, SIGNAL(sendTakePhoteToMainWidget()), this, SLOT(set_Mode_of_trig_soft()));
+	takephoto->show();
+}
+
+//图书标记
+void MainWindow::on_actionLabel_triggered()
+{
+	SHELLEXECUTEINFO ShExecInfo = { 0 };
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = NULL;
+	ShExecInfo.lpFile = _T("labelImg\\labelImg.exe");
+	ShExecInfo.lpParameters = NULL;
+	ShExecInfo.lpDirectory = NULL;
+	ShExecInfo.nShow = SW_SHOW;
+	ShExecInfo.hInstApp = NULL;
+	ShellExecuteEx(&ShExecInfo);
+	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+}
+
+//新书训练
+void MainWindow::on_actionTrain_triggered()
+{
+	//图书训练
+
+}
+
+//显示裁剪窗口。参考https://www.cnblogs.com/blogpro/p/11343975.html
+void MainWindow::on_actionOpenCutWindow_triggered()
+{
+	SHELLEXECUTEINFO ShExecInfo = { 0 };
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = NULL;
+	ShExecInfo.lpFile = _T("TemplateEditor\\TemplateEditor.exe");
+	ShExecInfo.lpParameters = NULL;
+	ShExecInfo.lpDirectory = NULL;
+	ShExecInfo.nShow = SW_SHOW;
+	ShExecInfo.hInstApp = NULL;
+	ShellExecuteEx(&ShExecInfo);
+	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+	ui->label->setText("裁剪已完成");
+	Mat mask = read_mask();
+	Rect rect_mask = mask_boundingRect(mask);
+	QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
+	Config().Set("Image Rect", "Book Name", "书名"); 
+	Config().Set("Image Rect", "Rectangle", qrectf);
+	QRectF f = Config().Get("Image Rect", "Rectangle").toRectF();
+	ui->label_2->setText(QString::number( f.x()));
+	//SHELLEXECUTEINFO  ShExecInfo;
+	//ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	//ShExecInfo.fMask = NULL;
+	//ShExecInfo.hwnd = NULL;
+	//ShExecInfo.lpVerb = NULL;
+	//ShExecInfo.lpFile = _T("TemplateEditor\\TemplateEditor.exe");        // 执行的程序名 
+	//ShExecInfo.lpParameters = NULL;
+	//ShExecInfo.lpDirectory = NULL;
+	//ShExecInfo.nShow = SW_MAXIMIZE;                // 全屏显示这个程序 
+	//ShExecInfo.hInstApp = NULL;
+	//BOOL ret = ShellExecuteEx(&ShExecInfo);
+	//ui->label->setText("裁剪已打开");
+	//HANDLE hThread = CreateThread(NULL, 0, MyThreadProc1, NULL, 0, NULL);
+	//DWORD dwReturn = WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+	////DWORD dwReturn = WaitForSingleObject(hThread, INFINITE);
+	//switch (dwReturn)
+	//{
+	//case WAIT_OBJECT_0:
+	//	// hProcess所代表的进程在5秒内结束
+	//	cout << "MyThreadProc1 >>> WaitForSingleObject signaled\n" << endl;
+	//	ui->label->setText("裁剪已完成");
+	//	Config().Set("Image Rect", "Image Rect", "1236");
+	//	break;
+	//case WAIT_TIMEOUT:
+	//	// 等待时间超过5秒
+	//	break;
+	//case WAIT_FAILED:
+	//	// 函数调用失败，比如传递了一个无效的句柄
+	//	break;
+	//}	
+}
+//图书裁剪
+void MainWindow::on_actionCut_2_triggered()
+{
+	run_cut();
+}
+
+//参数设置
 void MainWindow::on_actionPara_triggered()
 {
 	para = new ParametersSetting;
@@ -1469,6 +1550,7 @@ void MainWindow::on_actionPara_triggered()
 	para->show();
 }
 
+//接收参设设置窗口设置的参数
 void MainWindow::recevieDataFromSubWin(double rk, double rb, double rs, int rn)
 {
 	k = rk;
@@ -1482,6 +1564,7 @@ void MainWindow::recevieDataFromSubWin(double rk, double rb, double rs, int rn)
 	ui->label->setText(QString::fromStdString(str));	
 }
 
+//参数初始化
 void MainWindow::init_parameters() {
 
 	//QString fileName;
@@ -1507,7 +1590,7 @@ void MainWindow::init_parameters() {
 	Mat mask = read_mask();
 	Rect reck_mask = mask_boundingRect(mask);
 
-	rect_of_image = Config().Get("Rect of Image", "r").toRect();
+	Qrect_of_image = Config().Get("Rect of Image", "r").toRect();
 
 
 }

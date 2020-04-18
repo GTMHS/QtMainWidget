@@ -24,6 +24,7 @@ Config::~Config()
 }
 void Config::Set(QString qstrnodename, QString qstrkeyname, QVariant qvarvalue)
 {
+	m_psetting->setIniCodec("UTF8");
 	m_psetting->setValue(QString("/%1/%2").arg(qstrnodename).arg(qstrkeyname), qvarvalue);
 }
 

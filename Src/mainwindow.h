@@ -22,6 +22,7 @@
 #include <time.h>
 
 #include <Src\parameterssetting.h>
+#include <Src\takephoto.h>
 #include <Src\MySerialport.h>
 #include <Src\Config.h>
 
@@ -78,12 +79,17 @@ public:
 	//黑色标志的数量
 	int Num_of_blocks = 0;
 	//图书的位置
-	QRect rect_of_image;
-
+	QRect Qrect_of_image;
+	//Qt 与 OPenCV中的Rect不通用，装换一下
+	Rect rect_of_image = Rect(Qrect_of_image.x(), Qrect_of_image.y(), Qrect_of_image.width(), Qrect_of_image.height());
 	MyCSerialPort mycserialport;
 	//bool revFlag = false;
 
+	//设置出发方式
 	bool Mode_of_trig = false;
+	//软触发拍照
+	bool Mode_of_trig_soft = false;
+
 	//枚举触发方式
 	enum ETrigType
 	{
@@ -127,25 +133,29 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+	//保存图片
     void on_actionSavePic_triggered();
-
+	//裁剪图片
     void on_actionCut_2_triggered();
-
+	//打开标记软件
     void on_actionLabel_triggered();
-
+	//训练模型
     void on_actionTrain_triggered();
-
+	//打开裁剪窗口
     void on_actionOpenCutWindow_triggered();
-
+	//打开参数设置窗口
     void on_actionPara_triggered();
-
+	//从参数设置窗口接收新数据
 	void recevieDataFromSubWin(double, double, double, int);
-
+	//裁剪图片
     void on_actionCut_triggered();
+	//设置新书拍照信号
+	void set_Mode_of_trig_soft();
 
 private:
     Ui::MainWindow *ui;
 	ParametersSetting *para;
+	TakePhoto *takephoto;
 
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	
