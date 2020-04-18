@@ -165,9 +165,7 @@ void MainWindow::testRun() {
 			QImage* img = new QImage;
 			if (!(img->load(infile2))) //加载图像
 			{
-				QMessageBox::information(this,
-					tr("OPEN FAILED"),
-					tr("OPEN FAILED!"));
+				QMessageBox::information(this,tr("OPEN FAILED"),tr("OPEN FAILED!"));
 				delete img;
 				return;
 			}
@@ -188,6 +186,7 @@ void MainWindow::testRun() {
 			}
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
 			//ui->label_2->setPixmap(qimg);
+			//waitKey(100);
 			bookdetection(image_for_write);
 			endTime = clock();
 			//ui->label_3->setText("");
@@ -769,38 +768,16 @@ void MainWindow::run_labelImg()
 	ShExecInfo.fMask = NULL;
 	ShExecInfo.hwnd = NULL;
 	ShExecInfo.lpVerb = NULL;
-	//ShExecInfo.lpFile = _T("D:\Code\QtMainWidget\labelImg\labelImg.exe");        // 执行的程序名 
 	ShExecInfo.lpFile = _T("labelImg\\labelImg.exe");        // 执行的程序名 
 	ShExecInfo.lpParameters = NULL;
 	ShExecInfo.lpDirectory = NULL;
 	ShExecInfo.nShow = SW_MAXIMIZE;                // 全屏显示这个程序 
 	ShExecInfo.hInstApp = NULL;
 	ShellExecuteEx(&ShExecInfo);
-
-	// database.exe 2016-01-22 08:45:50 异常
-	//string filename = "labelImg\\labelImg.exe";
-	//string params = "2016-01-22 08:45:50 异常"
-	//std::stringstream ss;
-	//ss << " \"" << time << "\" \"" << result << "\"";
-	//std::string params = ss.str();
-	//run_exe(filename,"");
 }
 
 void MainWindow::run_cut()
 {
-	//SHELLEXECUTEINFO  ShExecInfo;
-	//ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	//ShExecInfo.fMask = NULL;
-	//ShExecInfo.hwnd = NULL;
-	//ShExecInfo.lpVerb = NULL;
-	////ShExecInfo.lpFile = _T("D:\Code\QtMainWidget\labelImg\labelImg.exe");        // 执行的程序名 
-	//ShExecInfo.lpFile = _T("TemplateEditor\\TemplateEditor.exe");        // 执行的程序名 
-	//ShExecInfo.lpParameters = NULL;
-	//ShExecInfo.lpDirectory = NULL;
-	//ShExecInfo.nShow = SW_MAXIMIZE;                // 全屏显示这个程序 
-	//ShExecInfo.hInstApp = NULL;
-	//ShellExecuteEx(&ShExecInfo);
-	//waitKey();
 	// database.exe 2016-01-22 08:45:50 异常
 	//string filename = "labelImg\\labelImg.exe";
 	//string params = "2016-01-22 08:45:50 异常"
@@ -1395,7 +1372,7 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton->setEnabled(false);
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
-	//testRun();
+	testRun();
 	//try {
 	//	CameraCheck();
 	//	bool camera_open = CameraOpen();
@@ -1459,18 +1436,18 @@ void MainWindow::on_actionSavePic_triggered()
 //图书标记
 void MainWindow::on_actionLabel_triggered()
 {
-	SHELLEXECUTEINFO ShExecInfo = { 0 };
-	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-	ShExecInfo.hwnd = NULL;
-	ShExecInfo.lpVerb = NULL;
-	ShExecInfo.lpFile = _T("labelImg\\labelImg.exe");
-	ShExecInfo.lpParameters = NULL;
-	ShExecInfo.lpDirectory = NULL;
-	ShExecInfo.nShow = SW_SHOW;
-	ShExecInfo.hInstApp = NULL;
-	ShellExecuteEx(&ShExecInfo);
-	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+	//SHELLEXECUTEINFO ShExecInfo = { 0 };
+	//ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	//ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	//ShExecInfo.hwnd = NULL;
+	//ShExecInfo.lpVerb = NULL;
+	//ShExecInfo.lpFile = _T("labelImg\\labelImg.exe");
+	//ShExecInfo.lpParameters = NULL;
+	//ShExecInfo.lpDirectory = NULL;
+	//ShExecInfo.nShow = SW_SHOW;
+	//ShExecInfo.hInstApp = NULL;
+	//ShellExecuteEx(&ShExecInfo);
+	//WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 }
 
 //新书训练
