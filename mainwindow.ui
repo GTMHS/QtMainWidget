@@ -27,7 +27,7 @@
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="4,2,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,2,1">
         <item>
          <widget class="QLabel" name="label">
           <property name="lineWidth">
@@ -37,17 +37,17 @@
            <number>0</number>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>TextLabel1</string>
           </property>
           <property name="scaledContents">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>TextLabel</string>
+           <string>TextLabel2</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -57,7 +57,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>TextLabel</string>
+           <string>TextLabel3</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -70,6 +70,12 @@
        <layout class="QFormLayout" name="formLayout">
         <item row="1" column="1">
          <widget class="QPushButton" name="pushButton">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>Adobe Devanagari</family>
@@ -83,6 +89,12 @@
         </item>
         <item row="2" column="1">
          <widget class="QPushButton" name="pushButton_2">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>Adobe Devanagari</family>
@@ -96,6 +108,12 @@
         </item>
         <item row="3" column="1">
          <widget class="QPushButton" name="pushButton_3">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>Adobe Devanagari</family>
@@ -214,7 +232,7 @@
      <x>0</x>
      <y>0</y>
      <width>933</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menutest">

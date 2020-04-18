@@ -399,9 +399,6 @@
     <ClInclude Include="Src\MessageQue.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\MySerialport.h">
       <Filter>Generated Files</Filter>
     </ClInclude>

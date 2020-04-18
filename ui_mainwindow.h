@@ -130,7 +130,7 @@ public:
         label->setObjectName(QString::fromUtf8("label"));
         label->setLineWidth(1);
         label->setMidLineWidth(0);
-        label->setScaledContents(true);
+        label->setScaledContents(false);
 
         verticalLayout_2->addWidget(label);
 
@@ -146,7 +146,7 @@ public:
 
         verticalLayout_2->addWidget(label_3);
 
-        verticalLayout_2->setStretch(0, 4);
+        verticalLayout_2->setStretch(0, 2);
         verticalLayout_2->setStretch(1, 2);
         verticalLayout_2->setStretch(2, 1);
         splitter->addWidget(layoutWidget);
@@ -159,6 +159,7 @@ public:
         formLayout->setContentsMargins(0, 0, 0, 0);
         pushButton = new QPushButton(layoutWidget1);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setMinimumSize(QSize(150, 0));
         QFont font;
         font.setFamily(QString::fromUtf8("Adobe Devanagari"));
         font.setPointSize(11);
@@ -168,12 +169,14 @@ public:
 
         pushButton_2 = new QPushButton(layoutWidget1);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        pushButton_2->setMinimumSize(QSize(150, 0));
         pushButton_2->setFont(font);
 
         formLayout->setWidget(2, QFormLayout::FieldRole, pushButton_2);
 
         pushButton_3 = new QPushButton(layoutWidget1);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        pushButton_3->setMinimumSize(QSize(150, 0));
         pushButton_3->setFont(font);
 
         formLayout->setWidget(3, QFormLayout::FieldRole, pushButton_3);
@@ -234,7 +237,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 933, 26));
+        menuBar->setGeometry(QRect(0, 0, 933, 23));
         menutest = new QMenu(menuBar);
         menutest->setObjectName(QString::fromUtf8("menutest"));
         menutest_2 = new QMenu(menuBar);
@@ -293,9 +296,9 @@ public:
         actionPara->setText(QApplication::translate("MainWindow", "\345\217\202\346\225\260\350\260\203\346\225\264", nullptr));
         actionCut->setText(QApplication::translate("MainWindow", "\350\243\201\345\211\252\345\233\276\347\211\207", nullptr));
         actionDeleteOld->setText(QApplication::translate("MainWindow", "\345\210\240\351\231\244\350\256\255\347\273\203\346\240\267\346\234\254", nullptr));
-        label->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
-        label_3->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        label->setText(QApplication::translate("MainWindow", "TextLabel1", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "TextLabel2", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "TextLabel3", nullptr));
         pushButton->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\347\233\270\346\234\272", nullptr));
         pushButton_2->setText(QApplication::translate("MainWindow", "\345\205\263\351\227\255\347\233\270\346\234\272", nullptr));
         pushButton_3->setText(QApplication::translate("MainWindow", "\345\274\200\345\247\213\350\257\206\345\210\253", nullptr));

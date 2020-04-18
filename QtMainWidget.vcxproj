@@ -228,7 +228,6 @@
     <QtUic Include="takephoto.ui" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h" />
     <ClInclude Include="Src\Config.h" />
     <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
     <ClInclude Include="Include\GenICam\AnalogControl.h" />
