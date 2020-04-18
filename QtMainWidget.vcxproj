@@ -197,6 +197,7 @@
     <ClCompile Include="Src\mainwindow.cpp" />
     <ClCompile Include="Src\MySerialport.cpp" />
     <ClCompile Include="Src\parameterssetting.cpp" />
+    <ClCompile Include="Src\takephoto.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Src\mainwindow.h">
@@ -224,6 +225,7 @@
     <QtUic Include="mainwindow.ui">
     </QtUic>
     <QtUic Include="parameterssetting.ui" />
+    <QtUic Include="takephoto.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bookdetection\bookdetectinwithYOLOCamera\MySerialport.h" />
@@ -332,14 +334,23 @@
     <ClInclude Include="Include\Memory\SmartObjectPtr.h" />
     <ClInclude Include="Include\Memory\WeakPtr.h" />
     <ClInclude Include="Src\MySerialport.h" />
+    <QtMoc Include="Src\takephoto.h" />
     <QtMoc Include="Src\parameterssetting.h" />
     <ClInclude Include="Src\MessageQue.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="database.db" />
+    <None Include="database.exe" />
     <None Include="readme.md" />
+    <None Include="sum.exe" />
+    <None Include="介绍文档.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
+    <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

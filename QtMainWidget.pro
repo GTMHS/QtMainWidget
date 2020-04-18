@@ -27,15 +27,18 @@ CONFIG += c++11
 SOURCES += \
         Src\main.cpp \
         Src\mainwindow.cpp \
-        Src\parameterssetting.cpp
+        Src\parameterssetting.cpp \
+		Src\takephoto.cpp
 
 HEADERS += \
         Src\mainwindow.h \
-        Src\parameterssetting.h
+        Src\parameterssetting.h \
+		Src\takephoto.h
 
 FORMS += \
         mainwindow.ui \
-    parameterssetting.ui
+    parameterssetting.ui \
+    takephoto.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

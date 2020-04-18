@@ -15,6 +15,11 @@ public:
     explicit TakePhoto(QWidget *parent = nullptr);
     ~TakePhoto();
 
+signals:
+	void sendTakePhoteToMainWidget();
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::TakePhoto *ui;
 };

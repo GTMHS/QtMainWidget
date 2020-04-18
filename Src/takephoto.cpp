@@ -12,3 +12,9 @@ TakePhoto::~TakePhoto()
 {
     delete ui;
 }
+
+void TakePhoto::on_pushButton_clicked()
+{
+	emit sendTakePhoteToMainWidget();
+	this->close();
+}
