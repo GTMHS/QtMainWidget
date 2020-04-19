@@ -7,8 +7,9 @@
 
 4. 目录结构如下
 
+
 	```
-	/ShowImage
+	/QMainWidget
 		├ Bin      ： ImageConvert.dll用于图像格式转换，VideoRender.dll用来显示图像。
 		│
 		├ Include  ： 头文件
@@ -23,16 +24,26 @@
 		│   └ MVSDKmd.lib     ： SDK库。请配合所用MV Viewer版本里自带的头文件。(MV Viewer安装目录下\MV Viewer\Development\Lib中)
 		│
 		├ Src
-		│   ├ Dahua.h         ： 客户需要的适配层接口类
-		│   ├ dahua.cpp       ： 客户需要的适配层接口类
-		│   ├ MessageQue.h    ： 帧缓存队列数据结构（必需！）
-		│   ├ main.cpp        ： <例程>为了演示接口的使用方法而提供的，实际使用接口时不需要包含
-		│   ├ form.h          ： <例程>为了演示接口的使用方法而提供的，实际使用接口时不需要包含
-		│   ├ form.cpp        ： <例程>为了演示接口的使用方法而提供的，实际使用接口时不需要包含
-		│   ├ form.ui         ： <例程>为了演示接口的使用方法而提供的，实际使用接口时不需要包含
-		│   └cammerwidget.ui  ： <例程>为了演示接口的使用方法而提供的，实际使用接口时不需要包含
+		│   ├ mainwindow.h         ： 主界面头文件
+		│   ├ mainwindow.cpp       ： 主界面实现
+		│   ├ Config.h             ： 写入配置文件类头文件
+		│   ├ Config.cpp           ： 写入配置文件类实现
+		│   ├ takephoto.h          ： 拍照按钮弹窗
+		│   ├ takephoto.cpp        ： 拍照按钮弹窗
+		│   ├ alertwindow.h        ： 错误识别弹窗窗口
+		│   ├ alertwindow.cpp      ： 错误识别弹窗窗口
+		│   ├ MySerialport.h       ： 串口类头文件
+		│   ├ MySerialport.cpp     ： 串口类实现
+		│   ├ MessageQue.h         ： 帧缓存队列数据结构（必需！）
+		│   ├ main.cpp             ： 主程序入口
+		│   ├ parametersetting.h   ：设置参数窗口
+		│   └ parametersetting.cpp ： 设置参数窗口
 		│
-		└ ShowQImage.pro
+		├ labelImg 标记图书软件	
+		│
+   		├ TemplateEditor 模板框定软件
+    	│
+		└ QMainWidget.pro
 
 	```
 5. 接口使用时需要注意顺序。
