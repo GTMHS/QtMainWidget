@@ -380,6 +380,7 @@
   <ItemGroup>
     <Image Include="..\..\images\pic\Pic (1).bmp" />
     <Image Include="Img\1.png" />
+    <Image Include="Img\dailyuse.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
