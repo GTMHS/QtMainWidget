@@ -94,8 +94,13 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			{
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
-				QMessageBox message(QMessageBox::Warning, "Show Qt", "<font size='26' color='red'>装订错误！</font>", QMessageBox::Yes | QMessageBox::No, NULL);
-				message.exec();
+				para = new ParametersSetting;
+				//connect(this, SIGNAL(sendData(double, double, double, int)), para, SLOT(recevieData(double, double, double)));	
+				//emit sendData(k, b, s);
+				connect(para, SIGNAL(sendDataToMainWidget(double, double, double)), this, SLOT(recevieDataFromSubWin(double, double, double, int)));
+				para->show();
+				//QMessageBox message(QMessageBox::Warning, "Show Qt", "<font size='100' color='red'>装订错误！</font>", QMessageBox::Yes | QMessageBox::No, NULL);
+				//message.exec();
 				/*QMessageBox::information(NULL, "错误", "");*/
 				//output file
 				//imwrite(wrong_filename, src_mat);
@@ -1310,44 +1315,44 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton->setEnabled(false);
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
-	//testRun();
+	testRun();
 	//打开相机
-	ICameraPtr cameraSptr;
-	//发现设备
-	CSystem &systemObj = CSystem::getInstance();
-	TVector<ICameraPtr> vCameraPtrList;
-	bool bRet = systemObj.discovery(vCameraPtrList);
+	//ICameraPtr cameraSptr;
+	////发现设备
+	//CSystem &systemObj = CSystem::getInstance();
+	//TVector<ICameraPtr> vCameraPtrList;
+	//bool bRet = systemObj.discovery(vCameraPtrList);
 
-	if (!bRet)
-	{
-		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
+	//if (!bRet)
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
 
-	if (0 == vCameraPtrList.size())
-	{
-		QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
-	try {
-		CameraCheck();
-		bool camera_open = CameraOpen();
-		CameraStart();
-		//SetExposeTime(10000);
-		//SetAdjustPlus(5);
-		CameraChangeTrig(trigContinous);
-	}
-	catch (Exception e) {
-		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	}
+	//if (0 == vCameraPtrList.size())
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
+	//try {
+	//	CameraCheck();
+	//	bool camera_open = CameraOpen();
+	//	CameraStart();
+	//	//SetExposeTime(10000);
+	//	//SetAdjustPlus(5);
+	//	CameraChangeTrig(trigContinous);
+	//}
+	//catch (Exception e) {
+	//	QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//}
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
