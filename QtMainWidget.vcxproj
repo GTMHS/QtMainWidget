@@ -192,6 +192,9 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="release\moc_mainwindow.cpp" />
+    <ClCompile Include="release\moc_parameterssetting.cpp" />
+    <ClCompile Include="release\moc_takephoto.cpp" />
     <ClCompile Include="Src\Config.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\mainwindow.cpp" />
@@ -228,6 +231,8 @@
     <QtUic Include="takephoto.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="labelImg\Include\pyconfig.h" />
+    <ClInclude Include="release\moc_predefs.h" />
     <ClInclude Include="Src\Config.h" />
     <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
     <ClInclude Include="Include\GenICam\AnalogControl.h" />
@@ -341,6 +346,31 @@
     <None Include="database.db" />
     <None Include="database.exe" />
     <None Include="readme.md" />
+    <None Include="release\Config\conf.ini" />
+    <None Include="release\D3Dcompiler_47.dll" />
+    <None Include="release\iconengines\qsvgicon.dll" />
+    <None Include="release\ImageConvert.dll" />
+    <None Include="release\imageformats\qgif.dll" />
+    <None Include="release\imageformats\qicns.dll" />
+    <None Include="release\imageformats\qico.dll" />
+    <None Include="release\imageformats\qjpeg.dll" />
+    <None Include="release\imageformats\qsvg.dll" />
+    <None Include="release\imageformats\qtga.dll" />
+    <None Include="release\imageformats\qtiff.dll" />
+    <None Include="release\imageformats\qwbmp.dll" />
+    <None Include="release\imageformats\qwebp.dll" />
+    <None Include="release\libEGL.dll" />
+    <None Include="release\libGLESV2.dll" />
+    <None Include="release\opengl32sw.dll" />
+    <None Include="release\platforms\qwindows.dll" />
+    <None Include="release\Qt5Core.dll" />
+    <None Include="release\Qt5Gui.dll" />
+    <None Include="release\Qt5Svg.dll" />
+    <None Include="release\Qt5Widgets.dll" />
+    <None Include="release\QtMainWidget.exe" />
+    <None Include="release\SDKLOG_default.properties" />
+    <None Include="release\styles\qwindowsvistastyle.dll" />
+    <None Include="release\VideoRender.dll" />
     <None Include="sum.exe" />
     <None Include="介绍文档.md" />
   </ItemGroup>
@@ -349,8 +379,12 @@
     <Image Include="Img\1.png" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
     <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
