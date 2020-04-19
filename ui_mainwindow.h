@@ -134,7 +134,7 @@ public:
         label->setMaximumSize(QSize(1080, 720));
         label->setLineWidth(1);
         label->setMidLineWidth(0);
-        label->setScaledContents(false);
+        label->setScaledContents(true);
 
         verticalLayout_2->addWidget(label);
 
@@ -151,8 +151,8 @@ public:
 
         verticalLayout_2->addWidget(label_3);
 
-        verticalLayout_2->setStretch(0, 2);
-        verticalLayout_2->setStretch(1, 2);
+        verticalLayout_2->setStretch(0, 3);
+        verticalLayout_2->setStretch(1, 1);
         verticalLayout_2->setStretch(2, 1);
         splitter->addWidget(layoutWidget);
         layoutWidget1 = new QWidget(splitter);

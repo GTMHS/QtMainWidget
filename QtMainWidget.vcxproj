@@ -348,6 +348,8 @@
   <ItemGroup>
     <None Include="database.db" />
     <None Include="database.exe" />
+    <None Include="debug\ImageConvert.dll" />
+    <None Include="debug\VideoRender.dll" />
     <None Include="readme.md" />
     <None Include="release\Config\conf.ini" />
     <None Include="release\D3Dcompiler_47.dll" />

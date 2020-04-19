@@ -27,7 +27,7 @@
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,2,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1,1">
         <item>
          <widget class="QLabel" name="label">
           <property name="maximumSize">
@@ -46,7 +46,7 @@
            <string>TextLabel1</string>
           </property>
           <property name="scaledContents">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>

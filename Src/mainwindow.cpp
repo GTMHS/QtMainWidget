@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	, m_handler(NULL)
 {
     ui->setupUi(this);
+	
 	m_hWnd = (VR_HWND)this->winId();
 	//pui = new CammerWidget();
 	//connect(pui, SIGNAL(SendUpdateLCDMsg(int)), this, SLOT(UpdateLCD()));
@@ -44,9 +45,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->splitter->setStretchFactor(0, 8);
 	ui->splitter->setStretchFactor(1, 1);	
 	ui->splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
-
-	ui->label->setScaledContents(true);
-
+	this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+	int label_width = this->width() * 8 / 9;
+	int label_heiht = this->height() / 5;
+	ui->label->setMaximumWidth(label_width);
+	ui->label->setMaximumHeight(label_heiht * 3);
+	ui->label_2->setMaximumWidth(label_width);
+	ui->label_2->setMaximumHeight(label_heiht);
 	init_parameters();
 
 }
@@ -74,7 +79,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	{
 		image = QImage(pRgbFrameBuf, nWidth, nHeight, QImage::Format_RGB888);
 	}
-
+	
 	//显示整幅图片
 	QPixmap pixmap = QPixmap::fromImage(image);
 	ui->label->setPixmap(pixmap);
@@ -94,9 +99,11 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			{
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
-
+				//弹窗报警,2秒自动关闭
 				alertWindow = new AlertWindow;
 				alertWindow->show();
+				waitKey(2000);
+				alertWindow->close();
 				//QMessageBox::information(NULL, "错误", "");
 
 				//output file
@@ -164,7 +171,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i < 26; i++) {
+		for (int i = 20; i < 21; i++) {
 			startTime1 = clock();
 			ss << imagefile << i << ").bmp";
 			string infile = ss.str();
@@ -195,7 +202,16 @@ void MainWindow::testRun() {
 			}
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
 			waitKey(100);
-			bookdetection(image_for_write);
+			if (!bookdetection(image_for_write))//识别判断
+			{
+				Beep(1000, 1000);
+				cout << "不合格" << endl << endl;
+				//弹窗报警
+				alertWindow = new AlertWindow;
+				alertWindow->show();
+				waitKey(1000);
+				alertWindow->close();
+			}
 			endTime = clock();
 			//ui->label_3->setText("");
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
@@ -203,7 +219,7 @@ void MainWindow::testRun() {
 			//ui->label_3->setText(st);
 			cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
 			ss.str("");
-			waitKey(2000);
+			waitKey(1000);
 		}
 	}
 	catch (const std::exception& e)
@@ -1312,8 +1328,7 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton->setEnabled(false);
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
-	alertWindow = new AlertWindow;
-	alertWindow->show();
+
 	//testRun();
 	//打开相机
 	//ICameraPtr cameraSptr;
@@ -1396,11 +1411,22 @@ void MainWindow::on_actionSavePic_triggered()
 	设置为软件触发方式，并触发拍照
 	弹窗一个按钮？然后点击拍照？
 	*/
-	takephoto = new TakePhoto;
-	connect(takephoto, SIGNAL(sendTakePhoteToMainWidget()), this, SLOT(set_Mode_of_trig_soft()));
-	takephoto->show();
-}
+	CSystem &systemObj = CSystem::getInstance();
 
+	bool bRet = systemObj.discovery(m_vCameraPtrList);
+	if (false == bRet || m_vCameraPtrList.size() < 1)
+	{
+		printf("discovery fail.\n");
+		QMessageBox::critical(NULL, "错误", "未连接到相机！");
+		return;
+	}
+	else
+	{
+		takephoto = new TakePhoto;
+		connect(takephoto, SIGNAL(sendTakePhoteToMainWidget()), this, SLOT(set_Mode_of_trig_soft()));
+		takephoto->show();
+	}
+}
 //图书标记
 void MainWindow::on_actionLabel_triggered()
 {
@@ -1428,6 +1454,14 @@ void MainWindow::on_actionTrain_triggered()
 //显示裁剪窗口。参考https://www.cnblogs.com/blogpro/p/11343975.html
 void MainWindow::on_actionOpenCutWindow_triggered()
 {
+	/* Qt校验文件hash值判断是否更改 https://blog.csdn.net/emdfans/article/details/23871741 
+	*/
+	QFile theFile("moban.png");
+	theFile.open(QIODevice::ReadOnly);
+	QByteArray ba = QCryptographicHash::hash(theFile.readAll(), QCryptographicHash::Md5);
+	theFile.close();
+	Config().Set("Template","Hash", ba.toHex().constData());
+	
 	SHELLEXECUTEINFO ShExecInfo = { 0 };
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
@@ -1440,20 +1474,41 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	ShExecInfo.hInstApp = NULL;
 	ShellExecuteEx(&ShExecInfo);
 	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
-	ui->label_3->setText("裁剪已完成");
-	Mat mask = read_mask();
-	Rect rect_mask = mask_boundingRect(mask);
-	QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
-	Config().Set("Image Rect", "Book Name", "书名"); 
-	Config().Set("Image Rect", "x", rect_mask.x);
-	Config().Set("Image Rect", "y", rect_mask.x);
-	Config().Set("Image Rect", "width", rect_mask.width);
-	Config().Set("Image Rect", "height", rect_mask.height);
 
-	Mat img = imread("Train/image/Pic.bmp");
-	img = img(rect_mask);
-	imshow("test", img);
-	imwrite("Train/image/Pic.bmp", img);
+	theFile.open(QIODevice::ReadOnly);
+	QByteArray bb = QCryptographicHash::hash(theFile.readAll(), QCryptographicHash::Md5);
+	theFile.close();
+
+	if (ba != bb) {
+		ui->label_3->setText("裁剪已完成");
+		Mat mask = read_mask();
+		Rect rect_mask = mask_boundingRect(mask);
+		Mat img = imread("Train/image/Pic.bmp");
+		if (rect_mask.x < 0) {
+			rect_mask.x = 0;
+		}
+		if (rect_mask.x + rect_mask.width > img.cols)
+		{
+			rect_mask.width = img.cols - rect_mask.x;
+		}
+		if (rect_mask.y + rect_mask.height > img.rows) {
+			rect_mask.height = img.rows - rect_mask.y;
+		}
+		QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
+		Config().Set("Image Rect", "Book Name", "书名");
+		Config().Set("Image Rect", "x", rect_mask.x);
+		Config().Set("Image Rect", "y", rect_mask.x);
+		Config().Set("Image Rect", "width", rect_mask.width);
+		Config().Set("Image Rect", "height", rect_mask.height);
+
+		img = img(rect_mask);
+		imshow("裁剪后的图书", img);
+		imwrite("Train/image/Pic.bmp", img);
+	}
+	else
+	{
+		return;
+	}
 	//SHELLEXECUTEINFO  ShExecInfo;
 	//ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 	//ShExecInfo.fMask = NULL;
@@ -1606,5 +1661,6 @@ void MainWindow::on_actionGetParemeter_triggered()
 	b = intercept1;
 	s = r_square1;
 	ui->label_3->setText("参数识别完毕！");
+
 	QMessageBox::information(NULL, "参数识别", "参数识别完成！");
 }

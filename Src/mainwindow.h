@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <qmessagebox.h>
 #include <qsettings.h>
+#include <QCryptographicHash>
+#include <qfile.h>
 
 #include "GenICam/System.h"
 #include "Media/VideoRender.h"
@@ -20,6 +22,7 @@
 #include <ShellAPI.h>
 #include <tchar.h>
 #include <time.h>
+
 
 #include <Src\parameterssetting.h>
 #include <Src\takephoto.h>
