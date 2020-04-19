@@ -149,8 +149,11 @@ private slots:
 	void recevieDataFromSubWin(double, double, double, int);
 	//裁剪图片
     void on_actionCut_triggered();
+	void on_actionGetParemeter_triggered();
 	//设置新书拍照信号
 	void set_Mode_of_trig_soft();
+
+    //void on_actionGetParemeter_triggered();
 
 private:
     Ui::MainWindow *ui;

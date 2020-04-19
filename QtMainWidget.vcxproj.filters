@@ -415,6 +415,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />
+    <Image Include="..\..\images\pic\Pic (1).bmp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />

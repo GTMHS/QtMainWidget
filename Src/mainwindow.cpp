@@ -78,6 +78,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	//显示整幅图片
 	QPixmap pixmap = QPixmap::fromImage(image);
 	ui->label->setPixmap(pixmap);
+	//label2显示裁剪之后的照片
 	Mat img = QImage2cvMat(image);
 	img = img(rect_of_image); //裁剪
 	cv::Mat out;
@@ -93,7 +94,9 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			{
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
-				QMessageBox::information(NULL, "错误", "装订错误！");
+				QMessageBox message(QMessageBox::Warning, "Show Qt", "<font size='26' color='red'>装订错误！</font>", QMessageBox::Yes | QMessageBox::No, NULL);
+				message.exec();
+				/*QMessageBox::information(NULL, "错误", "");*/
 				//output file
 				//imwrite(wrong_filename, src_mat);
 				//run_database(current_time, "不合格");
@@ -128,10 +131,11 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			try
 			{				
 				Mat img = QImage2cvMat(image);
+				Mode_of_trig_soft = false;
 				cv::Mat out;
 				cv::Mat in[] = { img, img, img };
 				cv::merge(in, 3, out);
-				ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+				//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
 				//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
 				imwrite("Train/image/Pic.bmp", img);
 				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
@@ -153,12 +157,12 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "D:\\Pic\\Pic (";
+	string imagefile = "D:\\images\\pic\\Pic (";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i < 5; i++) {
+		for (int i = 1; i < 26; i++) {
 			startTime1 = clock();
 			ss << imagefile << i << ").bmp";
 			string infile = ss.str();
@@ -188,8 +192,7 @@ void MainWindow::testRun() {
 				Img = QImage((const uchar*)(image_for_write.data), image_for_write.cols, image_for_write.rows, image_for_write.cols*image_for_write.channels(), QImage::Format_Indexed8);
 			}
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
-			//ui->label_2->setPixmap(qimg);
-			//waitKey(100);
+			waitKey(100);
 			bookdetection(image_for_write);
 			endTime = clock();
 			//ui->label_3->setText("");
@@ -225,7 +228,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//for循环获取每个黑块的中点，并存储到points中
 	for (int i = 0; i < boxes.size(); i++) {
 		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
-		average_piexl_value = average_piexl_value + imagefile.at<uchar>(points[i]);
+		//average_piexl_value = average_piexl_value + imagefile.at<uchar>(points[i]);
 		//if (boxes[i].x > max_point_x) {
 		//	max_point_x = boxes[i].x;
 		//	max_point_y = boxes[i].y;
@@ -361,9 +364,11 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	if (Num_of_blocks == this_block_nums) {
 		ui->label_3->setText("Correct");
 		LinearFitting(points, k, b, s);
+		return true;
 	}
 	else {
 		ui->label_3->setText("Wrong");
+		return false;
 	}
 
 	//switch (this_block_nums)
@@ -410,9 +415,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//	//emit SendUpdateLCDMsg(2);
 	//	return 0;
 	//}
-
-
-	return true;
+	
 }
 
 //OpenCV Mat与QImage相互转换函数
@@ -1301,9 +1304,13 @@ void MainWindow::setDisplayFPS(int nFPS)
 void MainWindow::set_Mode_of_trig_soft() {
 	Mode_of_trig_soft = true;
 }
-
+//打开相机
 void MainWindow::on_pushButton_clicked()
 {
+	ui->pushButton->setEnabled(false);
+	ui->pushButton_2->setEnabled(true);
+	ui->pushButton_3->setEnabled(true);
+	//testRun();
 	//打开相机
 	ICameraPtr cameraSptr;
 	//发现设备
@@ -1314,19 +1321,22 @@ void MainWindow::on_pushButton_clicked()
 	if (!bRet)
 	{
 		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		ui->pushButton->setEnabled(true);
+		ui->pushButton_2->setEnabled(false);
+		ui->pushButton_3->setEnabled(false);
+		ui->pushButton_4->setEnabled(false);
 		return;
 	}
 
 	if (0 == vCameraPtrList.size())
 	{
 		QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+		ui->pushButton->setEnabled(true);
+		ui->pushButton_2->setEnabled(false);
+		ui->pushButton_3->setEnabled(false);
+		ui->pushButton_4->setEnabled(false);
 		return;
 	}
-
-	ui->pushButton->setEnabled(false);
-	ui->pushButton_2->setEnabled(true);
-	ui->pushButton_3->setEnabled(true);
-	//testRun();
 	try {
 		CameraCheck();
 		bool camera_open = CameraOpen();
@@ -1338,9 +1348,8 @@ void MainWindow::on_pushButton_clicked()
 	catch (Exception e) {
 		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 	}
-	//QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
 }
-
+//关闭相机
 void MainWindow::on_pushButton_2_clicked()
 {
 	//关闭相机
@@ -1351,7 +1360,7 @@ void MainWindow::on_pushButton_2_clicked()
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(false);
 }
-
+//开始 识别
 void MainWindow::on_pushButton_3_clicked()
 {
 	//开始 识别
@@ -1361,8 +1370,9 @@ void MainWindow::on_pushButton_3_clicked()
 	ui->pushButton_4->setEnabled(true);
 	//将相机改为硬件触发，每触发一次执行一次判断
 	CameraChangeTrig(trigLine);
+	
 }
-
+//停止识别
 void MainWindow::on_pushButton_4_clicked()
 {
 	//停止识别
@@ -1431,9 +1441,15 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	Rect rect_mask = mask_boundingRect(mask);
 	QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
 	Config().Set("Image Rect", "Book Name", "书名"); 
-	Config().Set("Image Rect", "Rectangle", qrectf);
-	QRectF f = Config().Get("Image Rect", "Rectangle").toRectF();
-	ui->label_2->setText(QString::number( f.x()));
+	Config().Set("Image Rect", "x", rect_mask.x);
+	Config().Set("Image Rect", "y", rect_mask.x);
+	Config().Set("Image Rect", "width", rect_mask.width);
+	Config().Set("Image Rect", "height", rect_mask.height);
+
+	Mat img = imread("Train/image/Pic.bmp");
+	img = img(rect_mask);
+	imshow("test", img);
+	imwrite("Train/image/Pic.bmp", img);
 	//SHELLEXECUTEINFO  ShExecInfo;
 	//ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 	//ShExecInfo.fMask = NULL;
@@ -1520,12 +1536,71 @@ void MainWindow::init_parameters() {
 
 	Mat mask = read_mask();
 	Rect reck_mask = mask_boundingRect(mask);
-
-	Qrect_of_image = Config().Get("Rect of Image", "r").toRect();
-
-
+	rect_of_image = reck_mask;	
+	//QString x = QString::number(reck_mask.x);
+	//QString y = QString::number(reck_mask.y);
+	//QString width = QString::number(reck_mask.width);
+	//QString height = QString::number(reck_mask.height);
+	//QString str = x + "\t y:" + y + "\t width:" + width + "\t  height:" + height;
+	//ui->label_3->setText(str);
 }
 void MainWindow::on_actionCut_triggered()
 {
+	on_actionOpenCutWindow_triggered();
+}
+//识别参数，写入config文件中
+void MainWindow::on_actionGetParemeter_triggered()
+{
+	Mat img = imread("Train/image/Pic.bmp");
+	//img = img(rect_of_image);
+	String modelConfiguration = "D:/yolov3.cfg";
+	String model_label_Weights = "D:/yolov3-voc_9000.weights";
 
+	vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
+	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
+	sort(boxes.begin(), boxes.end(), sortFun);
+	vector<Point> points;
+
+	//for循环获取每个黑块的中点，并存储到points中
+	for (int i = 0; i < boxes.size(); i++) {
+		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
+	}
+
+	int length = points.size();
+	double xmean = 0.0;
+	double ymean = 0.0;
+	for (int i = 0; i < length; i++)
+	{
+		xmean += points[i].x;
+		ymean += points[i].y;
+	}
+	xmean /= length;
+	ymean /= length;
+
+	double sumx2 = 0.0;
+	double sumy2 = 0.0;
+	double sumxy = 0.0;
+	for (int i = 0; i < length; i++)
+	{
+		sumx2 += (points[i].x - xmean) * (points[i].x - xmean);
+		sumy2 += (points[i].y - ymean) * (points[i].y - ymean);
+		sumxy += (points[i].y - ymean) * (points[i].x - xmean);
+	}
+	double slope1 = sumxy / sumx2;  //斜率
+	double intercept1 = ymean - slope1 * xmean; //截距
+	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
+
+	//写入配置文件
+	Config().Set("Line Fitting", "k", slope1);
+	Config().Set("Line Fitting", "b", intercept1);
+	Config().Set("Line Fitting", "s", r_square1);
+	Config().Set("Line Fitting", "n", length);
+
+	//把参数更新到类属性变量中
+	Num_of_blocks = length;
+	k = slope1;
+	b = intercept1;
+	s = r_square1;
+	ui->label_3->setText("参数识别完毕！");
+	QMessageBox::information(NULL, "参数识别", "参数识别完成！");
 }
