@@ -18,7 +18,7 @@
 		│   ├ Infra       ：SDK库的头文件。请配合所用MV Viewer版本里自带的头文件。(MV Viewer安装目录下\MV Viewer\Development\Include中)
 		│   └ Memory      ：SDK库的头文件。请配合所用MV Viewer版本里自带的头文件。(MV Viewer安装目录下\MV Viewer\Development\Include中)
 		│
-		├ Depends  ：  编译时依赖库
+		├ Depends  ：  编译时依赖库（大华相机中的lib）
 		│   ├ ImageConvert.lib
 		│   ├ VideoRender.lib  
 		│   └ MVSDKmd.lib     ： SDK库。请配合所用MV Viewer版本里自带的头文件。(MV Viewer安装目录下\MV Viewer\Development\Lib中)
