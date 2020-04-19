@@ -6,6 +6,7 @@ AlertWindow::AlertWindow(QWidget *parent) :
     ui(new Ui::AlertWindow)
 {
     ui->setupUi(this);
+	ui->label->setStyleSheet("color:red");
 }
 
 AlertWindow::~AlertWindow()

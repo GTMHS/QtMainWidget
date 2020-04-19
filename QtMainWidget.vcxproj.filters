@@ -64,6 +64,9 @@
     <ClCompile Include="release\moc_takephoto.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\alertwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -83,6 +86,9 @@
     <QtUic Include="takephoto.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="alertwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Src\mainwindow.h">
@@ -92,6 +98,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Src\takephoto.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Src\alertwindow.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

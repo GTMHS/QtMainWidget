@@ -25,6 +25,7 @@
 #include <Src\takephoto.h>
 #include <Src\MySerialport.h>
 #include <Src\Config.h>
+#include <Src\alertwindow.h>
 
 using namespace cv;
 using namespace dnn;
@@ -159,6 +160,7 @@ private:
     Ui::MainWindow *ui;
 	ParametersSetting *para;
 	TakePhoto *takephoto;
+	AlertWindow *alertWindow;
 
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	

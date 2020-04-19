@@ -28,17 +28,20 @@ SOURCES += \
         Src\main.cpp \
         Src\mainwindow.cpp \
         Src\parameterssetting.cpp \
-		Src\takephoto.cpp
+		Src\takephoto.cpp \
+    alertwindow.cpp
 
 HEADERS += \
         Src\mainwindow.h \
         Src\parameterssetting.h \
-		Src\takephoto.h
+		Src\takephoto.h \
+    alertwindow.h
 
 FORMS += \
         mainwindow.ui \
     parameterssetting.ui \
-    takephoto.ui
+    takephoto.ui \
+    alertwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

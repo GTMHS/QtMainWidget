@@ -94,14 +94,11 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			{
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
-				para = new ParametersSetting;
-				//connect(this, SIGNAL(sendData(double, double, double, int)), para, SLOT(recevieData(double, double, double)));	
-				//emit sendData(k, b, s);
-				connect(para, SIGNAL(sendDataToMainWidget(double, double, double)), this, SLOT(recevieDataFromSubWin(double, double, double, int)));
-				para->show();
-				//QMessageBox message(QMessageBox::Warning, "Show Qt", "<font size='100' color='red'>装订错误！</font>", QMessageBox::Yes | QMessageBox::No, NULL);
-				//message.exec();
-				/*QMessageBox::information(NULL, "错误", "");*/
+
+				alertWindow = new AlertWindow;
+				alertWindow->show();
+				//QMessageBox::information(NULL, "错误", "");
+
 				//output file
 				//imwrite(wrong_filename, src_mat);
 				//run_database(current_time, "不合格");
@@ -1315,7 +1312,9 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton->setEnabled(false);
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
-	testRun();
+	alertWindow = new AlertWindow;
+	alertWindow->show();
+	//testRun();
 	//打开相机
 	//ICameraPtr cameraSptr;
 	////发现设备
