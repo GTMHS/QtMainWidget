@@ -47,6 +47,8 @@ public:
     QAction *actionCut;
     QAction *actionDeleteOld;
     QAction *actionGetParemeter;
+    QAction *actiontemp;
+    QAction *actiontakephoto;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QSplitter *splitter;
@@ -72,7 +74,6 @@ public:
     QMenu *menutest;
     QMenu *menutest_2;
     QMenu *menu;
-    QMenu *menu_2;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -80,7 +81,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(933, 605);
+        MainWindow->resize(775, 739);
         actiontest2 = new QAction(MainWindow);
         actiontest2->setObjectName(QString::fromUtf8("actiontest2"));
         actiontest3 = new QAction(MainWindow);
@@ -89,12 +90,14 @@ public:
         actionOPen_Camera->setObjectName(QString::fromUtf8("actionOPen_Camera"));
         actionSavePic = new QAction(MainWindow);
         actionSavePic->setObjectName(QString::fromUtf8("actionSavePic"));
+        actionSavePic->setEnabled(true);
         actionLabel = new QAction(MainWindow);
         actionLabel->setObjectName(QString::fromUtf8("actionLabel"));
         actionqita = new QAction(MainWindow);
         actionqita->setObjectName(QString::fromUtf8("actionqita"));
         actionTrain = new QAction(MainWindow);
         actionTrain->setObjectName(QString::fromUtf8("actionTrain"));
+        actionTrain->setEnabled(false);
         actionOpenCutWindow = new QAction(MainWindow);
         actionOpenCutWindow->setObjectName(QString::fromUtf8("actionOpenCutWindow"));
         actionCut_2 = new QAction(MainWindow);
@@ -109,8 +112,13 @@ public:
         actionCut->setObjectName(QString::fromUtf8("actionCut"));
         actionDeleteOld = new QAction(MainWindow);
         actionDeleteOld->setObjectName(QString::fromUtf8("actionDeleteOld"));
+        actionDeleteOld->setEnabled(false);
         actionGetParemeter = new QAction(MainWindow);
         actionGetParemeter->setObjectName(QString::fromUtf8("actionGetParemeter"));
+        actiontemp = new QAction(MainWindow);
+        actiontemp->setObjectName(QString::fromUtf8("actiontemp"));
+        actiontakephoto = new QAction(MainWindow);
+        actiontakephoto->setObjectName(QString::fromUtf8("actiontakephoto"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -131,7 +139,6 @@ public:
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
         label = new QLabel(layoutWidget);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setMaximumSize(QSize(1080, 720));
         label->setLineWidth(1);
         label->setMidLineWidth(0);
         label->setScaledContents(true);
@@ -140,7 +147,6 @@ public:
 
         label_2 = new QLabel(layoutWidget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setMaximumSize(QSize(1080, 360));
         label_2->setScaledContents(true);
 
         verticalLayout_2->addWidget(label_2);
@@ -242,15 +248,14 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 933, 23));
+        menuBar->setGeometry(QRect(0, 0, 775, 23));
         menutest = new QMenu(menuBar);
         menutest->setObjectName(QString::fromUtf8("menutest"));
         menutest_2 = new QMenu(menuBar);
         menutest_2->setObjectName(QString::fromUtf8("menutest_2"));
         menu = new QMenu(menuBar);
         menu->setObjectName(QString::fromUtf8("menu"));
-        menu_2 = new QMenu(menu);
-        menu_2->setObjectName(QString::fromUtf8("menu_2"));
+        menu->setEnabled(true);
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -266,17 +271,15 @@ public:
         menutest->addAction(actioncans);
         menutest->addSeparator();
         menutest->addAction(action);
-        menutest_2->addAction(actionPara);
+        menutest_2->addAction(actiontakephoto);
         menutest_2->addAction(actionCut);
         menutest_2->addAction(actionGetParemeter);
+        menutest_2->addAction(actionPara);
         menu->addAction(actionSavePic);
-        menu->addAction(menu_2->menuAction());
+        menu->addAction(actionCut_2);
         menu->addAction(actionLabel);
-        menu->addAction(actionqita);
         menu->addAction(actionTrain);
         menu->addAction(actionDeleteOld);
-        menu_2->addAction(actionOpenCutWindow);
-        menu_2->addAction(actionCut_2);
 
         retranslateUi(MainWindow);
         QObject::connect(actionOPen_Camera, SIGNAL(triggered()), MainWindow, SLOT(showMaximized()));
@@ -303,6 +306,8 @@ public:
         actionCut->setText(QApplication::translate("MainWindow", "\350\243\201\345\211\252\345\233\276\347\211\207", nullptr));
         actionDeleteOld->setText(QApplication::translate("MainWindow", "\345\210\240\351\231\244\350\256\255\347\273\203\346\240\267\346\234\254", nullptr));
         actionGetParemeter->setText(QApplication::translate("MainWindow", "\350\257\206\345\210\253\345\217\202\346\225\260", nullptr));
+        actiontemp->setText(QApplication::translate("MainWindow", "temp", nullptr));
+        actiontakephoto->setText(QApplication::translate("MainWindow", "\346\226\260\344\271\246\346\213\215\347\205\247", nullptr));
         label->setText(QApplication::translate("MainWindow", "TextLabel1", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "TextLabel2", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "TextLabel3", nullptr));
@@ -316,7 +321,6 @@ public:
         menutest->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
         menutest_2->setTitle(QApplication::translate("MainWindow", "\346\227\245\345\270\270\344\275\277\347\224\250", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\260\344\271\246\350\256\255\347\273\203", nullptr));
-        menu_2->setTitle(QApplication::translate("MainWindow", "\346\226\260\344\271\246\350\243\201\345\211\252", nullptr));
     } // retranslateUi
 
 };

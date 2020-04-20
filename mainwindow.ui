@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
-    <height>605</height>
+    <width>775</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,12 +30,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1,1">
         <item>
          <widget class="QLabel" name="label">
-          <property name="maximumSize">
-           <size>
-            <width>1080</width>
-            <height>720</height>
-           </size>
-          </property>
           <property name="lineWidth">
            <number>1</number>
           </property>
@@ -52,12 +46,6 @@
         </item>
         <item>
          <widget class="QLabel" name="label_2">
-          <property name="maximumSize">
-           <size>
-            <width>1080</width>
-            <height>360</height>
-           </size>
-          </property>
           <property name="text">
            <string>TextLabel2</string>
           </property>
@@ -243,7 +231,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>933</width>
+     <width>775</width>
      <height>23</height>
     </rect>
    </property>
@@ -260,25 +248,21 @@
     <property name="title">
      <string>日常使用</string>
     </property>
-    <addaction name="actionPara"/>
+    <addaction name="actiontakephoto"/>
     <addaction name="actionCut"/>
     <addaction name="actionGetParemeter"/>
+    <addaction name="actionPara"/>
    </widget>
    <widget class="QMenu" name="menu">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>新书训练</string>
     </property>
-    <widget class="QMenu" name="menu_2">
-     <property name="title">
-      <string>新书裁剪</string>
-     </property>
-     <addaction name="actionOpenCutWindow"/>
-     <addaction name="actionCut_2"/>
-    </widget>
     <addaction name="actionSavePic"/>
-    <addaction name="menu_2"/>
+    <addaction name="actionCut_2"/>
     <addaction name="actionLabel"/>
-    <addaction name="actionqita"/>
     <addaction name="actionTrain"/>
     <addaction name="actionDeleteOld"/>
    </widget>
@@ -311,6 +295,9 @@
    </property>
   </action>
   <action name="actionSavePic">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>新书拍照</string>
    </property>
@@ -326,6 +313,9 @@
    </property>
   </action>
   <action name="actionTrain">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>开始训练</string>
    </property>
@@ -361,6 +351,9 @@
    </property>
   </action>
   <action name="actionDeleteOld">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>删除训练样本</string>
    </property>
@@ -368,6 +361,16 @@
   <action name="actionGetParemeter">
    <property name="text">
     <string>识别参数</string>
+   </property>
+  </action>
+  <action name="actiontemp">
+   <property name="text">
+    <string>temp</string>
+   </property>
+  </action>
+  <action name="actiontakephoto">
+   <property name="text">
+    <string>新书拍照</string>
    </property>
   </action>
  </widget>

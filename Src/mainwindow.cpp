@@ -82,7 +82,9 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	
 	//显示整幅图片
 	QPixmap pixmap = QPixmap::fromImage(image);
-	ui->label->setPixmap(pixmap);
+	int w = ui->label->width();
+	int h = ui->label->height();	
+	ui->label->setPixmap(pixmap.scaled(w,h,Qt::KeepAspectRatio));
 	//label2显示裁剪之后的照片
 	Mat img = QImage2cvMat(image);
 	img = img(rect_of_image); //裁剪
@@ -166,12 +168,12 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "D:\\images\\pic\\Pic (";
+	string imagefile = "E:\\pic\\Pic (";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 20; i < 21; i++) {
+		for (int i = 1; i <926; i++) {
 			startTime1 = clock();
 			ss << imagefile << i << ").bmp";
 			string infile = ss.str();
@@ -535,6 +537,7 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
 	cout << "y = " << slope1 << "x+ " << intercept1 << "  r_square1 is " << r_square1 << endl;
 
+	//判断条件只添加了相关系数和斜率
 	if (abs(r_square - r_square1) <= 0.1 && abs(slope - slope1) <= 0.1) {
 		cout << "相关系数正确" << endl;
 
@@ -544,7 +547,6 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 	}
 	else
 	{
-
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | BACKGROUND_RED);
 		cout << "相关系数错误！" << endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
@@ -652,7 +654,7 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 	//cout << "indices.size(匹配得到的目标数):" << indices.size() << endl;
 	vector<Rect> boxes_for_return;
 
-	Rect box = boxes[0];
+	//Rect box = boxes[0];
 
 	for (size_t i = 0; i < indices.size(); ++i)
 	{
@@ -1329,7 +1331,7 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
 
-	//testRun();
+	testRun();
 	//打开相机
 	//ICameraPtr cameraSptr;
 	////发现设备
@@ -1454,7 +1456,7 @@ void MainWindow::on_actionTrain_triggered()
 //显示裁剪窗口。参考https://www.cnblogs.com/blogpro/p/11343975.html
 void MainWindow::on_actionOpenCutWindow_triggered()
 {
-	/* Qt校验文件hash值判断是否更改 https://blog.csdn.net/emdfans/article/details/23871741 
+	/* Qt校验模板文件hash值判断是否更改 https://blog.csdn.net/emdfans/article/details/23871741 
 	*/
 	QFile theFile("moban.png");
 	theFile.open(QIODevice::ReadOnly);
@@ -1478,7 +1480,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	theFile.open(QIODevice::ReadOnly);
 	QByteArray bb = QCryptographicHash::hash(theFile.readAll(), QCryptographicHash::Md5);
 	theFile.close();
-
+	//判断裁剪窗口关闭前后模板文件是否发生了变化，发生变化说明进行了裁剪，未发生变化则说明没有裁剪不执行任何操作只弹窗提示
 	if (ba != bb) {
 		ui->label_3->setText("裁剪已完成");
 		Mat mask = read_mask();
@@ -1507,6 +1509,8 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	}
 	else
 	{
+		QMessageBox::warning(NULL, "图书裁剪警告", "图书未执行裁剪操作或操作不当！");
+		ui->label_3->setText("裁剪已完成窗口未执行裁剪操作或操作不当！");
 		return;
 	}
 	//SHELLEXECUTEINFO  ShExecInfo;
@@ -1543,7 +1547,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 //图书裁剪
 void MainWindow::on_actionCut_2_triggered()
 {
-	run_cut();
+	on_actionOpenCutWindow_triggered();
 }
 
 //参数设置
@@ -1663,4 +1667,9 @@ void MainWindow::on_actionGetParemeter_triggered()
 	ui->label_3->setText("参数识别完毕！");
 
 	QMessageBox::information(NULL, "参数识别", "参数识别完成！");
+}
+
+void MainWindow::on_actiontakephoto_triggered()
+{
+     on_actionSavePic_triggered();
 }

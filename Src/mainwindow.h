@@ -159,6 +159,8 @@ private slots:
 
     //void on_actionGetParemeter_triggered();
 
+    void on_actiontakephoto_triggered();
+
 private:
     Ui::MainWindow *ui;
 	ParametersSetting *para;
