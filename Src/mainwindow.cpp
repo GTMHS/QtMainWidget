@@ -168,14 +168,14 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "E:\\pic\\Pic (";
+	string imagefile = "E:\\pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <926; i++) {
+		for (int i = 1508; i <2070; i++) {
 			startTime1 = clock();
-			ss << imagefile << i << ").bmp";
+			ss << imagefile <<"Pic (" << i << ").bmp";
 			string infile = ss.str();
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
@@ -204,10 +204,13 @@ void MainWindow::testRun() {
 			}
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
 			waitKey(100);
+			ss.str("");
 			if (!bookdetection(image_for_write))//识别判断
 			{
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
+				ss << imagefile << "wrong-" << i << ".bmp";
+				imwrite(ss.str(), image_for_write);
 				//弹窗报警
 				alertWindow = new AlertWindow;
 				alertWindow->show();
@@ -1331,8 +1334,13 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
 
+	//不需要摄像头，本地文件测试函数用
 	testRun();
-	//打开相机
+
+	//----------------------------上下互斥-------------------------------------------
+
+	//连接摄像头实时监测用
+	////打开相机
 	//ICameraPtr cameraSptr;
 	////发现设备
 	//CSystem &systemObj = CSystem::getInstance();

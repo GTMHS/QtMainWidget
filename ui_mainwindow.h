@@ -153,6 +153,9 @@ public:
 
         label_3 = new QLabel(layoutWidget);
         label_3->setObjectName(QString::fromUtf8("label_3"));
+        QFont font;
+        font.setPointSize(15);
+        label_3->setFont(font);
         label_3->setScaledContents(true);
 
         verticalLayout_2->addWidget(label_3);
@@ -170,28 +173,28 @@ public:
         formLayout->setContentsMargins(0, 0, 0, 0);
         label_4 = new QLabel(layoutWidget1);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        QFont font;
-        font.setFamily(QString::fromUtf8("Adobe Devanagari"));
-        font.setPointSize(14);
-        label_4->setFont(font);
+        QFont font1;
+        font1.setFamily(QString::fromUtf8("Adobe Devanagari"));
+        font1.setPointSize(14);
+        label_4->setFont(font1);
 
         formLayout->setWidget(5, QFormLayout::LabelRole, label_4);
 
         lcdNumber_2 = new QLCDNumber(layoutWidget1);
         lcdNumber_2->setObjectName(QString::fromUtf8("lcdNumber_2"));
-        lcdNumber_2->setFont(font);
+        lcdNumber_2->setFont(font1);
 
         formLayout->setWidget(5, QFormLayout::FieldRole, lcdNumber_2);
 
         lcdNumber = new QLCDNumber(layoutWidget1);
         lcdNumber->setObjectName(QString::fromUtf8("lcdNumber"));
-        lcdNumber->setFont(font);
+        lcdNumber->setFont(font1);
 
         formLayout->setWidget(6, QFormLayout::FieldRole, lcdNumber);
 
         lcdNumber_3 = new QLCDNumber(layoutWidget1);
         lcdNumber_3->setObjectName(QString::fromUtf8("lcdNumber_3"));
-        lcdNumber_3->setFont(font);
+        lcdNumber_3->setFont(font1);
 
         formLayout->setWidget(7, QFormLayout::FieldRole, lcdNumber_3);
 
@@ -201,43 +204,43 @@ public:
 
         label_5 = new QLabel(layoutWidget1);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setFont(font);
+        label_5->setFont(font1);
 
         formLayout->setWidget(6, QFormLayout::LabelRole, label_5);
 
         label_6 = new QLabel(layoutWidget1);
         label_6->setObjectName(QString::fromUtf8("label_6"));
-        label_6->setFont(font);
+        label_6->setFont(font1);
 
         formLayout->setWidget(7, QFormLayout::LabelRole, label_6);
 
         pushButton = new QPushButton(layoutWidget1);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setMinimumSize(QSize(150, 0));
-        QFont font1;
-        font1.setFamily(QString::fromUtf8("Adobe Devanagari"));
-        font1.setPointSize(11);
-        pushButton->setFont(font1);
+        QFont font2;
+        font2.setFamily(QString::fromUtf8("Adobe Devanagari"));
+        font2.setPointSize(11);
+        pushButton->setFont(font2);
 
         formLayout->setWidget(1, QFormLayout::SpanningRole, pushButton);
 
         pushButton_2 = new QPushButton(layoutWidget1);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
         pushButton_2->setMinimumSize(QSize(150, 0));
-        pushButton_2->setFont(font1);
+        pushButton_2->setFont(font2);
 
         formLayout->setWidget(2, QFormLayout::SpanningRole, pushButton_2);
 
         pushButton_3 = new QPushButton(layoutWidget1);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
         pushButton_3->setMinimumSize(QSize(150, 0));
-        pushButton_3->setFont(font1);
+        pushButton_3->setFont(font2);
 
         formLayout->setWidget(3, QFormLayout::SpanningRole, pushButton_3);
 
         pushButton_4 = new QPushButton(layoutWidget1);
         pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
-        pushButton_4->setFont(font1);
+        pushButton_4->setFont(font2);
 
         formLayout->setWidget(4, QFormLayout::SpanningRole, pushButton_4);
 
@@ -310,7 +313,7 @@ public:
         actiontakephoto->setText(QApplication::translate("MainWindow", "\346\226\260\344\271\246\346\213\215\347\205\247", nullptr));
         label->setText(QApplication::translate("MainWindow", "TextLabel1", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "TextLabel2", nullptr));
-        label_3->setText(QApplication::translate("MainWindow", "TextLabel3", nullptr));
+        label_3->setText(QString());
         label_4->setText(QApplication::translate("MainWindow", "\346\200\273\346\225\260", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "\346\255\243\347\241\256\346\200\273\346\225\260", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "\351\224\231\350\257\257\346\200\273\346\225\260", nullptr));
