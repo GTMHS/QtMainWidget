@@ -429,6 +429,9 @@
     <ClInclude Include="release\moc_predefs.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
@@ -468,6 +471,8 @@
     <Image Include="Img\1.png" />
     <Image Include="..\..\images\pic\Pic (1).bmp" />
     <Image Include="Img\dailyuse.jpg" />
+    <Image Include="book.ico" />
+    <Image Include="book_128px_1221557_easyicon.net.ico" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
@@ -476,5 +481,8 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="labelImg\labelImg.exe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="QtMainWidget.rc" />
   </ItemGroup>
 </Project>

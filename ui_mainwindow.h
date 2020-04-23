@@ -10,6 +10,7 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFormLayout>
@@ -82,6 +83,9 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(775, 739);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8("book_128px_1221557_easyicon.net.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        MainWindow->setWindowIcon(icon);
         actiontest2 = new QAction(MainWindow);
         actiontest2->setObjectName(QString::fromUtf8("actiontest2"));
         actiontest3 = new QAction(MainWindow);
@@ -293,7 +297,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\345\233\276\344\271\246\346\243\200\346\265\213\347\263\273\347\273\237", nullptr));
         actiontest2->setText(QApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
         actiontest3->setText(QApplication::translate("MainWindow", "\351\242\204\347\225\231", nullptr));
         actionOPen_Camera->setText(QApplication::translate("MainWindow", "\345\205\250\345\261\217", nullptr));

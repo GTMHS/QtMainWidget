@@ -173,7 +173,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1508; i <2070; i++) {
+		for (int i = 1; i <2070; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic (" << i << ").bmp";
 			string infile = ss.str();
