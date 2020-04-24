@@ -173,7 +173,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <2070; i++) {
+		for (int i = 1; i <5; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic (" << i << ").bmp";
 			string infile = ss.str();
@@ -205,7 +205,7 @@ void MainWindow::testRun() {
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
 			waitKey(100);
 			ss.str("");
-			ui->lcdNumber->display(i);
+			ui->lcdNumber_2->display(i);
 			if (!bookdetection(image_for_write))//识别判断
 			{
 				Beep(1000, 1000);
@@ -1336,48 +1336,48 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_3->setEnabled(true);
 
 	//不需要摄像头，本地文件测试函数用
-	//testRun();
+	testRun();
 
 	//----------------------------上下互斥-------------------------------------------
 
-	//连接摄像头实时监测用
-	//打开相机
-	ICameraPtr cameraSptr;
-	//发现设备
-	CSystem &systemObj = CSystem::getInstance();
-	TVector<ICameraPtr> vCameraPtrList;
-	bool bRet = systemObj.discovery(vCameraPtrList);
+	////连接摄像头实时监测用
+	////打开相机
+	//ICameraPtr cameraSptr;
+	////发现设备
+	//CSystem &systemObj = CSystem::getInstance();
+	//TVector<ICameraPtr> vCameraPtrList;
+	//bool bRet = systemObj.discovery(vCameraPtrList);
 
-	if (!bRet)
-	{
-		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
+	//if (!bRet)
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
 
-	if (0 == vCameraPtrList.size())
-	{
-		QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
-	try {
-		CameraCheck();
-		bool camera_open = CameraOpen();
-		CameraStart();
-		//SetExposeTime(10000);
-		//SetAdjustPlus(5);
-		CameraChangeTrig(trigContinous);
-	}
-	catch (Exception e) {
-		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	}
+	//if (0 == vCameraPtrList.size())
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
+	//try {
+	//	CameraCheck();
+	//	bool camera_open = CameraOpen();
+	//	CameraStart();
+	//	//SetExposeTime(10000);
+	//	//SetAdjustPlus(5);
+	//	CameraChangeTrig(trigContinous);
+	//}
+	//catch (Exception e) {
+	//	QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//}
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
