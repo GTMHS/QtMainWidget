@@ -168,12 +168,13 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "D:\\Pic\\";
+	//string imagefile = "D:\\Pic\\";
+	string imagefile = "E:\\pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <5; i++) {
+		for (int i = 1; i <150; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic (" << i << ").bmp";
 			string infile = ss.str();
@@ -1508,7 +1509,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 		QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
 		Config().Set("Image Rect", "Book Name", "ÊéÃû");
 		Config().Set("Image Rect", "x", rect_mask.x);
-		Config().Set("Image Rect", "y", rect_mask.x);
+		Config().Set("Image Rect", "y", rect_mask.y);
 		Config().Set("Image Rect", "width", rect_mask.width);
 		Config().Set("Image Rect", "height", rect_mask.height);
 
