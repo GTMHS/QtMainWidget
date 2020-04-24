@@ -118,9 +118,9 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 					Sleep(50);
 					count++;
 					if (count >= 3) {
-						count = 0;
 						//cout << "未收到下位机确认信息!" << endl;
 						//连续发三次，三次握手,返回动作执行成功
+						count = 0;
 						break;
 					}
 				}
@@ -168,7 +168,7 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "E:\\pic\\";
+	string imagefile = "D:\\Pic\\";
 	try
 	{
 		string outfile;
@@ -241,7 +241,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
 	String model_label_Weights = "D:/yolov3-voc_9000.weights";
-
+	//识别黑色标志，返回黑色方格的矩形信息保存在boxes中
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
 	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
 	sort(boxes.begin(), boxes.end(), sortFun);
@@ -680,7 +680,7 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 		//画框
 		rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
 	}
-
+	ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(frame)));
 	return boxes_for_return;
 }
 
