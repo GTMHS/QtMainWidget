@@ -378,7 +378,6 @@
     <None Include="release\styles\qwindowsvistastyle.dll" />
     <None Include="release\VideoRender.dll" />
     <None Include="sum.exe" />
-    <None Include="介绍文档.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\images\pic\Pic (1).bmp" />
