@@ -91,7 +91,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	cv::Mat out;
 	cv::Mat in[] = { img, img, img };
 	cv::merge(in, 3, out);
-	ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
 	//显示裁剪后并且识别后的图片
 	if (true == Mode_of_trig) {
 		try
@@ -103,11 +103,8 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 				cout << "不合格" << endl << endl;
 				//弹窗报警,2秒自动关闭
 				alertWindow = new AlertWindow;
-				alertWindow->show();
-				waitKey(2000);
-				alertWindow->close();
-				//QMessageBox::information(NULL, "错误", "");
-
+				alertWindow->startTimer();
+				alertWindow->show();			
 				//output file
 				//imwrite(wrong_filename, src_mat);
 				//run_database(current_time, "不合格");
@@ -174,26 +171,31 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <150; i++) {
+		for (int i = 1; i <2070; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic (" << i << ").bmp";
-			string infile = ss.str();
+			string infile = ss.str();			
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
-			QString filename(infile2);
+			Config().Set("Log", "FileName", infile2);
+			//QString filename(infile2);
 			QImage* img = new QImage;
 			if (!(img->load(infile2))) //加载图像
 			{
+				Config().Set("Log", "Function Load Image", "加载图片失败");
 				QMessageBox::information(this,tr("OPEN FAILED"),tr("OPEN FAILED!"));
 				delete img;
 				return;
 			}
 			ui->label->setPixmap(QPixmap::fromImage(*img));
+			delete img;
+			Config().Set("Log", "Function Load Image", "加载图片成功");
 			cout << infile << endl;
 			image_for_write = imread(infile);			
 			image_for_write = image_for_write(rect_of_image);
+			Config().Set("Log", "Function Cut Image", "加载图片成功");
 			QImage Img;
-			cv::Mat Rgb;
+			Mat Rgb;
 			if (image_for_write.channels() == 3)//RGB Img
 			{
 				cv::cvtColor(image_for_write, Rgb, CV_BGR2RGB);//颜色空间转换
@@ -204,6 +206,7 @@ void MainWindow::testRun() {
 				Img = QImage((const uchar*)(image_for_write.data), image_for_write.cols, image_for_write.rows, image_for_write.cols*image_for_write.channels(), QImage::Format_Indexed8);
 			}
 			ui->label_2->setPixmap(QPixmap::fromImage(Img));
+			Config().Set("Log", "Function Show Image", "显示图片2成功");
 			waitKey(100);
 			ss.str("");
 			ui->lcdNumber_2->display(i);
@@ -215,16 +218,16 @@ void MainWindow::testRun() {
 				imwrite(ss.str(), image_for_write);
 				//弹窗报警
 				alertWindow = new AlertWindow;
+				alertWindow->startTimer();
 				alertWindow->show();
-				waitKey(1000);
-				alertWindow->close();
+
 			}
 			endTime = clock();
 			//ui->label_3->setText("");
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
-			//ui->label_3->setText(st);
-			cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
+			ui->label_3->setText(st);
+			//cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
 			ss.str("");
 			waitKey(1000);
 		}
@@ -239,11 +242,13 @@ void MainWindow::testRun() {
 }
 
 bool MainWindow::bookdetection(Mat imagefile) {
-	string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
+	Config().Set("Log", "Function BookDetection", "BookDetection执行");
+	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
 	String model_label_Weights = "D:/yolov3-voc_9000.weights";
 	//识别黑色标志，返回黑色方格的矩形信息保存在boxes中
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
+	Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
 	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
 	sort(boxes.begin(), boxes.end(), sortFun);
 	vector<Point> points;
@@ -581,6 +586,7 @@ string MainWindow::get_datetime()
 }
 
 vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string modelConfiguration) {
+	Config().Set("Log", "Function detect_image", "detect_image执行");
 	// Load the network
 	Net net = readNetFromDarknet(modelConfiguration, modelWeights);
 	net.setPreferableBackend(DNN_BACKEND_OPENCV);
@@ -610,6 +616,7 @@ vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string mod
 	//imshow(kWinName, frame);
 	//imwrite(classesFile, frame);
 	return boxes;
+	Config().Set("Log", "Function detect_image", "detect_image执行成功");
 	//cv::waitKey(30);
 }
 
@@ -619,6 +626,7 @@ bool sortFun(Rect p1, Rect p2) {
 
 vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 {
+	Config().Set("Log", "Function postprocess_return", "postprocess_return执行");
 	vector<int> classIds;
 	vector<float> confidences;
 	vector<Rect> boxes;
@@ -659,8 +667,6 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 	//cout << "indices.size(匹配得到的目标数):" << indices.size() << endl;
 	vector<Rect> boxes_for_return;
 
-	//Rect box = boxes[0];
-
 	for (size_t i = 0; i < indices.size(); ++i)
 	{
 		int idx = indices[i];
@@ -681,7 +687,9 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 		//画框
 		rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
 	}
+	//label2 显示标记的图像
 	ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(frame)));
+	Config().Set("Log", "Function postprocess_return", "postprocess_return执行成功");
 	return boxes_for_return;
 }
 
@@ -701,6 +709,7 @@ vector<String> MainWindow::getOutputsNames(const Net& net)
 		for (size_t i = 0; i < outLayers.size(); ++i)
 			names[i] = layersNames[outLayers[i] - 1];
 	}
+	Config().Set("Log", "Function getOutputsNames", "getOutputsNames执行成功");
 	return names;
 }
 
@@ -1332,9 +1341,21 @@ void MainWindow::set_Mode_of_trig_soft() {
 //打开相机
 void MainWindow::on_pushButton_clicked()
 {
-	ui->pushButton->setEnabled(false);
-	ui->pushButton_2->setEnabled(true);
-	ui->pushButton_3->setEnabled(true);
+	//ui->pushButton->setEnabled(false);
+	//ui->pushButton_2->setEnabled(true);
+	//ui->pushButton_3->setEnabled(true);
+
+	//clock_t startTime, startTime1, endTime;
+	//startTime = clock();
+	//alertWindow = new AlertWindow;
+	//alertWindow->startTimer();
+	//alertWindow->show();
+	//startTime1 = clock();
+	//endTime = clock();
+	////ui->label_3->setText("");
+	//string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
+	//QString st = QString::fromStdString(s);
+	//ui->label_3->setText(st);
 
 	//不需要摄像头，本地文件测试函数用
 	testRun();

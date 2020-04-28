@@ -472,6 +472,7 @@
     <Image Include="Img\dailyuse.jpg" />
     <Image Include="book.ico" />
     <Image Include="book_128px_1221557_easyicon.net.ico" />
+    <Image Include="Img\bug.png" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
