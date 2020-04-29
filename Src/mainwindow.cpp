@@ -124,7 +124,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 				revFlag = false;
 			}
 			else {
-				//ui->textEdit->setText("Correct!");
+				ui->label_3->setText("Correct");
 			}
 		}
 		catch (const std::exception& e)
@@ -1341,15 +1341,15 @@ void MainWindow::set_Mode_of_trig_soft() {
 //打开相机
 void MainWindow::on_pushButton_clicked()
 {
-	//ui->pushButton->setEnabled(false);
-	//ui->pushButton_2->setEnabled(true);
-	//ui->pushButton_3->setEnabled(true);
+	ui->pushButton->setEnabled(false);
+	ui->pushButton_2->setEnabled(true);
+	ui->pushButton_3->setEnabled(true);
 
 	//clock_t startTime, startTime1, endTime;
 	//startTime = clock();
-	//alertWindow = new AlertWindow;
-	//alertWindow->startTimer();
-	//alertWindow->show();
+	alertWindow = new AlertWindow;
+	alertWindow->startTimer();
+	alertWindow->show();
 	//startTime1 = clock();
 	//endTime = clock();
 	////ui->label_3->setText("");
@@ -1358,12 +1358,12 @@ void MainWindow::on_pushButton_clicked()
 	//ui->label_3->setText(st);
 
 	//不需要摄像头，本地文件测试函数用
-	testRun();
+	//testRun();
 
 	//----------------------------上下互斥-------------------------------------------
 
-	////连接摄像头实时监测用
-	////打开相机
+	//连接摄像头实时监测用
+	//打开相机
 	//ICameraPtr cameraSptr;
 	////发现设备
 	//CSystem &systemObj = CSystem::getInstance();

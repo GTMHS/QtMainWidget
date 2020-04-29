@@ -21,7 +21,7 @@ AlertWindow::~AlertWindow()
 }
 
 void AlertWindow::startTimer() {
-	m_pTimer->start(1000);
+	m_pTimer->start(60000);
 }
 
 //²Î¿¼Á´½Óhttps://blog.csdn.net/xiezhongyuan07/article/details/79885546?utm_source=blogxgwz6

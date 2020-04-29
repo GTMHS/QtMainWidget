@@ -385,6 +385,7 @@
     <Image Include="Img\1.png" />
     <Image Include="Img\bug.png" />
     <Image Include="Img\dailyuse.jpg" />
+    <Image Include="Img\日常使用.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
