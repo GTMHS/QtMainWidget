@@ -141,7 +141,7 @@
       <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtWidgets;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtGui;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtANGLE;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\include\QtCore;debug;\include;..\..\QT\QT5.12.0\5.12.0\MSVC2015_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
-      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformation>true</BrowseInformation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -189,6 +189,9 @@
       <QtUicDir>$(ProjectDir)</QtUicDir>
       <QtUicFileName>ui_%(Filename).h</QtUicFileName>
     </QtUic>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="release\moc_mainwindow.cpp" />
@@ -237,109 +240,6 @@
     <QtMoc Include="Src\alertwindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Config.h" />
-    <ClInclude Include="Include\GenICam\AcquisitionControl.h" />
-    <ClInclude Include="Include\GenICam\AnalogControl.h" />
-    <ClInclude Include="Include\GenICam\Camera.h" />
-    <ClInclude Include="Include\GenICam\CAPI\IntTypes.h" />
-    <ClInclude Include="Include\GenICam\CAPI\SDK.h" />
-    <ClInclude Include="Include\GenICam\Defs.h" />
-    <ClInclude Include="Include\GenICam\DeviceControl.h" />
-    <ClInclude Include="Include\GenICam\DigitalIOControl.h" />
-    <ClInclude Include="Include\GenICam\ErrorCode.h" />
-    <ClInclude Include="Include\GenICam\EventSubscribe.h" />
-    <ClInclude Include="Include\GenICam\Frame.h" />
-    <ClInclude Include="Include\GenICam\GigE\GigECamera.h" />
-    <ClInclude Include="Include\GenICam\GigE\GigEInterface.h" />
-    <ClInclude Include="Include\GenICam\ImageFormatControl.h" />
-    <ClInclude Include="Include\GenICam\ISPControl.h" />
-    <ClInclude Include="Include\GenICam\ParameterNode.h" />
-    <ClInclude Include="Include\GenICam\PixelType.h" />
-    <ClInclude Include="Include\GenICam\StreamSource.h" />
-    <ClInclude Include="Include\GenICam\System.h" />
-    <ClInclude Include="Include\GenICam\TransportLayerControl.h" />
-    <ClInclude Include="Include\GenICam\Usb\UsbCamera.h" />
-    <ClInclude Include="Include\GenICam\Usb\UsbInterface.h" />
-    <ClInclude Include="Include\GenICam\UserSetControl.h" />
-    <ClInclude Include="Include\Infra\Allocator.h" />
-    <ClInclude Include="Include\Infra\Assert.h" />
-    <ClInclude Include="Include\Infra\AtomicCount.h" />
-    <ClInclude Include="Include\Infra\CString.h" />
-    <ClInclude Include="Include\Infra\Defs.h" />
-    <ClInclude Include="Include\Infra\Detail\allocatorstringstorage.h" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_gcc.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_gcc_x86.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_pthreads.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_solaris.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_sync.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_win32.hpp" />
-    <ClInclude Include="Include\Infra\Detail\atomic_count_win64.hpp" />
-    <ClInclude Include="Include\Infra\Detail\construct.h" />
-    <ClInclude Include="Include\Infra\Detail\cowstringopt.h" />
-    <ClInclude Include="Include\Infra\Detail\flex_string.h" />
-    <ClInclude Include="Include\Infra\Detail\flex_string_details.h" />
-    <ClInclude Include="Include\Infra\Detail\flex_string_shell.h" />
-    <ClInclude Include="Include\Infra\Detail\ministringstorage.h" />
-    <ClInclude Include="Include\Infra\Detail\pp.hpp" />
-    <ClInclude Include="Include\Infra\Detail\pp_gcc.hpp" />
-    <ClInclude Include="Include\Infra\Detail\pp_msvc.hpp" />
-    <ClInclude Include="Include\Infra\Detail\simplestringstorage.h" />
-    <ClInclude Include="Include\Infra\Detail\smallstringopt.h" />
-    <ClInclude Include="Include\Infra\Detail\vectorstringstorage.h" />
-    <ClInclude Include="Include\Infra\Error.h" />
-    <ClInclude Include="Include\Infra\File.h" />
-    <ClInclude Include="Include\Infra\Function.h" />
-    <ClInclude Include="Include\Infra\FunctionTemplate.h" />
-    <ClInclude Include="Include\Infra\Guard.h" />
-    <ClInclude Include="Include\Infra\IntTypes.h" />
-    <ClInclude Include="Include\Infra\Mutex.h" />
-    <ClInclude Include="Include\Infra\PreProcessor.h" />
-    <ClInclude Include="Include\Infra\PrintLog.h" />
-    <ClInclude Include="Include\Infra\ReadWriteMutex.h" />
-    <ClInclude Include="Include\Infra\RecursiveMutex.h" />
-    <ClInclude Include="Include\Infra\Semaphore.h" />
-    <ClInclude Include="Include\Infra\Signal.h" />
-    <ClInclude Include="Include\Infra\SignalTemplate.h" />
-    <ClInclude Include="Include\Infra\StaticAssert.h" />
-    <ClInclude Include="Include\Infra\String.h" />
-    <ClInclude Include="Include\Infra\System.h" />
-    <ClInclude Include="Include\Infra\Thread.h" />
-    <ClInclude Include="Include\Infra\ThreadSpecific.h" />
-    <ClInclude Include="Include\Infra\Time.h" />
-    <ClInclude Include="Include\Infra\Timer.h" />
-    <ClInclude Include="Include\Infra\Types.h" />
-    <ClInclude Include="Include\Infra\Types\IntTypes.h" />
-    <ClInclude Include="Include\Infra\Types\Types.h" />
-    <ClInclude Include="Include\Infra\Vector.h" />
-    <ClInclude Include="Include\Infra\Version.h" />
-    <ClInclude Include="Include\Media\Defs.h" />
-    <ClInclude Include="Include\Media\ImageConvert.h" />
-    <ClInclude Include="Include\Media\VideoRender.h" />
-    <ClInclude Include="Include\Memory\Block.h" />
-    <ClInclude Include="Include\Memory\Buffer.h" />
-    <ClInclude Include="Include\Memory\Defs.h" />
-    <ClInclude Include="Include\Memory\Detail\checked_delete.hpp" />
-    <ClInclude Include="Include\Memory\Detail\MemPool.h" />
-    <ClInclude Include="Include\Memory\Detail\shared_count.h" />
-    <ClInclude Include="Include\Memory\Detail\singleton.h" />
-    <ClInclude Include="Include\Memory\Detail\singleton_pool.h" />
-    <ClInclude Include="Include\Memory\Detail\smartptr_detail.h" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base.hpp" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base.h" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_gcc_ia64.hpp" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_gcc_x86.hpp" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_impl.hpp" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_base\sp_counted_base_w32.hpp" />
-    <ClInclude Include="Include\Memory\Detail\sp_counted_impl.hpp" />
-    <ClInclude Include="Include\Memory\EnableSharedFromThis.h" />
-    <ClInclude Include="Include\Memory\Packet.h" />
-    <ClInclude Include="Include\Memory\PoolAllocator.h" />
-    <ClInclude Include="Include\Memory\RefCount.h" />
-    <ClInclude Include="Include\Memory\ScopedPtr.h" />
-    <ClInclude Include="Include\Memory\SharedPtr.h" />
-    <ClInclude Include="Include\Memory\SharePacketHelper.h" />
-    <ClInclude Include="Include\Memory\SmartObjectPtr.h" />
-    <ClInclude Include="Include\Memory\WeakPtr.h" />
     <ClInclude Include="Src\MySerialport.h" />
     <QtMoc Include="Src\takephoto.h" />
     <QtMoc Include="Src\parameterssetting.h" />
@@ -379,12 +279,12 @@
     <None Include="sum.exe" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\images\pic\Pic (1).bmp" />
     <Image Include="book.ico" />
     <Image Include="book_128px_1221557_easyicon.net.ico" />
     <Image Include="Img\1.png" />
     <Image Include="Img\bug.png" />
     <Image Include="Img\dailyuse.jpg" />
+    <Image Include="Img\多线程错误.png" />
     <Image Include="Img\日常使用.jpg" />
   </ItemGroup>
   <ItemGroup>

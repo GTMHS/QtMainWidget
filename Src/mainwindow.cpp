@@ -56,6 +56,40 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+//参数初始化
+void MainWindow::init_parameters() {
+
+	//QString fileName;
+	////fileName = QCoreApplication::applicationDirPath();
+	////fileName = "../Config/conf.ini";
+	//fileName = "conf.ini";
+
+	//QSettings settings(fileName, QSettings::IniFormat);
+	//settings.setIniCodec("UTF-8");
+	//settings.setValue("systemCfg/mode", mode);
+	//settings.setValue("server/ip", "10.10.64.115");
+	//Config().Set("user", "name", "test");
+	//QString qstrname = Config().Get("user", "name").toString();
+	//Config().Set("systemCfg", "mode", 1);
+	//Config().Set("server", "ip", "10.10.64.115");
+	//Config().Set("server", "netmask", "255.255.255.0");
+
+	s = Config().Get("Line Fitting", "s").toDouble();
+	b = Config().Get("Line Fitting", "b").toDouble();
+	k = Config().Get("Line Fitting", "k").toDouble();
+	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
+
+	Mat mask = read_mask();
+	Rect reck_mask = mask_boundingRect(mask);
+	rect_of_image = reck_mask;
+	//QString x = QString::number(reck_mask.x);
+	//QString y = QString::number(reck_mask.y);
+	//QString width = QString::number(reck_mask.width);
+	//QString height = QString::number(reck_mask.height);
+	//QString str = x + "\t y:" + y + "\t width:" + width + "\t  height:" + height;
+	//ui->label_3->setText(str);
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -133,29 +167,35 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			return true;
 		}
 	}
-	else
-	{
-		if (true == Mode_of_trig_soft) {
-			try
-			{				
-				Mat img = QImage2cvMat(image);
-				Mode_of_trig_soft = false;
-				cv::Mat out;
-				cv::Mat in[] = { img, img, img };
-				cv::merge(in, 3, out);
-				//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-				//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-				imwrite("Train/image/Pic.bmp", img);
+	else if (true == Mode_of_trig_soft) {
+		try
+		{
+			Mat img = QImage2cvMat(image);
+			//imshow("test", img);
+			bool ret = imwrite("Train/image/Pic.bmp", img);
+			cv::Mat out;
+			cv::Mat in[] = { img, img, img };
+			cv::merge(in, 3, out);
+			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+			//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+			if (ret) {
 				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+				Mode_of_trig_soft = false;
 			}
-			catch (const std::exception& e)
+			else
 			{
-				QMessageBox::information(NULL, "识别部分出错", e.what());
-				return true;
+				QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
 			}
-			Mode_of_trig_soft = false;
+
 		}
+		catch (const std::exception& e)
+		{
+			QMessageBox::information(NULL, "识别部分出错", e.what());
+			return true;
+		}
+		Mode_of_trig_soft = false;
 	}
+
 	return true;
 }
 
@@ -630,7 +670,7 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 	vector<int> classIds;
 	vector<float> confidences;
 	vector<Rect> boxes;
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (int i = 0; i < outs.size(); ++i)
 	{
 		// Scan through all the bounding boxes output from the network and keep only the
@@ -846,12 +886,6 @@ Mat MainWindow::read_mask()
 	return mask2;
 }
 
-void MainWindow::run_train() {
-	string params = "darknet.exe detector train cfg/voc.data cfg/yolov3-voc.cfg darknet53.conv.7";
-	string filename = "darknet.exe";
-	run_exe(filename, params);
-}
-
 Rect MainWindow::mask_boundingRect(Mat mask)
 {
 	int j, k;
@@ -919,6 +953,12 @@ Rect MainWindow::mask_boundingRect(Mat mask)
 	return rect;
 }
 
+void MainWindow::run_train() {
+	string params = "darknet.exe detector train cfg/voc.data cfg/yolov3-voc.cfg darknet53.conv.7";
+	string filename = "darknet.exe";
+	run_exe(filename, params);
+}
+
 void MainWindow::CameraCheck(void)
 {
 	CSystem &systemObj = CSystem::getInstance();
@@ -930,17 +970,16 @@ void MainWindow::CameraCheck(void)
 		return;
 	}
 
-	// 打印相机基本信息（key, 制造商信息, 型号, 序列号）
-	for (int i = 0; i < m_vCameraPtrList.size(); i++)
-	{
-		ICameraPtr cameraSptr = m_vCameraPtrList[i];
-
-		printf("Camera[%d] Info :\n", i);
-		printf("    key           = [%s]\n", cameraSptr->getKey());
-		printf("    vendor name   = [%s]\n", cameraSptr->getVendorName());
-		printf("    model         = [%s]\n", cameraSptr->getModelName());
-		printf("    serial number = [%s]\n", cameraSptr->getSerialNumber());
-	}
+	//// 打印相机基本信息（key, 制造商信息, 型号, 序列号）
+	//for (int i = 0; i < m_vCameraPtrList.size(); i++)
+	//{
+	//	ICameraPtr cameraSptr = m_vCameraPtrList[i];
+	//	printf("Camera[%d] Info :\n", i);
+	//	printf("    key           = [%s]\n", cameraSptr->getKey());
+	//	printf("    vendor name   = [%s]\n", cameraSptr->getVendorName());
+	//	printf("    model         = [%s]\n", cameraSptr->getModelName());
+	//	printf("    serial number = [%s]\n", cameraSptr->getSerialNumber());
+	//}
 
 	if (m_vCameraPtrList.size() < 1)
 	{
@@ -1077,6 +1116,30 @@ void MainWindow::CameraChangeTrig(ETrigType trigType)
 	}
 }
 
+// 执行一次软触发
+bool MainWindow::ExecuteSoftTrig(void)
+{
+	if (NULL == m_pCamera)
+	{
+		printf("Set GainRaw fail. No camera or camera is not connected.\n");
+		return false;
+	}
+
+	CCmdNode nodeTriggerSoftware(m_pCamera, "TriggerSoftware");
+	if (false == nodeTriggerSoftware.isValid())
+	{
+		printf("get TriggerSoftware node fail.\n");
+		return false;
+	}
+	if (false == nodeTriggerSoftware.execute())
+	{
+		printf("set TriggerSoftware fail.\n");
+		return false;
+	}
+
+	printf("ExecuteSoftTrig success.\n");
+	return true;
+}
 //打开相机
 bool MainWindow::CameraOpen(void)
 {
@@ -1334,9 +1397,54 @@ void MainWindow::setDisplayFPS(int nFPS)
 		m_nDisplayInterval = 0;
 	}
 }
-
+//保存图片中的槽函数
 void MainWindow::set_Mode_of_trig_soft() {
+	////创建AcquisitionControl对象
+	//IAcquisitionControlPtr sptrAcquisitionControl = systemObj.createAcquisitionControl(cameraSptr);
+	//if (NULL == sptrAcquisitionControl.get())
+	//{
+	//	printf("create AcquisitionControl object fail.\n");
+	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
+	//	return;
+	//}
+
+	////设置软触发配置
+	////bool bRet = setSoftTriggerConf(sptrAcquisitionControl);
+	////if (!bRet)
+	////{
+	////	printf("set soft trigger config fail.\n");
+	////	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
+	////	return;
+	////}
+	//CameraChangeTrig(trigSoftware);
+	//
+
+	////执行一次软触发
+	//CCmdNode cmdNode = sptrAcquisitionControl->triggerSoftware();
+	//bool bRet = cmdNode.execute();
+	//if (!bRet)
+	//{
+	//	printf("Software Trigger is fail.\n");
+	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
+	//	return;
+	//}
+
+	////等待完成一次软触发
+	//while (isGrabbingFlag)
+	//{
+	//	Sleep(50);
+	//}
 	Mode_of_trig_soft = true;
+	//try
+	//{
+	//	ExecuteSoftTrig();
+	//}
+	//catch (const std::exception&)
+	//{
+	//	QMessageBox::warning(NULL, "Wrong", "软件处罚失败");
+	//}
+	//CameraChangeTrig(trigContinous);
+	
 }
 //打开相机
 void MainWindow::on_pushButton_clicked()
@@ -1347,9 +1455,9 @@ void MainWindow::on_pushButton_clicked()
 
 	//clock_t startTime, startTime1, endTime;
 	//startTime = clock();
-	alertWindow = new AlertWindow;
-	alertWindow->startTimer();
-	alertWindow->show();
+	//alertWindow = new AlertWindow;
+	//alertWindow->startTimer();
+	//alertWindow->show();
 	//startTime1 = clock();
 	//endTime = clock();
 	////ui->label_3->setText("");
@@ -1364,42 +1472,42 @@ void MainWindow::on_pushButton_clicked()
 
 	//连接摄像头实时监测用
 	//打开相机
-	//ICameraPtr cameraSptr;
-	////发现设备
-	//CSystem &systemObj = CSystem::getInstance();
-	//TVector<ICameraPtr> vCameraPtrList;
-	//bool bRet = systemObj.discovery(vCameraPtrList);
+	ICameraPtr cameraSptr;
+	//发现设备
+	CSystem &systemObj = CSystem::getInstance();
+	TVector<ICameraPtr> vCameraPtrList;
+	bool bRet = systemObj.discovery(vCameraPtrList);
 
-	//if (!bRet)
-	//{
-	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	//	ui->pushButton->setEnabled(true);
-	//	ui->pushButton_2->setEnabled(false);
-	//	ui->pushButton_3->setEnabled(false);
-	//	ui->pushButton_4->setEnabled(false);
-	//	return;
-	//}
+	if (!bRet)
+	{
+		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		ui->pushButton->setEnabled(true);
+		ui->pushButton_2->setEnabled(false);
+		ui->pushButton_3->setEnabled(false);
+		ui->pushButton_4->setEnabled(false);
+		return;
+	}
 
-	//if (0 == vCameraPtrList.size())
-	//{
-	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-	//	ui->pushButton->setEnabled(true);
-	//	ui->pushButton_2->setEnabled(false);
-	//	ui->pushButton_3->setEnabled(false);
-	//	ui->pushButton_4->setEnabled(false);
-	//	return;
-	//}
-	//try {
-	//	CameraCheck();
-	//	bool camera_open = CameraOpen();
-	//	CameraStart();
-	//	//SetExposeTime(10000);
-	//	//SetAdjustPlus(5);
-	//	CameraChangeTrig(trigContinous);
-	//}
-	//catch (Exception e) {
-	//	QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	//}
+	if (0 == vCameraPtrList.size())
+	{
+		QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+		ui->pushButton->setEnabled(true);
+		ui->pushButton_2->setEnabled(false);
+		ui->pushButton_3->setEnabled(false);
+		ui->pushButton_4->setEnabled(false);
+		return;
+	}
+	try {
+		CameraCheck();
+		bool camera_open = CameraOpen();
+		CameraStart();
+		//SetExposeTime(10000);
+		//SetAdjustPlus(5);
+		CameraChangeTrig(trigContinous);
+	}
+	catch (Exception e) {
+		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	}
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
@@ -1421,8 +1529,7 @@ void MainWindow::on_pushButton_3_clicked()
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(true);
 	//将相机改为硬件触发，每触发一次执行一次判断
-	CameraChangeTrig(trigLine);
-	
+	CameraChangeTrig(trigLine);	
 }
 //停止识别
 void MainWindow::on_pushButton_4_clicked()
@@ -1439,17 +1546,16 @@ void MainWindow::on_pushButton_4_clicked()
 //保存新照片
 void MainWindow::on_actionSavePic_triggered()
 {
-	//打开相机
-	/*
-	设置为软件触发方式，并触发拍照
-	弹窗一个按钮？然后点击拍照？
-	*/
-	CSystem &systemObj = CSystem::getInstance();
+	//打开相机	/*	设置为软件触发方式，并触发拍照	弹窗一个按钮？然后点击拍照？	*/
+	ICameraPtr cameraSptr;
 
-	bool bRet = systemObj.discovery(m_vCameraPtrList);
-	if (false == bRet || m_vCameraPtrList.size() < 1)
+	//发现设备
+	CSystem &systemObj = CSystem::getInstance();
+	TVector<ICameraPtr> vCameraPtrList;
+	bool bRet = systemObj.discovery(vCameraPtrList);
+	cameraSptr = vCameraPtrList[0];
+	if (!bRet && 0 == vCameraPtrList.size() && !cameraSptr->connect())
 	{
-		printf("discovery fail.\n");
 		QMessageBox::critical(NULL, "错误", "未连接到相机！");
 		return;
 	}
@@ -1487,7 +1593,8 @@ void MainWindow::on_actionTrain_triggered()
 //显示裁剪窗口。参考https://www.cnblogs.com/blogpro/p/11343975.html
 void MainWindow::on_actionOpenCutWindow_triggered()
 {
-	/* Qt校验模板文件hash值判断是否更改 https://blog.csdn.net/emdfans/article/details/23871741 
+	/* 
+	Qt校验模板文件hash值判断是否更改 https://blog.csdn.net/emdfans/article/details/23871741 
 	*/
 	QFile theFile("moban.png");
 	theFile.open(QIODevice::ReadOnly);
@@ -1541,7 +1648,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	else
 	{
 		QMessageBox::warning(NULL, "图书裁剪警告", "图书未执行裁剪操作或操作不当！");
-		ui->label_3->setText("裁剪已完成窗口未执行裁剪操作或操作不当！");
+		ui->label_3->setText("窗口未执行裁剪操作或操作不当！");
 		return;
 	}
 	//SHELLEXECUTEINFO  ShExecInfo;
@@ -1605,39 +1712,6 @@ void MainWindow::recevieDataFromSubWin(double rk, double rb, double rs, int rn)
 	ui->label->setText(QString::fromStdString(str));	
 }
 
-//参数初始化
-void MainWindow::init_parameters() {
-
-	//QString fileName;
-	////fileName = QCoreApplication::applicationDirPath();
-	////fileName = "../Config/conf.ini";
-	//fileName = "conf.ini";
-
-	//QSettings settings(fileName, QSettings::IniFormat);
-	//settings.setIniCodec("UTF-8");
-	//settings.setValue("systemCfg/mode", mode);
-	//settings.setValue("server/ip", "10.10.64.115");
-	//Config().Set("user", "name", "test");
-	//QString qstrname = Config().Get("user", "name").toString();
-	//Config().Set("systemCfg", "mode", 1);
-	//Config().Set("server", "ip", "10.10.64.115");
-	//Config().Set("server", "netmask", "255.255.255.0");
-
-	s = Config().Get("Line Fitting", "s").toDouble();
-	b = Config().Get("Line Fitting", "b").toDouble();
-	k = Config().Get("Line Fitting", "k").toDouble();
-	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
-
-	Mat mask = read_mask();
-	Rect reck_mask = mask_boundingRect(mask);
-	rect_of_image = reck_mask;	
-	//QString x = QString::number(reck_mask.x);
-	//QString y = QString::number(reck_mask.y);
-	//QString width = QString::number(reck_mask.width);
-	//QString height = QString::number(reck_mask.height);
-	//QString str = x + "\t y:" + y + "\t width:" + width + "\t  height:" + height;
-	//ui->label_3->setText(str);
-}
 void MainWindow::on_actionCut_triggered()
 {
 	on_actionOpenCutWindow_triggered();
@@ -1703,4 +1777,57 @@ void MainWindow::on_actionGetParemeter_triggered()
 void MainWindow::on_actiontakephoto_triggered()
 {
      on_actionSavePic_triggered();
+}
+
+bool MainWindow::setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl)
+{
+	//设置触发源为软触发
+	CEnumNode enumNode = sptrAcquisitionCtl->triggerSource();
+	bool bRet = enumNode.setValueBySymbol("Software");
+	if (bRet != true)
+	{
+		printf("set trigger source fail.\n");
+		return false;
+	}
+
+	//设置触发器
+	enumNode = sptrAcquisitionCtl->triggerSelector();
+	bRet = enumNode.setValueBySymbol("FrameStart");
+	if (bRet != true)
+	{
+		printf("set trigger selector fail.\n");
+		return false;
+	}
+
+	//设置触发模式
+	enumNode = sptrAcquisitionCtl->triggerMode();
+	bRet = enumNode.setValueBySymbol("On");
+	if (bRet != true)
+	{
+		printf("set trigger mode fail.\n");
+		return false;
+	}
+	return true;
+}
+
+void MainWindow::onGetFrame(const CFrame &pFrame)
+{
+	// 标准输出换行
+	printf("\r\n");
+
+	//判断帧的有效性
+	bool isValid = pFrame.valid();
+	if (!isValid)
+	{
+		printf("frame is invalid!\n");
+		return;
+	}
+	else
+	{
+		uint64_t blockId = pFrame.getBlockId();
+		printf("blockId = %d.\n", blockId);
+		isGrabbingFlag = false;
+	}
+
+	return;
 }

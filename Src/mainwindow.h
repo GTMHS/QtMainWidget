@@ -94,6 +94,7 @@ public:
 	//软触发拍照
 	bool Mode_of_trig_soft = false;
 
+	bool isGrabbingFlag = false;
 	//枚举触发方式
 	enum ETrigType
 	{
@@ -115,6 +116,11 @@ public:
 	bool CameraStop(void);
 	//切换采集方式、触发方式 （连续采集、外部触发、软件触发）
 	void CameraChangeTrig(ETrigType trigType = trigContinous);
+	//执行一次软触发
+	bool ExecuteSoftTrig(void);
+	static bool setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl);
+
+	void onGetFrame(const CFrame &pFrame);
 	/// \brief 显示一帧图像
 	/// \param [in] pRgbFrameBuf 要显示的图像数据
 	/// \param [in] nWidth 图像的宽
