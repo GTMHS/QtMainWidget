@@ -285,6 +285,7 @@
     <Image Include="Img\bug.png" />
     <Image Include="Img\dailyuse.jpg" />
     <Image Include="Img\多线程错误.png" />
+    <Image Include="Img\多线程错误2.jpg" />
     <Image Include="Img\日常使用.jpg" />
   </ItemGroup>
   <ItemGroup>

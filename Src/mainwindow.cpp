@@ -121,6 +121,13 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	ui->label->setPixmap(pixmap.scaled(w,h,Qt::KeepAspectRatio));
 	//label2显示裁剪之后的照片
 	Mat img = QImage2cvMat(image);
+	Pic_to_Save = img;
+	//if (true == Mode_of_trig_soft) {
+	//	imwrite("Train/image/Pic.bmp", img);
+	//	ui->label_3->setText("保存图像成功");
+	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+	//	Mode_of_trig_soft = false;
+	//}
 	img = img(rect_of_image); //裁剪
 	cv::Mat out;
 	cv::Mat in[] = { img, img, img };
@@ -138,7 +145,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 				//弹窗报警,2秒自动关闭
 				alertWindow = new AlertWindow;
 				alertWindow->startTimer();
-				alertWindow->show();			
+				alertWindow->show();
 				//output file
 				//imwrite(wrong_filename, src_mat);
 				//run_database(current_time, "不合格");
@@ -167,35 +174,37 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			return true;
 		}
 	}
-	else if (true == Mode_of_trig_soft) {
-		try
-		{
-			Mat img = QImage2cvMat(image);
-			//imshow("test", img);
-			bool ret = imwrite("Train/image/Pic.bmp", img);
-			cv::Mat out;
-			cv::Mat in[] = { img, img, img };
-			cv::merge(in, 3, out);
-			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-			//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-			if (ret) {
-				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
-				Mode_of_trig_soft = false;
-			}
-			else
-			{
-				QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
-			}
-
-		}
-		catch (const std::exception& e)
-		{
-			QMessageBox::information(NULL, "识别部分出错", e.what());
-			return true;
-		}
-		Mode_of_trig_soft = false;
-	}
-
+	//else if (true == Mode_of_trig_soft) {
+	//	try
+	//	{
+	//		Pic_to_Save = QImage2cvMat(image);
+	//		ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(Pic_to_Save)));
+	//		////imshow("test", img);
+	//		//bool ret = imwrite("Train/image/Pic.bmp", img);
+	//		////cv::Mat out;
+	//		////cv::Mat in[] = { img, img, img };
+	//		////cv::merge(in, 3, out);
+	//		////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	//		//////QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//		////if (ret) {
+	//		////	//QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+	//		////	ui->label_3->setText("保存图片成功");
+	//		////	Mode_of_trig_soft = false;
+	//		////}
+	//		////else
+	//		////{
+	//		////	QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
+	//		////}
+	//		//Mat i = imread("Train/image/Pic.bmp");
+	//		//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(i)));
+	//	}
+	//	catch (const std::exception& e)
+	//	{
+	//		QMessageBox::information(NULL, "识别部分出错", e.what());
+	//		return true;
+	//	}
+	//	Mode_of_trig_soft = false;
+	//}
 	return true;
 }
 
@@ -670,7 +679,7 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 	vector<int> classIds;
 	vector<float> confidences;
 	vector<Rect> boxes;
-//#pragma omp parallel for
+#pragma omp parallel for
 	for (int i = 0; i < outs.size(); ++i)
 	{
 		// Scan through all the bounding boxes output from the network and keep only the
@@ -1428,13 +1437,26 @@ void MainWindow::set_Mode_of_trig_soft() {
 	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
 	//	return;
 	//}
-
+	CameraChangeTrig(trigSoftware);
+	ExecuteSoftTrig();
+	Mat tmp = Pic_to_Save.clone();
+	imwrite("Train/image/Pic.bmp", tmp);
+	QMessageBox::information(this, "Save Picture", "保存图片成功");
+	CameraChangeTrig(trigContinous);
+		//if (true == Mode_of_trig_soft) {
+		//	imwrite("Train/image/Pic.bmp", img);
+		//	ui->label_3->setText("保存图像成功");
+		//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+		//	Mode_of_trig_soft = false;
+		//}
 	////等待完成一次软触发
 	//while (isGrabbingFlag)
 	//{
 	//	Sleep(50);
 	//}
-	Mode_of_trig_soft = true;
+	//CameraChangeTrig(trigSoftware);
+	//ExecuteSoftTrig();
+	//Mode_of_trig_soft = true;
 	//try
 	//{
 	//	ExecuteSoftTrig();
@@ -1444,6 +1466,7 @@ void MainWindow::set_Mode_of_trig_soft() {
 	//	QMessageBox::warning(NULL, "Wrong", "软件处罚失败");
 	//}
 	//CameraChangeTrig(trigContinous);
+
 	
 }
 //打开相机
@@ -1547,14 +1570,11 @@ void MainWindow::on_pushButton_4_clicked()
 void MainWindow::on_actionSavePic_triggered()
 {
 	//打开相机	/*	设置为软件触发方式，并触发拍照	弹窗一个按钮？然后点击拍照？	*/
-	ICameraPtr cameraSptr;
-
 	//发现设备
 	CSystem &systemObj = CSystem::getInstance();
 	TVector<ICameraPtr> vCameraPtrList;
 	bool bRet = systemObj.discovery(vCameraPtrList);
-	cameraSptr = vCameraPtrList[0];
-	if (!bRet && 0 == vCameraPtrList.size() && !cameraSptr->connect())
+	if (!bRet && 0 == vCameraPtrList.size() && !m_pCamera->connect())
 	{
 		QMessageBox::critical(NULL, "错误", "未连接到相机！");
 		return;

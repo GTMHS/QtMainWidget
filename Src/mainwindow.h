@@ -88,8 +88,9 @@ public:
 	Rect rect_of_image = Rect(Qrect_of_image.x(), Qrect_of_image.y(), Qrect_of_image.width(), Qrect_of_image.height());
 	MyCSerialPort mycserialport;
 	//bool revFlag = false;
-
-	//设置出发方式
+	//拍照保存的照片
+	Mat Pic_to_Save;
+	//设置触发方式
 	bool Mode_of_trig = false;
 	//软触发拍照
 	bool Mode_of_trig_soft = false;
@@ -177,7 +178,7 @@ private:
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	
 	Dahua::GenICam::IStreamSourcePtr m_pStreamSource;					// 流对象
 
-	Dahua::Infra::CThreadLite           m_thdDisplayThread;   // 显示线程      
+	Dahua::Infra::CThreadLite           m_thdDisplayThread;   // 显示线程
 	TMessageQue<CFrameInfo>				m_qDisplayFrameQueue;// 显示队列
 
 	Dahua::Infra::CMutex				m_mxTime;

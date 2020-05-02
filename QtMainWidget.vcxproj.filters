@@ -165,6 +165,7 @@
     <Image Include="Img\bug.png" />
     <Image Include="Img\日常使用.jpg" />
     <Image Include="Img\多线程错误.png" />
+    <Image Include="Img\多线程错误2.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
