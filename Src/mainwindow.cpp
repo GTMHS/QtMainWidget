@@ -1776,59 +1776,68 @@ void MainWindow::on_actionCut_triggered()
 //识别参数，写入config文件中
 void MainWindow::on_actionGetParemeter_triggered()
 {
-	Mat img = imread("Train/image/Pic.bmp");
-	//img = img(rect_of_image);
-	String modelConfiguration = "D:/yolov3.cfg";
-	String model_label_Weights = "D:/yolov3-voc_9000.weights";
-
-	vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
-	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
-	sort(boxes.begin(), boxes.end(), sortFun);
-	vector<Point> points;
-
-	//for循环获取每个黑块的中点，并存储到points中
-	for (int i = 0; i < boxes.size(); i++) {
-		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
-	}
-
-	int length = points.size();
-	double xmean = 0.0;
-	double ymean = 0.0;
-	for (int i = 0; i < length; i++)
+	try
 	{
-		xmean += points[i].x;
-		ymean += points[i].y;
-	}
-	xmean /= length;
-	ymean /= length;
+		Mat img = imread("Train/image/Pic.bmp");
+		//img = img(rect_of_image);
+		String modelConfiguration = "D:/yolov3.cfg";
+		String model_label_Weights = "D:/yolov3-voc_9000.weights";
 
-	double sumx2 = 0.0;
-	double sumy2 = 0.0;
-	double sumxy = 0.0;
-	for (int i = 0; i < length; i++)
+		vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
+		//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
+		sort(boxes.begin(), boxes.end(), sortFun);
+		vector<Point> points;
+
+		//for循环获取每个黑块的中点，并存储到points中
+		for (int i = 0; i < boxes.size(); i++) {
+			points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
+		}
+
+		int length = points.size();
+		double xmean = 0.0;
+		double ymean = 0.0;
+		for (int i = 0; i < length; i++)
+		{
+			xmean += points[i].x;
+			ymean += points[i].y;
+		}
+		xmean /= length;
+		ymean /= length;
+
+		double sumx2 = 0.0;
+		double sumy2 = 0.0;
+		double sumxy = 0.0;
+		for (int i = 0; i < length; i++)
+		{
+			sumx2 += (points[i].x - xmean) * (points[i].x - xmean);
+			sumy2 += (points[i].y - ymean) * (points[i].y - ymean);
+			sumxy += (points[i].y - ymean) * (points[i].x - xmean);
+		}
+		double slope1 = sumxy / sumx2;  //斜率
+		double intercept1 = ymean - slope1 * xmean; //截距
+		double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
+
+															//写入配置文件
+		Config().Set("Line Fitting", "k", slope1);
+		Config().Set("Line Fitting", "b", intercept1);
+		Config().Set("Line Fitting", "s", r_square1);
+		Config().Set("Line Fitting", "n", length);
+
+		//把参数更新到类属性变量中
+		Num_of_blocks = length;
+		k = slope1;
+		b = intercept1;
+		s = r_square1;
+		ui->label_3->setText("参数识别完毕！");
+
+		QMessageBox::information(NULL, "参数识别", "参数识别完成！");
+	}
+	catch (const std::exception& e)
 	{
-		sumx2 += (points[i].x - xmean) * (points[i].x - xmean);
-		sumy2 += (points[i].y - ymean) * (points[i].y - ymean);
-		sumxy += (points[i].y - ymean) * (points[i].x - xmean);
+		QMessageBox::warning(NULL, "参数识别错误", e.what());
+		return;
 	}
-	double slope1 = sumxy / sumx2;  //斜率
-	double intercept1 = ymean - slope1 * xmean; //截距
-	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
-
-	//写入配置文件
-	Config().Set("Line Fitting", "k", slope1);
-	Config().Set("Line Fitting", "b", intercept1);
-	Config().Set("Line Fitting", "s", r_square1);
-	Config().Set("Line Fitting", "n", length);
-
-	//把参数更新到类属性变量中
-	Num_of_blocks = length;
-	k = slope1;
-	b = intercept1;
-	s = r_square1;
-	ui->label_3->setText("参数识别完毕！");
-
-	QMessageBox::information(NULL, "参数识别", "参数识别完成！");
+	
 }
 
 void MainWindow::on_actiontakephoto_triggered()

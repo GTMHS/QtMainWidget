@@ -123,6 +123,9 @@
     <ClInclude Include="resource.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="x64\Release\labelImg\Include\pyconfig.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
@@ -174,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="labelImg\labelImg.exe.manifest" />
+    <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />

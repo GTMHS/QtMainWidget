@@ -237,6 +237,7 @@
   <ItemGroup>
     <ClInclude Include="labelImg\Include\pyconfig.h" />
     <ClInclude Include="release\moc_predefs.h" />
+    <ClInclude Include="x64\Release\labelImg\Include\pyconfig.h" />
     <QtMoc Include="Src\alertwindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Config.h" />
@@ -295,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="labelImg\labelImg.exe.manifest" />
+    <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />
