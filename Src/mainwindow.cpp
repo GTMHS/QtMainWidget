@@ -205,6 +205,29 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	//	}
 	//	Mode_of_trig_soft = false;
 	//}
+	else
+	{
+		if (true == Mode_of_trig_soft) {
+			try
+			{
+				Mat img = QImage2cvMat(image);
+				Mode_of_trig_soft = false;
+				cv::Mat out;
+				cv::Mat in[] = { img, img, img };
+				cv::merge(in, 3, out);
+				//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+				//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+				imwrite("Train/image/Pic.bmp", img);
+				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+			}
+			catch (const std::exception& e)
+			{
+				QMessageBox::information(NULL, "识别部分出错", e.what());
+				return true;
+			}
+			Mode_of_trig_soft = false;
+		}
+	}
 	return true;
 }
 
@@ -1437,18 +1460,32 @@ void MainWindow::set_Mode_of_trig_soft() {
 	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
 	//	return;
 	//}
-	CameraChangeTrig(trigSoftware);
-	ExecuteSoftTrig();
-	Mat tmp = Pic_to_Save.clone();
-	imwrite("Train/image/Pic.bmp", tmp);
-	QMessageBox::information(this, "Save Picture", "保存图片成功");
-	CameraChangeTrig(trigContinous);
-		//if (true == Mode_of_trig_soft) {
-		//	imwrite("Train/image/Pic.bmp", img);
-		//	ui->label_3->setText("保存图像成功");
-		//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-		//	Mode_of_trig_soft = false;
-		//}
+	//CameraChangeTrig(trigSoftware);
+	//bool ret = ExecuteSoftTrig();
+	//try
+	//{
+	//	if (ret) {
+	//		Mat tmp = Pic_to_Save.clone();
+	//		imshow("test", tmp);
+	//		imwrite("Train/image/Pic.bmp", tmp);
+	//		QMessageBox::information(this, "Save Picture", "保存图片成功");
+	//		CameraChangeTrig(trigContinous);
+	//	}
+	//	else
+	//		QMessageBox::warning(NULL, "error", "errpr");
+	//}
+	//catch (const std::exception& e)
+	//{
+	//	QMessageBox::warning(NULL, "error", e.what());
+	//}
+
+
+	//if (true == Mode_of_trig_soft) {
+	//	imwrite("Train/image/Pic.bmp", img);
+	//	ui->label_3->setText("保存图像成功");
+	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+	//	Mode_of_trig_soft = false;
+	//}
 	////等待完成一次软触发
 	//while (isGrabbingFlag)
 	//{
@@ -1456,7 +1493,7 @@ void MainWindow::set_Mode_of_trig_soft() {
 	//}
 	//CameraChangeTrig(trigSoftware);
 	//ExecuteSoftTrig();
-	//Mode_of_trig_soft = true;
+	Mode_of_trig_soft = true;
 	//try
 	//{
 	//	ExecuteSoftTrig();
