@@ -295,7 +295,6 @@
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="F:\code\python\labelImg\dist\labelImg\labelImg.exe.manifest" />
     <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>

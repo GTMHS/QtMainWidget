@@ -174,7 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
-    <Manifest Include="F:\code\python\labelImg\dist\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />
