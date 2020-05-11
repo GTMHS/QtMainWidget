@@ -58,6 +58,7 @@ public:
     QLabel *label;
     QLabel *label_2;
     QLabel *label_3;
+    QLabel *label_7;
     QWidget *layoutWidget1;
     QFormLayout *formLayout;
     QLabel *label_4;
@@ -164,9 +165,15 @@ public:
 
         verticalLayout_2->addWidget(label_3);
 
-        verticalLayout_2->setStretch(0, 3);
-        verticalLayout_2->setStretch(1, 1);
+        label_7 = new QLabel(layoutWidget);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        verticalLayout_2->addWidget(label_7);
+
+        verticalLayout_2->setStretch(0, 4);
+        verticalLayout_2->setStretch(1, 2);
         verticalLayout_2->setStretch(2, 1);
+        verticalLayout_2->setStretch(3, 1);
         splitter->addWidget(layoutWidget);
         layoutWidget1 = new QWidget(splitter);
         layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
@@ -255,7 +262,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 775, 23));
+        menuBar->setGeometry(QRect(0, 0, 775, 26));
         menutest = new QMenu(menuBar);
         menutest->setObjectName(QString::fromUtf8("menutest"));
         menutest_2 = new QMenu(menuBar);
@@ -315,9 +322,10 @@ public:
         actionGetParemeter->setText(QApplication::translate("MainWindow", "\350\257\206\345\210\253\345\217\202\346\225\260", nullptr));
         actiontemp->setText(QApplication::translate("MainWindow", "temp", nullptr));
         actiontakephoto->setText(QApplication::translate("MainWindow", "\346\226\260\344\271\246\346\213\215\347\205\247", nullptr));
-        label->setText(QApplication::translate("MainWindow", "TextLabel1", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "TextLabel2", nullptr));
+        label->setText(QString());
+        label_2->setText(QString());
         label_3->setText(QString());
+        label_7->setText(QString());
         label_4->setText(QApplication::translate("MainWindow", "\346\200\273\346\225\260", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "\346\255\243\347\241\256\346\200\273\346\225\260", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "\351\224\231\350\257\257\346\200\273\346\225\260", nullptr));

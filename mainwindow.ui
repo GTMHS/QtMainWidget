@@ -31,7 +31,7 @@
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="3,1,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="4,2,1,1">
         <item>
          <widget class="QLabel" name="label">
           <property name="lineWidth">
@@ -41,7 +41,7 @@
            <number>0</number>
           </property>
           <property name="text">
-           <string>TextLabel1</string>
+           <string/>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -51,7 +51,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>TextLabel2</string>
+           <string/>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -70,6 +70,13 @@
           </property>
           <property name="scaledContents">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </item>
@@ -241,7 +248,7 @@
      <x>0</x>
      <y>0</y>
      <width>775</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menutest">

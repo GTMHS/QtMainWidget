@@ -139,60 +139,65 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		outFile.close();
 	}
 
-	////label2显示裁剪之后的照片
-	//Mat img = QImage2cvMat(image);
-	////Pic_to_Save = img;
-	////if (true == Mode_of_trig_soft) {
-	////	imwrite("Train/image/Pic.bmp", img);
-	////	ui->label_3->setText("保存图像成功");
-	////	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-	////	Mode_of_trig_soft = false;
-	////}
-	////裁剪并显示
-	//img = img(rect_of_image); 
-	//cv::Mat out;
-	//cv::Mat in[] = { img, img, img };
-	//cv::merge(in, 3, out);
+	//label2显示裁剪之后的照片
+	Mat img = QImage2cvMat(image);
+	//Pic_to_Save = img;
+	//if (true == Mode_of_trig_soft) {
+	//	imwrite("Train/image/Pic.bmp", img);
+	//	ui->label_3->setText("保存图像成功");
+	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+	//	Mode_of_trig_soft = false;
+	//}
+	//裁剪并显示
+	img = img(rect_of_image); 
+	cv::Mat out;
+	cv::Mat in[] = { img, img, img };
+	cv::merge(in, 3, out);
 	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
 	//识别裁剪后的图片
-	//try
-	//{
-	//	//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-	//	if (!bookdetection(out))//识别判断
-	//	{
-	//		Beep(1000, 1000);
-	//		cout << "不合格" << endl << endl;
-	//		//弹窗报警,2秒自动关闭
-	//		//alertWindow = new AlertWindow;
-	//		//alertWindow->startTimer();
-	//		//alertWindow->show();
-	//		//output file
-	//		//imwrite(wrong_filename, src_mat);
-	//		//run_database(current_time, "不合格");
-	//		unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
-	//		int count = 0;
-	//		while (revFlag != true) {
-	//			revFlag = mycserialport.WriteData(uc, 6);
-	//			Sleep(50);
-	//			count++;
-	//			if (count >= 3) {
-	//				//cout << "未收到下位机确认信息!" << endl;
-	//				//连续发三次，三次握手,返回动作执行成功
-	//				count = 0;
-	//				break;
-	//			}
-	//		}
-	//		revFlag = false;
-	//	}
-	//	else {
-	//		ui->label_3->setText("Correct");
-	//	}
-	//}
-	//catch (const std::exception& e)
-	//{
-	//	QMessageBox::information(NULL, "识别部分出错", e.what());
-	//	return true;
-	//}
+	try
+	{
+		startTime = clock();
+		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+		if (!bookdetection(out))//识别判断
+		{
+			Beep(1000, 1000);
+			cout << "不合格" << endl << endl;
+			//弹窗报警,2秒自动关闭
+			//alertWindow = new AlertWindow;
+			//alertWindow->startTimer();
+			//alertWindow->show();
+			//output file
+			//imwrite(wrong_filename, src_mat);
+			//run_database(current_time, "不合格");
+			unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+			int count = 0;
+			while (revFlag != true) {
+				revFlag = mycserialport.WriteData(uc, 6);
+				Sleep(50);
+				count++;
+				if (count >= 3) {
+					//cout << "未收到下位机确认信息!" << endl;
+					//连续发三次，三次握手,返回动作执行成功
+					count = 0;
+					break;
+				}
+			}
+			revFlag = false;
+		}
+		else {
+			ui->label_3->setText("Correct");
+		}
+		endTime = clock();
+		string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
+		QString st = QString::fromStdString(s);
+		ui->label_7->setText(st);
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::information(NULL, "识别部分出错", e.what());
+		return true;
+	}
 
 	//else if (true == Mode_of_trig_soft) {
 	//	try
@@ -432,7 +437,10 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 	double intercept1 = ymean - slope * xmean; //截距
 	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
 	cout << "y = " << slope1 << "x+ " << intercept1 << "  r_square1 is " << r_square1 << endl;
-
+	ofstream outFile;
+	outFile.open("LinearFitting.csv", ios::app); // 打开模式可省略,使用的app追加模式
+	outFile << get_datetime() << ',' << length << ',' << slope1 << ',' << intercept1 << ',' << r_square1 << endl;
+	outFile.close();
 	//判断条件只添加了相关系数和斜率
 	if (abs(r_square - r_square1) <= 0.1 && abs(slope - slope1) <= 0.1) {
 		cout << "相关系数正确" << endl;
@@ -474,6 +482,7 @@ string MainWindow::get_datetime()
 //-------以下四个函数是opencv中给出的YOLO模型识别的代码，略有改动--------
 //功能主函数
 bool MainWindow::bookdetection(Mat imagefile) {
+	
 	Config().Set("Log", "Function BookDetection", "BookDetection执行");
 	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
@@ -489,17 +498,6 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//for循环获取每个黑块的中点，并存储到points中
 	for (int i = 0; i < boxes.size(); i++) {
 		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
-		//average_piexl_value = average_piexl_value + imagefile.at<uchar>(points[i]);
-		//if (boxes[i].x > max_point_x) {
-		//	max_point_x = boxes[i].x;
-		//	max_point_y = boxes[i].y;
-		//}
-		//if (i > 0)
-		//	cout << "Rect(" << boxes[i].x << ", " << boxes[i].y << ", " << boxes[i].width << ", " << boxes[i].height << ")" << "Mid-points " << ":" << points[i].x << "," << points[i].y << " 两点间距：" << points[i - 1].x - points[i].x << ", " << points[i].y - points[i - 1].y << endl;
-		//else
-		//	cout << "Rect(" << boxes[i].x << ", " << boxes[i].y << ", " << boxes[i].width << ", " << boxes[i].height << ")" << "Mid-points " << ":" << points[i].x << "," << points[i].y << endl;
-		//cout << "Mid-points " << i << "," << points[i].x << "," << points[i].y << endl;
-		//cout << i << ": boxes[i].x " << boxes[i].x << " boxes[i].y " << boxes[i].y << " boxes[i].width " << boxes[i].width << " boxes[i].height " << boxes[i].height << endl;
 	}
 	//if (boxes.size() < block_nums) {
 	//	int this_boxes_size = boxes.size();
@@ -545,28 +543,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//	}
 	//	return 1;
 	//}
-	//前十个用来自适应调整截距斜率跟相关系数参数
-	//if (total_number < 11) {
-	//	//v_block_locations.push_back((boxes));
-	//}
-	//if (total_number == 10) {
-	//	double sum_k = 0, sum_b = 0, sum_r_q = 0;
-	//	for (int i = 0; i < 11; i++) {
-	//		sum_b += v_b[i];
-	//		sum_k += v_k[i];
-	//		sum_r_q += v_r_q[i];
-	//	}
-	//	cout << "sum_b: " << sum_b << " sum_k：" << sum_k << " sum_r_q: " << sum_r_q << endl;
-	//	k = sum_k / 10;
-	//	b = sum_b / 10;
-	//	r_q = sum_r_q / 10;
-	//	cout << "k: " << k << " b: " << b << " r_q: " << r_q;
-	//}
-	//前十个用来自适应调整截距斜率跟相关系数参数
-	//if (boxes.size() == block_nums && total_number < 11) {
-	//	LinearFitting(points, 0, 0, 0);
-	//}
-
+	
 	//cout << "本书黑色标记数量： " << boxes.size() << endl;
 	int this_block_nums = boxes.size();
 	int val = 0;
@@ -622,59 +599,61 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//}
 	//ui->textEdit->append("this_block_nums is " + boxes.size());
 
-	if (Num_of_blocks == this_block_nums) {
-		ui->label_3->setText("Correct");
-		LinearFitting(points, k, b, s);
-		return true;
-	}
-	else {
-		ui->label_3->setText("Wrong");
-		return false;
-	}
-	//switch (this_block_nums)
-	//{
-	//case 11:
-	//	cout << "黑色标志点数量正确" << endl;
+	//if (Num_of_blocks == this_block_nums) {
 	//	ui->label_3->setText("Correct");
-	//	//imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "正常");
-	//	//emit SendUpdateLCDMsg(1);
-	//	return LinearFitting(points,k, b, s);
-	//case 12:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-	//	cout << "黑色标志点数为12" << endl;
-	//	outfile = "E:\\pic\\label\\12-" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	//imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	ui->label_3->setText("12");
-	//	run_database(get_datetime(), "正常");
-	//	//emit SendUpdateLCDMsg(1);
-	//	return LinearFitting(points, k, b, s);
-	//case 10:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-	//	cout << "黑色标志点数为10" << endl;
-	//	ui->label_3->setText("10");
-	//	outfile = "E:\\pic\\label\\少" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	//imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "异常");
-	//	//emit SendUpdateLCDMsg(2);
-	//	return LinearFitting(points, k,b,s) && 0;
-	//default:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
-	//	cout << "黑色标志数量错误：  " << this_block_nums << endl;
-	//	ui->label_3->setText("Wrong");
-	//	outfile = "E:\\pic\\label\\有误" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	//imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "异常");
-	//	//emit SendUpdateLCDMsg(2);
-	//	return 0;
+	//	LinearFitting(points, k, b, s);
+	//	return true;
 	//}
+	//else {
+	//	ui->label_3->setText("Wrong");
+	//	return false;
+	//}
+
+	string outfile;
+	switch (this_block_nums)
+	{
+	case 11:
+		cout << "黑色标志点数量正确" << endl;
+		ui->label_3->setText("Correct");
+		//imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "正常");
+		//emit SendUpdateLCDMsg(1);
+		return LinearFitting(points,k, b, s);
+	case 12:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+		cout << "黑色标志点数为12" << endl;
+		outfile = "E:\\pic\\label\\12-" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		ui->label_3->setText("12");
+		run_database(get_datetime(), "正常");
+		//emit SendUpdateLCDMsg(1);
+		return LinearFitting(points, k, b, s);
+	case 10:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+		cout << "黑色标志点数为10" << endl;
+		ui->label_3->setText("10");
+		outfile = "E:\\pic\\label\\少" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "异常");
+		//emit SendUpdateLCDMsg(2);
+		return LinearFitting(points, k,b,s) && 0;
+	default:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
+		cout << "黑色标志数量错误：  " << this_block_nums << endl;
+		ui->label_3->setText("Wrong");
+		outfile = "E:\\pic\\label\\有误" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "异常");
+		//emit SendUpdateLCDMsg(2);
+		return 0;
+	}
 }
 
 vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string modelConfiguration) {
@@ -1452,80 +1431,7 @@ void MainWindow::setDisplayFPS(int nFPS)
 }
 //保存图片中的槽函数
 void MainWindow::set_Mode_of_trig_soft() {
-	////创建AcquisitionControl对象
-	//IAcquisitionControlPtr sptrAcquisitionControl = systemObj.createAcquisitionControl(cameraSptr);
-	//if (NULL == sptrAcquisitionControl.get())
-	//{
-	//	printf("create AcquisitionControl object fail.\n");
-	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
-	//	return;
-	//}
-
-	////设置软触发配置
-	////bool bRet = setSoftTriggerConf(sptrAcquisitionControl);
-	////if (!bRet)
-	////{
-	////	printf("set soft trigger config fail.\n");
-	////	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
-	////	return;
-	////}
-	//CameraChangeTrig(trigSoftware);
-	//
-
-	////执行一次软触发
-	//CCmdNode cmdNode = sptrAcquisitionControl->triggerSoftware();
-	//bool bRet = cmdNode.execute();
-	//if (!bRet)
-	//{
-	//	printf("Software Trigger is fail.\n");
-	//	//实际应用中应及时释放相关资源，如diconnect相机等，不宜直接return
-	//	return;
-	//}
-	//CameraChangeTrig(trigSoftware);
-	//bool ret = ExecuteSoftTrig();
-	//try
-	//{
-	//	if (ret) {
-	//		Mat tmp = Pic_to_Save.clone();
-	//		imshow("test", tmp);
-	//		imwrite("Train/image/Pic.bmp", tmp);
-	//		QMessageBox::information(this, "Save Picture", "保存图片成功");
-	//		CameraChangeTrig(trigContinous);
-	//	}
-	//	else
-	//		QMessageBox::warning(NULL, "error", "errpr");
-	//}
-	//catch (const std::exception& e)
-	//{
-	//	QMessageBox::warning(NULL, "error", e.what());
-	//}
-
-
-	//if (true == Mode_of_trig_soft) {
-	//	imwrite("Train/image/Pic.bmp", img);
-	//	ui->label_3->setText("保存图像成功");
-	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-	//	Mode_of_trig_soft = false;
-	//}
-	////等待完成一次软触发
-	//while (isGrabbingFlag)
-	//{
-	//	Sleep(50);
-	//}
-	//CameraChangeTrig(trigSoftware);
-	//ExecuteSoftTrig();
 	Mode_of_trig_soft = true;
-	//try
-	//{
-	//	ExecuteSoftTrig();
-	//}
-	//catch (const std::exception&)
-	//{
-	//	QMessageBox::warning(NULL, "Wrong", "软件处罚失败");
-	//}
-	//CameraChangeTrig(trigContinous);
-
-
 }
 //打开相机
 void MainWindow::on_pushButton_clicked()
@@ -1585,8 +1491,11 @@ void MainWindow::on_pushButton_clicked()
 		ui->label_3->setText("相机连接成功！");
 		//SetExposeTime(10000);
 		//SetAdjustPlus(5);
-		//CameraChangeTrig(trigContinous);
-		ui->label_2->setEnabled(false);
+		CameraChangeTrig(trigLine);
+		//ui->label_2->setEnabled(false);
+		//ui->label_2->setVisible(false);
+		ui->pushButton_3->setEnabled(false);
+		ui->pushButton_4->setEnabled(false);
 	}
 	catch (Exception e) {
 		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -1613,6 +1522,8 @@ void MainWindow::on_pushButton_3_clicked()
 	ui->pushButton_4->setEnabled(true);
 	//将相机改为硬件触发，每触发一次执行一次判断
 	CameraChangeTrig(trigLine);	
+	ui->label_2->setEnabled(true);
+	ui->label_2->setVisible(true);
 }
 //停止识别
 void MainWindow::on_pushButton_4_clicked()

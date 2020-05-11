@@ -103,6 +103,9 @@ public:
 	QRect Qrect_of_image;
 	//Qt 与 OPenCV中的Rect不通用，装换一下
 	Rect rect_of_image = Rect(Qrect_of_image.x(), Qrect_of_image.y(), Qrect_of_image.width(), Qrect_of_image.height());
+	//用于计时
+	clock_t startTime, startTime1, endTime;
+	//串口嘞
 	MyCSerialPort mycserialport;
 	//bool revFlag = false;
 	//拍照保存的照片
