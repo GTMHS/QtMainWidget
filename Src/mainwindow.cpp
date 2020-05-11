@@ -80,8 +80,8 @@ void MainWindow::init_parameters() {
 	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
 
 	total_number = Config().Get("Count", "Count").toInt();
-	sum_of_correct = Config().Get("Count", "Correct_Number").toInt();
-	sum_of_wrong = Config().Get("Count", "Wrong_Number").toInt();
+	sum_of_correct = Config().Get("Count", "sum_of_correct").toInt();
+	sum_of_wrong = Config().Get("Count", "sum_of_wrong").toInt();
 
 	Mat mask = read_mask();
 	Rect reck_mask = mask_boundingRect(mask);
@@ -129,9 +129,10 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	int w = ui->label->width();
 	int h = ui->label->height();	
 	ui->label->setPixmap(pixmap.scaled(w,h,Qt::KeepAspectRatio));
-	ui->lcdNumber->display(++total_number);
+	ui->lcdNumber_2->display(++total_number);
 	Config().Set("Count", "Count", total_number);
-	if (total_number % 2) {
+	//每增加一百个就写入一次
+	if (total_number % 100) {
 		//参考连接https://www.cnblogs.com/findumars/p/7252854.html
 		ofstream outFile;
 		outFile.open("count.csv", ios::app); // 打开模式可省略  
@@ -141,13 +142,13 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 
 	//label2显示裁剪之后的照片
 	Mat img = QImage2cvMat(image);
-	//Pic_to_Save = img;
-	//if (true == Mode_of_trig_soft) {
-	//	imwrite("Train/image/Pic.bmp", img);
-	//	ui->label_3->setText("保存图像成功");
-	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-	//	Mode_of_trig_soft = false;
-	//}
+	Pic_to_Save = img;
+	if (true == Mode_of_trig_soft) {
+		imwrite("Train/image/Pic.bmp", Pic_to_Save);
+		ui->label_3->setText("保存图像成功");
+		//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+		Mode_of_trig_soft = false;
+	}
 	//裁剪并显示
 	img = img(rect_of_image); 
 	cv::Mat out;
@@ -161,6 +162,8 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
 		if (!bookdetection(out))//识别判断
 		{
+			ui->lcdNumber_3->display(++sum_of_wrong);
+			Config().Set("Count", "sum_of_wrong", sum_of_wrong);
 			Beep(1000, 1000);
 			cout << "不合格" << endl << endl;
 			//弹窗报警,2秒自动关闭
@@ -186,7 +189,9 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			revFlag = false;
 		}
 		else {
-			ui->label_3->setText("Correct");
+			ui->lcdNumber->display(++sum_of_correct);
+			Config().Set("Count", "sum_of_correct", sum_of_correct);
+			//ui->label_3->setText("Correct");
 		}
 		endTime = clock();
 		string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
@@ -321,7 +326,6 @@ void MainWindow::testRun() {
 
 			}
 			endTime = clock();
-			//ui->label_3->setText("");
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
 			ui->label_3->setText(st);
@@ -444,8 +448,7 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 	//判断条件只添加了相关系数和斜率
 	if (abs(r_square - r_square1) <= 0.1 && abs(slope - slope1) <= 0.1) {
 		cout << "相关系数正确" << endl;
-
-		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Correct";
+		QString str = QString::number(length) + " y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + " Correct";
 		ui->label_3->setText(str);
 		return true;
 	}
@@ -454,7 +457,7 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | BACKGROUND_RED);
 		cout << "相关系数错误！" << endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Wrong";
+		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + " Wrong";
 		ui->label_3->setText(str);
 		return false;
 	}
@@ -614,30 +617,27 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	{
 	case 11:
 		cout << "黑色标志点数量正确" << endl;
-		ui->label_3->setText("Correct");
 		//imwrite(outfile, imagefile);
 		//cout << "文件写入：" + outfile << endl;
 		run_database(get_datetime(), "正常");
 		//emit SendUpdateLCDMsg(1);
-		return LinearFitting(points,k, b, s);
+		return LinearFitting(points,0.403, -359, 0.985);
 	case 12:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
 		cout << "黑色标志点数为12" << endl;
-		outfile = "E:\\pic\\label\\12-" + get_datetime() + ".bmp";
+		outfile = "E:\\20200511\\12-" + get_datetime() + ".bmp";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		//imwrite(outfile, imagefile);
+		imwrite(outfile, imagefile);
 		//cout << "文件写入：" + outfile << endl;
-		ui->label_3->setText("12");
 		run_database(get_datetime(), "正常");
 		//emit SendUpdateLCDMsg(1);
 		return LinearFitting(points, k, b, s);
 	case 10:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
 		cout << "黑色标志点数为10" << endl;
-		ui->label_3->setText("10");
-		outfile = "E:\\pic\\label\\少" + get_datetime() + ".bmp";
+		outfile = "E:\\20200511\\少" + get_datetime() + ".bmp";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		//imwrite(outfile, imagefile);
+		imwrite(outfile, imagefile);
 		//cout << "文件写入：" + outfile << endl;
 		run_database(get_datetime(), "异常");
 		//emit SendUpdateLCDMsg(2);
@@ -645,12 +645,12 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	default:
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
 		cout << "黑色标志数量错误：  " << this_block_nums << endl;
-		ui->label_3->setText("Wrong");
-		outfile = "E:\\pic\\label\\有误" + get_datetime() + ".bmp";
+		outfile = "E:\\20200511\\有误" + get_datetime() + ".bmp";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		//imwrite(outfile, imagefile);
+		imwrite(outfile, imagefile);
 		//cout << "文件写入：" + outfile << endl;
 		run_database(get_datetime(), "异常");
+		ui->label_3->setText("Wrong");
 		//emit SendUpdateLCDMsg(2);
 		return 0;
 	}
@@ -754,6 +754,7 @@ vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
 		//画框
 		rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
 	}
+
 	//label2 显示标记的图像
 	ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(frame)));
 	Config().Set("Log", "Function postprocess_return", "postprocess_return执行成功");
@@ -869,9 +870,6 @@ void MainWindow::run_cut()
 	}
 	ui->label->setPixmap(QPixmap::fromImage(Img));
 	
-	//ui->label->setText(QString::number(reck_mask.x));
-	//ui->label_2->setText(QString::number(reck_mask.y));
-	//ui->label_3->setText(QString::number(reck_mask.height));
 }
 //读取模板，识别画的框，与mask_boundingRect一起用
 Mat MainWindow::read_mask()
