@@ -92,6 +92,12 @@ void MainWindow::init_parameters() {
 	//QString height = QString::number(reck_mask.height);
 	//QString str = x + "\t y:" + y + "\t width:" + width + "\t  height:" + height;
 	//ui->label_3->setText(str);
+
+	////外部设备初始化及监听
+	//int state = 0;
+	//state = mycserialport.InitPort();
+	//////cout << "state 1: " << state << endl;
+	//state = mycserialport.OpenListenThread();
 }
 
 MainWindow::~MainWindow()
@@ -135,93 +141,90 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 
 	////label2显示裁剪之后的照片
 	//Mat img = QImage2cvMat(image);
-	//Pic_to_Save = img;
-	//if (true == Mode_of_trig_soft) {
-	//	imwrite("Train/image/Pic.bmp", img);
-	//	ui->label_3->setText("保存图像成功");
-	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-	//	Mode_of_trig_soft = false;
-	//}
-	//img = img(rect_of_image); //裁剪
+	////Pic_to_Save = img;
+	////if (true == Mode_of_trig_soft) {
+	////	imwrite("Train/image/Pic.bmp", img);
+	////	ui->label_3->setText("保存图像成功");
+	////	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+	////	Mode_of_trig_soft = false;
+	////}
+	////裁剪并显示
+	//img = img(rect_of_image); 
 	//cv::Mat out;
 	//cv::Mat in[] = { img, img, img };
 	//cv::merge(in, 3, out);
 	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-	//显示裁剪后并且识别后的图片
-	//CEnumNode nodeEnum(m_pCamera, "TriggerSource");
-	//CString strValue;
-	//nodeEnum.getValueSymbol(strValue);
-	//if (true == Mode_of_trig) {
+	//识别裁剪后的图片
+	//try
+	//{
+	//	//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//	if (!bookdetection(out))//识别判断
+	//	{
+	//		Beep(1000, 1000);
+	//		cout << "不合格" << endl << endl;
+	//		//弹窗报警,2秒自动关闭
+	//		//alertWindow = new AlertWindow;
+	//		//alertWindow->startTimer();
+	//		//alertWindow->show();
+	//		//output file
+	//		//imwrite(wrong_filename, src_mat);
+	//		//run_database(current_time, "不合格");
+	//		unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+	//		int count = 0;
+	//		while (revFlag != true) {
+	//			revFlag = mycserialport.WriteData(uc, 6);
+	//			Sleep(50);
+	//			count++;
+	//			if (count >= 3) {
+	//				//cout << "未收到下位机确认信息!" << endl;
+	//				//连续发三次，三次握手,返回动作执行成功
+	//				count = 0;
+	//				break;
+	//			}
+	//		}
+	//		revFlag = false;
+	//	}
+	//	else {
+	//		ui->label_3->setText("Correct");
+	//	}
+	//}
+	//catch (const std::exception& e)
+	//{
+	//	QMessageBox::information(NULL, "识别部分出错", e.what());
+	//	return true;
+	//}
+
+	//else if (true == Mode_of_trig_soft) {
 	//	try
 	//	{
-	//		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-	//		//if (!bookdetection(out))//识别判断
-	//		//{
-	//		//	Beep(1000, 1000);
-	//		//	cout << "不合格" << endl << endl;
-	//		//	//弹窗报警,2秒自动关闭
-	//		//	alertWindow = new AlertWindow;
-	//		//	alertWindow->startTimer();
-	//		//	alertWindow->show();
-	//		//	//output file
-	//		//	//imwrite(wrong_filename, src_mat);
-	//		//	//run_database(current_time, "不合格");
-	//		//	unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
-	//		//	int count = 0;
-	//		//	while (revFlag != true) {
-	//		//		revFlag = mycserialport.WriteData(uc, 6);
-	//		//		Sleep(50);
-	//		//		count++;
-	//		//		if (count >= 3) {
-	//		//			//cout << "未收到下位机确认信息!" << endl;
-	//		//			//连续发三次，三次握手,返回动作执行成功
-	//		//			count = 0;
-	//		//			break;
-	//		//		}
-	//		//	}
-	//		//	revFlag = false;
-	//		//}
-	//		//else {
-	//		//	ui->label_3->setText("Correct");
-	//		//}
+	//		Pic_to_Save = QImage2cvMat(image);
+	//		ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(Pic_to_Save)));
+	//		////imshow("test", img);
+	//		//bool ret = imwrite("Train/image/Pic.bmp", img);
+	//		////cv::Mat out;
+	//		////cv::Mat in[] = { img, img, img };
+	//		////cv::merge(in, 3, out);
+	//		////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	//		//////QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//		////if (ret) {
+	//		////	//QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+	//		////	ui->label_3->setText("保存图片成功");
+	//		////	Mode_of_trig_soft = false;
+	//		////}
+	//		////else
+	//		////{
+	//		////	QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
+	//		////}
+	//		//Mat i = imread("Train/image/Pic.bmp");
+	//		//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(i)));
 	//	}
 	//	catch (const std::exception& e)
 	//	{
 	//		QMessageBox::information(NULL, "识别部分出错", e.what());
 	//		return true;
 	//	}
+	//	Mode_of_trig_soft = false;
 	//}
-	////else if (true == Mode_of_trig_soft) {
-	////	try
-	////	{
-	////		Pic_to_Save = QImage2cvMat(image);
-	////		ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(Pic_to_Save)));
-	////		////imshow("test", img);
-	////		//bool ret = imwrite("Train/image/Pic.bmp", img);
-	////		////cv::Mat out;
-	////		////cv::Mat in[] = { img, img, img };
-	////		////cv::merge(in, 3, out);
-	////		////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-	////		//////QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-	////		////if (ret) {
-	////		////	//QMessageBox::information(NULL, "保存图片", "保存图片成功！");
-	////		////	ui->label_3->setText("保存图片成功");
-	////		////	Mode_of_trig_soft = false;
-	////		////}
-	////		////else
-	////		////{
-	////		////	QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
-	////		////}
-	////		//Mat i = imread("Train/image/Pic.bmp");
-	////		//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(i)));
-	////	}
-	////	catch (const std::exception& e)
-	////	{
-	////		QMessageBox::information(NULL, "识别部分出错", e.what());
-	////		return true;
-	////	}
-	////	Mode_of_trig_soft = false;
-	////}
 	//else
 	//{
 	//	//单击按钮保存图片
@@ -1522,7 +1525,7 @@ void MainWindow::set_Mode_of_trig_soft() {
 	//}
 	//CameraChangeTrig(trigContinous);
 
-	
+
 }
 //打开相机
 void MainWindow::on_pushButton_clicked()
@@ -1582,7 +1585,8 @@ void MainWindow::on_pushButton_clicked()
 		ui->label_3->setText("相机连接成功！");
 		//SetExposeTime(10000);
 		//SetAdjustPlus(5);
-		CameraChangeTrig(trigLine);
+		//CameraChangeTrig(trigContinous);
+		ui->label_2->setEnabled(false);
 	}
 	catch (Exception e) {
 		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -1599,7 +1603,7 @@ void MainWindow::on_pushButton_2_clicked()
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(false);
 }
-//开始 识别
+//开始识别
 void MainWindow::on_pushButton_3_clicked()
 {
 	//开始 识别
