@@ -128,7 +128,6 @@
     <None Include="readme.md" />
     <None Include="sum.exe" />
     <None Include="database.exe" />
-    <None Include="database.db" />
     <None Include="release\Config\conf.ini" />
     <None Include="release\iconengines\qsvgicon.dll" />
     <None Include="release\imageformats\qgif.dll" />
@@ -156,6 +155,7 @@
     <None Include="release\VideoRender.dll" />
     <None Include="debug\VideoRender.dll" />
     <None Include="debug\ImageConvert.dll" />
+    <None Include="database.db" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />

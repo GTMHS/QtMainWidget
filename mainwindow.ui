@@ -27,6 +27,9 @@
       <property name="opaqueResize">
        <bool>false</bool>
       </property>
+      <property name="handleWidth">
+       <number>2</number>
+      </property>
       <property name="childrenCollapsible">
        <bool>true</bool>
       </property>

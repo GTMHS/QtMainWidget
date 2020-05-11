@@ -134,6 +134,7 @@ public:
         splitter->setObjectName(QString::fromUtf8("splitter"));
         splitter->setOrientation(Qt::Horizontal);
         splitter->setOpaqueResize(false);
+        splitter->setHandleWidth(2);
         splitter->setChildrenCollapsible(true);
         layoutWidget = new QWidget(splitter);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
