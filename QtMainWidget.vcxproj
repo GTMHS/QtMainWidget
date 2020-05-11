@@ -80,6 +80,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Program Files\opencv3.4.6\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -235,9 +236,8 @@
     <QtUic Include="takephoto.ui" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="labelImg\Include\pyconfig.h" />
+    <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h" />
     <ClInclude Include="release\moc_predefs.h" />
-    <ClInclude Include="x64\Release\labelImg\Include\pyconfig.h" />
     <QtMoc Include="Src\alertwindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Config.h" />
@@ -295,7 +295,7 @@
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="labelImg\labelImg.exe.manifest" />
+    <Manifest Include="F:\code\python\labelImg\dist\labelImg\labelImg.exe.manifest" />
     <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>

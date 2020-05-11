@@ -79,6 +79,10 @@ void MainWindow::init_parameters() {
 	k = Config().Get("Line Fitting", "k").toDouble();
 	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
 
+	total_number = Config().Get("Count", "Count").toInt();
+	sum_of_correct = Config().Get("Count", "Correct_Number").toInt();
+	sum_of_wrong = Config().Get("Count", "Wrong_Number").toInt();
+
 	Mat mask = read_mask();
 	Rect reck_mask = mask_boundingRect(mask);
 	rect_of_image = reck_mask;
@@ -119,120 +123,134 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	int w = ui->label->width();
 	int h = ui->label->height();	
 	ui->label->setPixmap(pixmap.scaled(w,h,Qt::KeepAspectRatio));
-	//label2显示裁剪之后的照片
-	Mat img = QImage2cvMat(image);
-	Pic_to_Save = img;
+	ui->lcdNumber->display(++total_number);
+	Config().Set("Count", "Count", total_number);
+	if (total_number % 2) {
+		//参考连接https://www.cnblogs.com/findumars/p/7252854.html
+		ofstream outFile;
+		outFile.open("count.csv", ios::app); // 打开模式可省略  
+		outFile << get_datetime() << ',' << "总数" << ',' << total_number << ',' << "正确总数" << ',' << sum_of_correct << ',' << "错误总数" << ',' << sum_of_wrong << endl;
+		outFile.close();
+	}
+
+	////label2显示裁剪之后的照片
+	//Mat img = QImage2cvMat(image);
+	//Pic_to_Save = img;
 	//if (true == Mode_of_trig_soft) {
 	//	imwrite("Train/image/Pic.bmp", img);
 	//	ui->label_3->setText("保存图像成功");
 	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
 	//	Mode_of_trig_soft = false;
 	//}
-	img = img(rect_of_image); //裁剪
-	cv::Mat out;
-	cv::Mat in[] = { img, img, img };
-	cv::merge(in, 3, out);
+	//img = img(rect_of_image); //裁剪
+	//cv::Mat out;
+	//cv::Mat in[] = { img, img, img };
+	//cv::merge(in, 3, out);
 	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
 	//显示裁剪后并且识别后的图片
-	if (true == Mode_of_trig) {
-		try
-		{
-			//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-			if (!bookdetection(out))//识别判断
-			{
-				Beep(1000, 1000);
-				cout << "不合格" << endl << endl;
-				//弹窗报警,2秒自动关闭
-				alertWindow = new AlertWindow;
-				alertWindow->startTimer();
-				alertWindow->show();
-				//output file
-				//imwrite(wrong_filename, src_mat);
-				//run_database(current_time, "不合格");
-				unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
-				int count = 0;
-				while (revFlag != true) {
-					revFlag = mycserialport.WriteData(uc, 6);
-					Sleep(50);
-					count++;
-					if (count >= 3) {
-						//cout << "未收到下位机确认信息!" << endl;
-						//连续发三次，三次握手,返回动作执行成功
-						count = 0;
-						break;
-					}
-				}
-				revFlag = false;
-			}
-			else {
-				ui->label_3->setText("Correct");
-			}
-		}
-		catch (const std::exception& e)
-		{
-			QMessageBox::information(NULL, "识别部分出错", e.what());
-			return true;
-		}
-	}
-	//else if (true == Mode_of_trig_soft) {
+	//CEnumNode nodeEnum(m_pCamera, "TriggerSource");
+	//CString strValue;
+	//nodeEnum.getValueSymbol(strValue);
+	//if (true == Mode_of_trig) {
 	//	try
 	//	{
-	//		Pic_to_Save = QImage2cvMat(image);
-	//		ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(Pic_to_Save)));
-	//		////imshow("test", img);
-	//		//bool ret = imwrite("Train/image/Pic.bmp", img);
-	//		////cv::Mat out;
-	//		////cv::Mat in[] = { img, img, img };
-	//		////cv::merge(in, 3, out);
-	//		////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-	//		//////QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-	//		////if (ret) {
-	//		////	//QMessageBox::information(NULL, "保存图片", "保存图片成功！");
-	//		////	ui->label_3->setText("保存图片成功");
-	//		////	Mode_of_trig_soft = false;
-	//		////}
-	//		////else
-	//		////{
-	//		////	QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
-	//		////}
-	//		//Mat i = imread("Train/image/Pic.bmp");
-	//		//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(i)));
+	//		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//		//if (!bookdetection(out))//识别判断
+	//		//{
+	//		//	Beep(1000, 1000);
+	//		//	cout << "不合格" << endl << endl;
+	//		//	//弹窗报警,2秒自动关闭
+	//		//	alertWindow = new AlertWindow;
+	//		//	alertWindow->startTimer();
+	//		//	alertWindow->show();
+	//		//	//output file
+	//		//	//imwrite(wrong_filename, src_mat);
+	//		//	//run_database(current_time, "不合格");
+	//		//	unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+	//		//	int count = 0;
+	//		//	while (revFlag != true) {
+	//		//		revFlag = mycserialport.WriteData(uc, 6);
+	//		//		Sleep(50);
+	//		//		count++;
+	//		//		if (count >= 3) {
+	//		//			//cout << "未收到下位机确认信息!" << endl;
+	//		//			//连续发三次，三次握手,返回动作执行成功
+	//		//			count = 0;
+	//		//			break;
+	//		//		}
+	//		//	}
+	//		//	revFlag = false;
+	//		//}
+	//		//else {
+	//		//	ui->label_3->setText("Correct");
+	//		//}
 	//	}
 	//	catch (const std::exception& e)
 	//	{
 	//		QMessageBox::information(NULL, "识别部分出错", e.what());
 	//		return true;
 	//	}
-	//	Mode_of_trig_soft = false;
 	//}
-	else
-	{
-		if (true == Mode_of_trig_soft) {
-			try
-			{
-				Mat img = QImage2cvMat(image);
-				Mode_of_trig_soft = false;
-				cv::Mat out;
-				cv::Mat in[] = { img, img, img };
-				cv::merge(in, 3, out);
-				//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-				//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-				imwrite("Train/image/Pic.bmp", img);
-				QMessageBox::information(NULL, "保存图片", "保存图片成功！");
-			}
-			catch (const std::exception& e)
-			{
-				QMessageBox::information(NULL, "识别部分出错", e.what());
-				return true;
-			}
-			Mode_of_trig_soft = false;
-		}
-	}
+	////else if (true == Mode_of_trig_soft) {
+	////	try
+	////	{
+	////		Pic_to_Save = QImage2cvMat(image);
+	////		ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(Pic_to_Save)));
+	////		////imshow("test", img);
+	////		//bool ret = imwrite("Train/image/Pic.bmp", img);
+	////		////cv::Mat out;
+	////		////cv::Mat in[] = { img, img, img };
+	////		////cv::merge(in, 3, out);
+	////		////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	////		//////QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	////		////if (ret) {
+	////		////	//QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+	////		////	ui->label_3->setText("保存图片成功");
+	////		////	Mode_of_trig_soft = false;
+	////		////}
+	////		////else
+	////		////{
+	////		////	QMessageBox::warning(NULL, "保存图片失败！", "保存图片失败！");
+	////		////}
+	////		//Mat i = imread("Train/image/Pic.bmp");
+	////		//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(i)));
+	////	}
+	////	catch (const std::exception& e)
+	////	{
+	////		QMessageBox::information(NULL, "识别部分出错", e.what());
+	////		return true;
+	////	}
+	////	Mode_of_trig_soft = false;
+	////}
+	//else
+	//{
+	//	//单击按钮保存图片
+	//	if (true == Mode_of_trig_soft) {
+	//		try
+	//		{
+	//			Mat img = QImage2cvMat(image);
+	//			Mode_of_trig_soft = false;
+	//			cv::Mat out;
+	//			cv::Mat in[] = { img, img, img };
+	//			cv::merge(in, 3, out);
+	//			//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	//			//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//			imwrite("Train/image/Pic.bmp", img);
+	//			QMessageBox::information(NULL, "保存图片", "保存图片成功！");
+	//		}
+	//		catch (const std::exception& e)
+	//		{
+	//			QMessageBox::information(NULL, "识别部分出错", e.what());
+	//			return true;
+	//		}
+	//		Mode_of_trig_soft = false;
+	//	}
+	//}
 	return true;
 }
 
 bool sortFun(Rect p1, Rect p2);
-
+//用于测试本地图片文件
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
@@ -313,6 +331,145 @@ void MainWindow::testRun() {
 	cout << "The run time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << endl << endl;
 }
 
+//OpenCV Mat与QImage相互转换函数
+Mat MainWindow::QImage2cvMat(QImage &image, bool clone, bool rb_swap)
+{
+	cv::Mat mat;
+	//qDebug() << image.format();
+	switch (image.format())
+	{
+	case QImage::Format_ARGB32:
+	case QImage::Format_RGB32:
+	case QImage::Format_ARGB32_Premultiplied:
+		mat = cv::Mat(image.height(), image.width(), CV_8UC4, (void *)image.constBits(), image.bytesPerLine());
+		if (clone)  mat = mat.clone();
+		break;
+	case QImage::Format_RGB888:
+		mat = cv::Mat(image.height(), image.width(), CV_8UC3, (void *)image.constBits(), image.bytesPerLine());
+		if (clone)  mat = mat.clone();
+		if (rb_swap) cv::cvtColor(mat, mat, CV_BGR2RGB);
+		break;
+	case QImage::Format_Indexed8:
+	case QImage::Format_Grayscale8:
+		mat = cv::Mat(image.height(), image.width(), CV_8UC1, (void *)image.bits(), image.bytesPerLine());
+		if (clone)  mat = mat.clone();
+		break;
+	}
+	return mat;
+}
+//QImage与OpenCV Mat相互转换函数
+QImage MainWindow::cvMat2QImage(const cv::Mat& mat)
+{
+	// 8-bits unsigned, NO. OF CHANNELS = 1
+	if (mat.type() == CV_8UC1)
+	{
+		QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
+		// Set the color table (used to translate colour indexes to qRgb values)
+		image.setColorCount(256);
+		for (int i = 0; i < 256; i++)
+		{
+			image.setColor(i, qRgb(i, i, i));
+		}
+		// Copy input Mat
+		uchar *pSrc = mat.data;
+		for (int row = 0; row < mat.rows; row++)
+		{
+			uchar *pDest = image.scanLine(row);
+			memcpy(pDest, pSrc, mat.cols);
+			pSrc += mat.step;
+		}
+		return image;
+	}
+	// 8-bits unsigned, NO. OF CHANNELS = 3
+	else if (mat.type() == CV_8UC3)
+	{
+		// Copy input Mat
+		const uchar *pSrc = (const uchar*)mat.data;
+		// Create QImage with same dimensions as input Mat
+		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+		return image.rgbSwapped();
+	}
+	else if (mat.type() == CV_8UC4)
+	{
+		// Copy input Mat
+		const uchar *pSrc = (const uchar*)mat.data;
+		// Create QImage with same dimensions as input Mat
+		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
+		return image.copy();
+	}
+	else
+	{
+		return QImage();
+	}
+}
+//线性拟合函数
+bool MainWindow::LinearFitting(const vector<Point> points, double slope, double intercept, double r_square)
+{
+	int length = points.size();
+	double xmean = 0.0;
+	double ymean = 0.0;
+	for (int i = 0; i < length; i++)
+	{
+		xmean += points[i].x;
+		ymean += points[i].y;
+	}
+	xmean /= length;
+	ymean /= length;
+
+	double sumx2 = 0.0;
+	double sumy2 = 0.0;
+	double sumxy = 0.0;
+	for (int i = 0; i < length; i++)
+	{
+		sumx2 += (points[i].x - xmean) * (points[i].x - xmean);
+		sumy2 += (points[i].y - ymean) * (points[i].y - ymean);
+		sumxy += (points[i].y - ymean) * (points[i].x - xmean);
+	}
+	double slope1 = sumxy / sumx2;  //斜率
+	double intercept1 = ymean - slope * xmean; //截距
+	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
+	cout << "y = " << slope1 << "x+ " << intercept1 << "  r_square1 is " << r_square1 << endl;
+
+	//判断条件只添加了相关系数和斜率
+	if (abs(r_square - r_square1) <= 0.1 && abs(slope - slope1) <= 0.1) {
+		cout << "相关系数正确" << endl;
+
+		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Correct";
+		ui->label_3->setText(str);
+		return true;
+	}
+	else
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | BACKGROUND_RED);
+		cout << "相关系数错误！" << endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Wrong";
+		ui->label_3->setText(str);
+		return false;
+	}
+
+}
+//返回日期-时间字符串
+string MainWindow::get_datetime()
+{
+	SYSTEMTIME st = { 0 };
+	GetLocalTime(&st);
+
+	char temp[100];
+	sprintf_s(temp, "%d-%02d-%02d-%02d-%02d-%02d",
+		st.wYear,
+		st.wMonth,
+		st.wDay,
+		st.wHour,
+		st.wMinute,
+		st.wSecond
+	);
+	std::string params = string(temp);
+	return params;
+}
+
+//-------以下四个函数是opencv中给出的YOLO模型识别的代码，略有改动--------
+//功能主函数
 bool MainWindow::bookdetection(Mat imagefile) {
 	Config().Set("Log", "Function BookDetection", "BookDetection执行");
 	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
@@ -326,7 +483,6 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	vector<Point> points;
 	int max_point_x = 0, max_point_y = 0;
 	double average_piexl_value = 0;
-
 	//for循环获取每个黑块的中点，并存储到points中
 	for (int i = 0; i < boxes.size(); i++) {
 		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
@@ -472,7 +628,6 @@ bool MainWindow::bookdetection(Mat imagefile) {
 		ui->label_3->setText("Wrong");
 		return false;
 	}
-
 	//switch (this_block_nums)
 	//{
 	//case 11:
@@ -517,144 +672,6 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//	//emit SendUpdateLCDMsg(2);
 	//	return 0;
 	//}
-	
-}
-
-//OpenCV Mat与QImage相互转换函数
-Mat MainWindow::QImage2cvMat(QImage &image, bool clone, bool rb_swap)
-{
-	cv::Mat mat;
-	//qDebug() << image.format();
-	switch (image.format())
-	{
-	case QImage::Format_ARGB32:
-	case QImage::Format_RGB32:
-	case QImage::Format_ARGB32_Premultiplied:
-		mat = cv::Mat(image.height(), image.width(), CV_8UC4, (void *)image.constBits(), image.bytesPerLine());
-		if (clone)  mat = mat.clone();
-		break;
-	case QImage::Format_RGB888:
-		mat = cv::Mat(image.height(), image.width(), CV_8UC3, (void *)image.constBits(), image.bytesPerLine());
-		if (clone)  mat = mat.clone();
-		if (rb_swap) cv::cvtColor(mat, mat, CV_BGR2RGB);
-		break;
-	case QImage::Format_Indexed8:
-	case QImage::Format_Grayscale8:
-		mat = cv::Mat(image.height(), image.width(), CV_8UC1, (void *)image.bits(), image.bytesPerLine());
-		if (clone)  mat = mat.clone();
-		break;
-	}
-	return mat;
-}
-
-QImage MainWindow::cvMat2QImage(const cv::Mat& mat)
-{
-	// 8-bits unsigned, NO. OF CHANNELS = 1
-	if (mat.type() == CV_8UC1)
-	{
-		QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
-		// Set the color table (used to translate colour indexes to qRgb values)
-		image.setColorCount(256);
-		for (int i = 0; i < 256; i++)
-		{
-			image.setColor(i, qRgb(i, i, i));
-		}
-		// Copy input Mat
-		uchar *pSrc = mat.data;
-		for (int row = 0; row < mat.rows; row++)
-		{
-			uchar *pDest = image.scanLine(row);
-			memcpy(pDest, pSrc, mat.cols);
-			pSrc += mat.step;
-		}
-		return image;
-	}
-	// 8-bits unsigned, NO. OF CHANNELS = 3
-	else if (mat.type() == CV_8UC3)
-	{
-		// Copy input Mat
-		const uchar *pSrc = (const uchar*)mat.data;
-		// Create QImage with same dimensions as input Mat
-		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-		return image.rgbSwapped();
-	}
-	else if (mat.type() == CV_8UC4)
-	{
-		// Copy input Mat
-		const uchar *pSrc = (const uchar*)mat.data;
-		// Create QImage with same dimensions as input Mat
-		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
-		return image.copy();
-	}
-	else
-	{
-		return QImage();
-	}
-}
-
-bool MainWindow::LinearFitting(const vector<Point> points, double slope, double intercept, double r_square)
-{
-	int length = points.size();
-	double xmean = 0.0;
-	double ymean = 0.0;
-	for (int i = 0; i < length; i++)
-	{
-		xmean += points[i].x;
-		ymean += points[i].y;
-	}
-	xmean /= length;
-	ymean /= length;
-
-	double sumx2 = 0.0;
-	double sumy2 = 0.0;
-	double sumxy = 0.0;
-	for (int i = 0; i < length; i++)
-	{
-		sumx2 += (points[i].x - xmean) * (points[i].x - xmean);
-		sumy2 += (points[i].y - ymean) * (points[i].y - ymean);
-		sumxy += (points[i].y - ymean) * (points[i].x - xmean);
-	}
-	double slope1 = sumxy / sumx2;  //斜率
-	double intercept1 = ymean - slope * xmean; //截距
-	double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
-	cout << "y = " << slope1 << "x+ " << intercept1 << "  r_square1 is " << r_square1 << endl;
-
-	//判断条件只添加了相关系数和斜率
-	if (abs(r_square - r_square1) <= 0.1 && abs(slope - slope1) <= 0.1) {
-		cout << "相关系数正确" << endl;
-
-		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Correct";
-		ui->label_3->setText(str);
-		return true;
-	}
-	else
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | BACKGROUND_RED);
-		cout << "相关系数错误！" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		QString str = "y=" + QString::number(slope) + "x+ " + QString::number(intercept1) + "  r_square1 is " + QString::number(r_square1) + "Wrong";
-		ui->label_3->setText(str);
-		return false;
-	}
-
-}
-
-string MainWindow::get_datetime()
-{
-	SYSTEMTIME st = { 0 };
-	GetLocalTime(&st);
-
-	char temp[100];
-	sprintf_s(temp, "%d-%02d-%02d-%02d-%02d-%02d",
-		st.wYear,
-		st.wMonth,
-		st.wDay,
-		st.wHour,
-		st.wMinute,
-		st.wSecond
-	);
-	std::string params = string(temp);
-	return params;
 }
 
 vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string modelConfiguration) {
@@ -690,10 +707,6 @@ vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string mod
 	return boxes;
 	Config().Set("Log", "Function detect_image", "detect_image执行成功");
 	//cv::waitKey(30);
-}
-
-bool sortFun(Rect p1, Rect p2) {
-	return p1.y + 0.5*p1.height < p2.y + 0.5* p2.height;
 }
 
 vector<Rect> MainWindow::postprocess_return(Mat& frame, const vector<Mat>& outs)
@@ -784,7 +797,12 @@ vector<String> MainWindow::getOutputsNames(const Net& net)
 	Config().Set("Log", "Function getOutputsNames", "getOutputsNames执行成功");
 	return names;
 }
+//-----------------------------------
 
+//用于识别到的黑框的位置排序
+bool sortFun(Rect p1, Rect p2) {
+	return p1.y + 0.5*p1.height < p2.y + 0.5* p2.height;
+}
 wstring MainWindow::string2tchar(const string& s)
 {
 	int len;
@@ -796,7 +814,7 @@ wstring MainWindow::string2tchar(const string& s)
 	delete[] buf;
 	return r;
 }
-
+//用来执行exe文件
 void MainWindow::run_exe(string path, string params)
 {
 	std::wstring t_path = string2tchar(path);
@@ -812,7 +830,7 @@ void MainWindow::run_exe(string path, string params)
 	ShellInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 	BOOL bResult = ShellExecuteEx(&ShellInfo);
 }
-
+//保存数据到数据库。似乎并不能用
 void MainWindow::run_database(string time, string result)
 {
 	// database.exe 2016-01-22 08:45:50 异常
@@ -823,7 +841,7 @@ void MainWindow::run_database(string time, string result)
 	std::string params = ss.str();
 	run_exe(filename, params);
 }
-
+//打开labelImg软件，标记软件
 void MainWindow::run_labelImg()
 {
 	SHELLEXECUTEINFO  ShExecInfo;
@@ -838,7 +856,7 @@ void MainWindow::run_labelImg()
 	ShExecInfo.hInstApp = NULL;
 	ShellExecuteEx(&ShExecInfo);
 }
-
+//模型训练部分中的裁剪图片
 void MainWindow::run_cut()
 {
 	// database.exe 2016-01-22 08:45:50 异常
@@ -873,7 +891,7 @@ void MainWindow::run_cut()
 	//ui->label_2->setText(QString::number(reck_mask.y));
 	//ui->label_3->setText(QString::number(reck_mask.height));
 }
-
+//读取模板，识别画的框，与mask_boundingRect一起用
 Mat MainWindow::read_mask()
 {
 	String maskfile = "moban.png";	
@@ -917,7 +935,7 @@ Mat MainWindow::read_mask()
 	}
 	return mask2;
 }
-
+//将模板中的矩形提取出来，提取矩形
 Rect MainWindow::mask_boundingRect(Mat mask)
 {
 	int j, k;
@@ -984,13 +1002,13 @@ Rect MainWindow::mask_boundingRect(Mat mask)
 
 	return rect;
 }
-
+//训练模型
 void MainWindow::run_train() {
-	string params = "darknet.exe detector train cfg/voc.data cfg/yolov3-voc.cfg darknet53.conv.7";
+	string params = "darknet.exe detector train cfg/voc.data cfg/yolov3-voc.cfg yolov3-voc_last.weights";
 	string filename = "darknet.exe";
 	run_exe(filename, params);
 }
-
+//检查相机是否连接
 void MainWindow::CameraCheck(void)
 {
 	CSystem &systemObj = CSystem::getInstance();
@@ -1561,9 +1579,10 @@ void MainWindow::on_pushButton_clicked()
 		CameraCheck();
 		bool camera_open = CameraOpen();
 		CameraStart();
+		ui->label_3->setText("相机连接成功！");
 		//SetExposeTime(10000);
 		//SetAdjustPlus(5);
-		CameraChangeTrig(trigContinous);
+		CameraChangeTrig(trigLine);
 	}
 	catch (Exception e) {
 		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -1602,7 +1621,6 @@ void MainWindow::on_pushButton_4_clicked()
 	//恢复相机为持续拉流
 	CameraChangeTrig(trigContinous);
 }
-
 //保存新照片
 void MainWindow::on_actionSavePic_triggered()
 {
@@ -1639,14 +1657,12 @@ void MainWindow::on_actionLabel_triggered()
 	//ShellExecuteEx(&ShExecInfo);
 	//WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 }
-
 //新书训练
 void MainWindow::on_actionTrain_triggered()
 {
 	//图书训练
 
 }
-
 //显示裁剪窗口。参考https://www.cnblogs.com/blogpro/p/11343975.html
 void MainWindow::on_actionOpenCutWindow_triggered()
 {
@@ -1744,7 +1760,6 @@ void MainWindow::on_actionCut_2_triggered()
 {
 	on_actionOpenCutWindow_triggered();
 }
-
 //参数设置
 void MainWindow::on_actionPara_triggered()
 {
@@ -1754,7 +1769,6 @@ void MainWindow::on_actionPara_triggered()
 	connect(para, SIGNAL(sendDataToMainWidget(double, double, double)), this, SLOT(recevieDataFromSubWin(double, double, double, int)));
 	para->show();
 }
-
 //接收参设设置窗口设置的参数
 void MainWindow::recevieDataFromSubWin(double rk, double rb, double rs, int rn)
 {
@@ -1845,6 +1859,7 @@ void MainWindow::on_actiontakephoto_triggered()
      on_actionSavePic_triggered();
 }
 
+//----------------------没有用到的函数---------------------------------------
 bool MainWindow::setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl)
 {
 	//设置触发源为软触发

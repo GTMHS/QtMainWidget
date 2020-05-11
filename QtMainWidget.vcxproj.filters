@@ -114,16 +114,13 @@
     <ClInclude Include="Src\Config.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="labelImg\Include\pyconfig.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="release\moc_predefs.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="x64\Release\labelImg\Include\pyconfig.h">
+    <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,8 +173,8 @@
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="labelImg\labelImg.exe.manifest" />
     <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
+    <Manifest Include="F:\code\python\labelImg\dist\labelImg\labelImg.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />

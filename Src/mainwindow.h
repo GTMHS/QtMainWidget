@@ -6,8 +6,10 @@
 #include <qsettings.h>
 #include <QCryptographicHash>
 #include <qfile.h>
+//#include <QtXlsx>
 
 #include "GenICam/System.h"
+#include "GenICam/ParameterNode.h"
 #include "Media/VideoRender.h"
 #include "Media/ImageConvert.h"
 #include "MessageQue.h"
@@ -22,6 +24,8 @@
 #include <ShellAPI.h>
 #include <tchar.h>
 #include <time.h>
+#include <sstream>
+#include <fstream>
 
 
 #include <Src\parameterssetting.h>
@@ -29,6 +33,14 @@
 #include <Src\MySerialport.h>
 #include <Src\Config.h>
 #include <Src\alertwindow.h>
+
+//#include "xlsxdocument.h"
+//#include "xlsxchartsheet.h"
+//#include "xlsxcellrange.h"
+//#include "xlsxchart.h"
+//#include "xlsxrichstring.h"
+//#include "xlsxworkbook.h"
+//using namespace QXlsx;
 
 using namespace cv;
 using namespace dnn;
@@ -77,7 +89,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+	//图书总数
+	int total_number = 0;
+	//正确总数
+	int sum_of_correct = 0;
+	//错误总数
+	int sum_of_wrong = 0;
 	//设置拟合的直线的斜率、截距和相关系数
 	double k, b, s;
 	//黑色标志的数量
