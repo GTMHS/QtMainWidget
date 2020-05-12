@@ -83,9 +83,14 @@ void MainWindow::init_parameters() {
 	sum_of_correct = Config().Get("Count", "sum_of_correct").toInt();
 	sum_of_wrong = Config().Get("Count", "sum_of_wrong").toInt();
 
-	Mat mask = read_mask();
-	Rect reck_mask = mask_boundingRect(mask);
-	rect_of_image = reck_mask;
+	//Mat mask = read_mask();
+	//Rect reck_mask = mask_boundingRect(mask);
+	//rect_of_image = reck_mask;
+	rect_of_image.x = Config().Get("Image Rect", "x").toInt();
+	rect_of_image.y = Config().Get("Image Rect", "y").toInt();
+	rect_of_image.width = Config().Get("Image Rect", "width").toInt();
+	rect_of_image.height = Config().Get("Image Rect", "height").toInt();
+
 	//QString x = QString::number(reck_mask.x);
 	//QString y = QString::number(reck_mask.y);
 	//QString width = QString::number(reck_mask.width);
@@ -132,7 +137,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	ui->lcdNumber_2->display(++total_number);
 	Config().Set("Count", "Count", total_number);
 	//每增加一百个就写入一次
-	if (total_number % 100) {
+	if (0 == total_number % 100) {
 		//参考连接https://www.cnblogs.com/findumars/p/7252854.html
 		ofstream outFile;
 		outFile.open("count.csv", ios::app); // 打开模式可省略  

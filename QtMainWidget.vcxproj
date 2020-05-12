@@ -278,6 +278,7 @@
     <None Include="release\styles\qwindowsvistastyle.dll" />
     <None Include="release\VideoRender.dll" />
     <None Include="sum.exe" />
+    <None Include="x64\Release\Config\conf.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="book.ico" />
