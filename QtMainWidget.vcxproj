@@ -247,7 +247,6 @@
     <ClInclude Include="Src\MessageQue.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="database.db" />
     <None Include="database.exe" />
     <None Include="debug\ImageConvert.dll" />
     <None Include="debug\VideoRender.dll" />

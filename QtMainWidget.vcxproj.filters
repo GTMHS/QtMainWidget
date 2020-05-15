@@ -155,7 +155,6 @@
     <None Include="release\VideoRender.dll" />
     <None Include="debug\VideoRender.dll" />
     <None Include="debug\ImageConvert.dll" />
-    <None Include="database.db" />
     <None Include="x64\Release\Config\conf.ini" />
   </ItemGroup>
   <ItemGroup>
