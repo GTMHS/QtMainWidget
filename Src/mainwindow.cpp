@@ -42,10 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->pushButton_3->setEnabled(false);
 	ui->pushButton_4->setEnabled(false);
 
-	ui->splitter->setStretchFactor(0, 8);
+	ui->splitter->setStretchFactor(0, 4);
 	ui->splitter->setStretchFactor(1, 1);	
 	//ui->splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
-	this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+	//this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
 	int label_width = this->width() * 8 / 9;
 	int label_heiht = this->height() / 5;
 	ui->label->setMaximumWidth(label_width);
@@ -107,6 +107,7 @@ void MainWindow::init_parameters() {
 
 MainWindow::~MainWindow()
 {
+	CameraClose();
     delete ui;
 }
 
@@ -134,80 +135,80 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	int w = ui->label->width();
 	int h = ui->label->height();	
 	ui->label->setPixmap(pixmap.scaled(w,h,Qt::KeepAspectRatio));
-	ui->lcdNumber_2->display(++total_number);
-	Config().Set("Count", "Count", total_number);
-	//每增加一百个就写入一次
-	if (0 == total_number % 100) {
-		//参考连接https://www.cnblogs.com/findumars/p/7252854.html
-		ofstream outFile;
-		outFile.open("count.csv", ios::app); // 打开模式可省略  
-		outFile << get_datetime() << ',' << "总数" << ',' << total_number << ',' << "正确总数" << ',' << sum_of_correct << ',' << "错误总数" << ',' << sum_of_wrong << endl;
-		outFile.close();
-	}
+	//ui->lcdNumber_2->display(++total_number);
+	//Config().Set("Count", "Count", total_number);
+	////每增加一百个就写入一次
+	//if (0 == total_number % 100) {
+	//	//参考连接https://www.cnblogs.com/findumars/p/7252854.html
+	//	ofstream outFile;
+	//	outFile.open("count.csv", ios::app); // 打开模式可省略  
+	//	outFile << get_datetime() << ',' << "总数" << ',' << total_number << ',' << "正确总数" << ',' << sum_of_correct << ',' << "错误总数" << ',' << sum_of_wrong << endl;
+	//	outFile.close();
+	//}
 
-	//label2显示裁剪之后的照片
-	Mat img = QImage2cvMat(image);
-	Pic_to_Save = img;
-	if (true == Mode_of_trig_soft) {
-		imwrite("Train/image/Pic.bmp", Pic_to_Save);
-		ui->label_3->setText("保存图像成功");
-		//QMessageBox::information(this, "保存图片成功", "保存图像成功");
-		Mode_of_trig_soft = false;
-	}
-	//裁剪并显示
-	img = img(rect_of_image); 
-	cv::Mat out;
-	cv::Mat in[] = { img, img, img };
-	cv::merge(in, 3, out);
-	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-	//识别裁剪后的图片
-	try
-	{
-		startTime = clock();
-		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-		if (!bookdetection(out))//识别判断
-		{
-			ui->lcdNumber_3->display(++sum_of_wrong);
-			Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-			Beep(1000, 1000);
-			cout << "不合格" << endl << endl;
-			//弹窗报警,2秒自动关闭
-			//alertWindow = new AlertWindow;
-			//alertWindow->startTimer();
-			//alertWindow->show();
-			//output file
-			//imwrite(wrong_filename, src_mat);
-			//run_database(current_time, "不合格");
-			unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
-			int count = 0;
-			while (revFlag != true) {
-				revFlag = mycserialport.WriteData(uc, 6);
-				Sleep(50);
-				count++;
-				if (count >= 3) {
-					//cout << "未收到下位机确认信息!" << endl;
-					//连续发三次，三次握手,返回动作执行成功
-					count = 0;
-					break;
-				}
-			}
-			revFlag = false;
-		}
-		else {
-			ui->lcdNumber->display(++sum_of_correct);
-			Config().Set("Count", "sum_of_correct", sum_of_correct);
-			//ui->label_3->setText("Correct");
-		}
-		endTime = clock();
-		string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
-		QString st = QString::fromStdString(s);
-		ui->label_7->setText(st);
-	}
-	catch (const std::exception& e)
-	{
-		QMessageBox::information(NULL, "识别部分出错", e.what());
-		return true;
-	}
+	////label2显示裁剪之后的照片
+	//Mat img = QImage2cvMat(image);
+	//Pic_to_Save = img;
+	//if (true == Mode_of_trig_soft) {
+	//	imwrite("Train/image/Pic.bmp", Pic_to_Save);
+	//	ui->label_3->setText("保存图像成功");
+	//	//QMessageBox::information(this, "保存图片成功", "保存图像成功");
+	//	Mode_of_trig_soft = false;
+	//}
+	////裁剪并显示
+	//img = img(rect_of_image); 
+	//cv::Mat out;
+	//cv::Mat in[] = { img, img, img };
+	//cv::merge(in, 3, out);
+	////ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+	////识别裁剪后的图片
+	//try
+	//{
+	//	startTime = clock();
+	//	//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
+	//	if (!bookdetection(out))//识别判断
+	//	{
+	//		ui->lcdNumber_3->display(++sum_of_wrong);
+	//		Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+	//		Beep(1000, 1000);
+	//		cout << "不合格" << endl << endl;
+	//		//弹窗报警,2秒自动关闭
+	//		//alertWindow = new AlertWindow;
+	//		//alertWindow->startTimer();
+	//		//alertWindow->show();
+	//		//output file
+	//		//imwrite(wrong_filename, src_mat);
+	//		//run_database(current_time, "不合格");
+	//		unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+	//		int count = 0;
+	//		while (revFlag != true) {
+	//			revFlag = mycserialport.WriteData(uc, 6);
+	//			Sleep(50);
+	//			count++;
+	//			if (count >= 3) {
+	//				//cout << "未收到下位机确认信息!" << endl;
+	//				//连续发三次，三次握手,返回动作执行成功
+	//				count = 0;
+	//				break;
+	//			}
+	//		}
+	//		revFlag = false;
+	//	}
+	//	else {
+	//		ui->lcdNumber->display(++sum_of_correct);
+	//		Config().Set("Count", "sum_of_correct", sum_of_correct);
+	//		//ui->label_3->setText("Correct");
+	//	}
+	//	endTime = clock();
+	//	string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
+	//	QString st = QString::fromStdString(s);
+	//	ui->label_7->setText(st);
+	//}
+	//catch (const std::exception& e)
+	//{
+	//	QMessageBox::information(NULL, "识别部分出错", e.what());
+	//	return true;
+	//}
 
 	//else if (true == Mode_of_trig_soft) {
 	//	try
@@ -1476,17 +1477,7 @@ void MainWindow::on_pushButton_clicked()
 		ui->pushButton_4->setEnabled(false);
 		return;
 	}
-
-	//if (0 == vCameraPtrList.size())
-	//{
-	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-	//	ui->pushButton->setEnabled(true);
-	//	ui->pushButton_2->setEnabled(false);
-	//	ui->pushButton_3->setEnabled(false);
-	//	ui->pushButton_4->setEnabled(false);
-	//	return;
-	//}
-	else
+	else {
 		try {
 			CameraCheck();
 			bool camera_open = CameraOpen();
@@ -1495,6 +1486,7 @@ void MainWindow::on_pushButton_clicked()
 			//SetExposeTime(10000);
 			//SetAdjustPlus(5);
 			CameraChangeTrig(trigLine);
+			//CameraChangeTrig(trigContinous);
 			//ui->label_2->setEnabled(false);
 			//ui->label_2->setVisible(false);
 			ui->pushButton_3->setEnabled(false);
@@ -1503,6 +1495,7 @@ void MainWindow::on_pushButton_clicked()
 		catch (Exception e) {
 			QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 		}
+	}
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
