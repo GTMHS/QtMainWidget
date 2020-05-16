@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->splitter->setStretchFactor(0, 8);
 	ui->splitter->setStretchFactor(1, 1);	
-	ui->splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
+	//ui->splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
 	this->setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
 	int label_width = this->width() * 8 / 9;
 	int label_heiht = this->height() / 5;
@@ -1406,7 +1406,6 @@ bool MainWindow::isTimeToDisplay(uintmax_t nCurTime)
 		return true;
 	}
 
-
 	// 当前帧相对于第一帧的时间间隔
 	uint64_t nPre = (m_nLastFrameTime - m_nFirstFrameTime) % m_nDisplayInterval;
 	if (nPre + nAcquisitionInterval > m_nDisplayInterval)
@@ -1468,7 +1467,7 @@ void MainWindow::on_pushButton_clicked()
 	TVector<ICameraPtr> vCameraPtrList;
 	bool bRet = systemObj.discovery(vCameraPtrList);
 
-	if (!bRet)
+	if (!bRet || 0 == vCameraPtrList.size())
 	{
 		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 		ui->pushButton->setEnabled(true);
@@ -1478,31 +1477,32 @@ void MainWindow::on_pushButton_clicked()
 		return;
 	}
 
-	if (0 == vCameraPtrList.size())
-	{
-		QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
-	try {
-		CameraCheck();
-		bool camera_open = CameraOpen();
-		CameraStart();
-		ui->label_3->setText("相机连接成功！");
-		//SetExposeTime(10000);
-		//SetAdjustPlus(5);
-		CameraChangeTrig(trigLine);
-		//ui->label_2->setEnabled(false);
-		//ui->label_2->setVisible(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-	}
-	catch (Exception e) {
-		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-	}
+	//if (0 == vCameraPtrList.size())
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现摄像头失败\n");
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
+	else
+		try {
+			CameraCheck();
+			bool camera_open = CameraOpen();
+			CameraStart();
+			ui->label_3->setText("相机连接成功！");
+			//SetExposeTime(10000);
+			//SetAdjustPlus(5);
+			CameraChangeTrig(trigLine);
+			//ui->label_2->setEnabled(false);
+			//ui->label_2->setVisible(false);
+			ui->pushButton_3->setEnabled(false);
+			ui->pushButton_4->setEnabled(false);
+		}
+		catch (Exception e) {
+			QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		}
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
