@@ -303,6 +303,7 @@ public:
         lcdNumber_2 = new QLCDNumber(groupBox_3);
         lcdNumber_2->setObjectName(QString::fromUtf8("lcdNumber_2"));
         lcdNumber_2->setFont(font1);
+        lcdNumber_2->setDigitCount(7);
 
         gridLayout->addWidget(lcdNumber_2, 0, 1, 1, 1);
 
@@ -315,6 +316,7 @@ public:
         lcdNumber = new QLCDNumber(groupBox_3);
         lcdNumber->setObjectName(QString::fromUtf8("lcdNumber"));
         lcdNumber->setFont(font1);
+        lcdNumber->setDigitCount(7);
 
         gridLayout->addWidget(lcdNumber, 1, 1, 1, 1);
 
@@ -327,6 +329,7 @@ public:
         lcdNumber_3 = new QLCDNumber(groupBox_3);
         lcdNumber_3->setObjectName(QString::fromUtf8("lcdNumber_3"));
         lcdNumber_3->setFont(font1);
+        lcdNumber_3->setDigitCount(7);
 
         gridLayout->addWidget(lcdNumber_3, 2, 1, 1, 1);
 
@@ -411,7 +414,7 @@ public:
         actiontakephoto->setText(QApplication::translate("MainWindow", "\346\226\260\344\271\246\346\213\215\347\205\247", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "\345\256\236\346\227\266\347\224\273\351\235\242", nullptr));
         label->setText(QString());
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "\345\233\276\344\271\246\351\242\204\346\265\213", nullptr));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "\346\243\200\346\265\213\347\273\223\346\236\234", nullptr));
         label_2->setText(QString());
         label_3->setText(QString());
         label_7->setText(QString());
