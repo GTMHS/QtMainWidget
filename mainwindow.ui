@@ -89,7 +89,7 @@
            </font>
           </property>
           <property name="title">
-           <string>图书预测</string>
+           <string>检测结果</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout" stretch="3,1,1">
            <item>
@@ -286,6 +286,9 @@
                <bold>true</bold>
               </font>
              </property>
+             <property name="digitCount">
+              <number>7</number>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -313,6 +316,9 @@
                <bold>true</bold>
               </font>
              </property>
+             <property name="digitCount">
+              <number>7</number>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
@@ -339,6 +345,9 @@
                <weight>75</weight>
                <bold>true</bold>
               </font>
+             </property>
+             <property name="digitCount">
+              <number>7</number>
              </property>
             </widget>
            </item>
