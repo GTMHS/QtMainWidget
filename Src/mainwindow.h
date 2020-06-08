@@ -6,6 +6,7 @@
 #include <qsettings.h>
 #include <QCryptographicHash>
 #include <qfile.h>
+#include "QProcess"
 //#include <QtXlsx>
 
 #include "GenICam/System.h"
@@ -97,7 +98,7 @@ public:
 	int sum_of_wrong = 0;
 	//设置拟合的直线的斜率、截距和相关系数
 	double k, b, s;
-	//黑色标志的数量
+	//黑色标志的数量ss
 	int Num_of_blocks = 0;
 	//图书的位置
 	QRect Qrect_of_image;
@@ -105,8 +106,6 @@ public:
 	Rect rect_of_image = Rect(Qrect_of_image.x(), Qrect_of_image.y(), Qrect_of_image.width(), Qrect_of_image.height());
 	//用于计时
 	clock_t startTime, startTime1, endTime;
-	//串口嘞
-	MyCSerialPort mycserialport;
 	//bool revFlag = false;
 	//拍照保存的照片
 	Mat Pic_to_Save;
@@ -193,6 +192,8 @@ private:
 	ParametersSetting *para;
 	TakePhoto *takephoto;
 	AlertWindow *alertWindow;
+	//串口类
+	MyCSerialPort mycserialport;
 
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	

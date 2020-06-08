@@ -92,7 +92,7 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(923, 836);
         QIcon icon;
-        icon.addFile(QString::fromUtf8("book_128px_1221557_easyicon.net.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8("book_128px.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         actiontest2 = new QAction(MainWindow);
         actiontest2->setObjectName(QString::fromUtf8("actiontest2"));

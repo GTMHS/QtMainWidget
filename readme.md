@@ -156,6 +156,13 @@
 ### 20200505日报
 - 重新加了样本训练了模型
 
+
+### 20200518 总结
+1. 灵活设置判别标准在实现方面改动比较大，目前暂时没有太大的急需，暂时放缓此功能
+2. V字形的字典做成一个专用软件，与主版本区分开，只用来识别字典
+3. 解决串口通信闪退问题，将串口通讯加入到程序中
+4. 软件发布，尝试release下的exe的发布，解决依赖库的问题
+
 ## 使用手册
 
 ### 日常使用
@@ -193,7 +200,8 @@ QVariant qv(qs);
 
 
 ## 目前存在的问题
-1. 双击release下的exe文件不能打开，闪都不闪，直接没反应 
+1. ~~双击release下的exe文件不能打开，闪都不闪，直接没反应 ~~
+
 2. 识别时闪退。连接相机进行识别时，运行一会就会闪退；识别本地图片文件时，没有这种现象（在之前的命令行中。改为Qt之后没有试过）
 3. 调用其他exe时闪退。调用的exe包括TemplateEditor.exe（框定图书用，之前是画模板的那个）、labelImg.exe图书标记软件，关闭弹出的exe之后，主窗口闪退。
 4. 执行其他的命令时闪退，图书拍照、识别参数。图书拍照采用的是设置了一个参数，点击按钮之后将参数改为true，拍照保存图片，并将参数改为false。有时候能用有时候就会闪退。相机采用的是连续拉流。
@@ -210,4 +218,66 @@ QVariant qv(qs);
 - 弹窗要明显
 - 现有功能完善，能够使用
 ##
+
+
+## 打包安装包
+参考链接
+https://www.cnblogs.com/dongh/p/6868638.html
+
+查找依赖dll
+
+    D:\Program Files (x86)\Microsoft Visual Studio 14.0>dumpbin /dependents D:\Code\QtMainWidget\x64\Release\QtMainWidget.exe
+
+卸载的路径
+
+    C：Windows\System32\Msiexec.exe
+*debug*
+
+    opencv_world346d.dll
+    MVSDKmd.dll
+    ImageConvert.dll
+    Qt5Widgetsd.dll
+    Qt5Guid.dll
+    Qt5Cored.dll
+    SHELL32.dll
+    KERNEL32.dll
+    USER32.dll
+    MSVCP140D.dll
+    VCRUNTIME140D.dll
+    ucrtbased.dll
+
+*release*
+
+    opencv_world346.dll
+    MVSDKmd.dll
+    ImageConvert.dll
+    Qt5Widgets.dll
+    Qt5Gui.dll
+    Qt5Core.dll
+    SHELL32.dll
+    KERNEL32.dll
+    USER32.dll
+    MSVCP140.dll
+    VCRUNTIME140.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-filesystem-l1-1-0.dll
+    api-ms-win-crt-time-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+
+额外的需求
+
+    MSVCR120.dll
+    GCBase_MD_VC120_v3_0.dll
+    GenApi_MD_VC120_v3_0.dll
+    CLProtocol_MD_VC120_v3_0.dll
+    CONCRT140.dll
+    MSVCP120.dll
+
+生成的exe安装之后报错0xc000007b，不缺少依赖项
+https://jingyan.baidu.com/article/375c8e1997252e25f2a22936.html
+需要安装VC_redist.x64.exe vccredist.exe C++ 2013/C++2015的库
+
 

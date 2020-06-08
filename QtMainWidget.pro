@@ -28,14 +28,14 @@ SOURCES += \
         Src\main.cpp \
         Src\mainwindow.cpp \
         Src\parameterssetting.cpp \
-		Src\takephoto.cpp \
-    alertwindow.cpp
+        Src\takephoto.cpp \
+        alertwindow.cpp
 
 HEADERS += \
         Src\mainwindow.h \
         Src\parameterssetting.h \
-		Src\takephoto.h \
-    alertwindow.h
+        Src\takephoto.h \
+        Src\alertwindow.h
 
 FORMS += \
         mainwindow.ui \
