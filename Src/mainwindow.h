@@ -268,6 +268,17 @@ private:
 
 	void init_parameters();
 
+	//最小二乘拟合相关函数定义----------------------
+	int polyfit(vector<Point> points);
+	double sum(vector<double> Vnum, int n);
+	double MutilSum(vector<double> Vx, vector<double> Vy, int n);
+	double RelatePow(vector<double> Vx, int n, int ex);
+	double RelateMutiXY(vector<double> Vx, vector<double> Vy, int n, int ex);
+	void EMatrix(vector<double> Vx, vector<double> Vy, int n, int ex, double coefficient[]);
+	void CalEquation(int exp, double coefficient[]);
+	double F(double c[], int l, int m);
+	double Em[6][4];
+	//最小二乘拟合相关函数定义-----------------------
 	VR_HWND		m_hWnd;
 };
 

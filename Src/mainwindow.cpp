@@ -94,10 +94,10 @@ void MainWindow::init_parameters() {
 	//串口嘞
 	//MyCSerialPort mycserialport;
 	////外部设备初始化及监听
-	int state = 0;
-	state = mycserialport.InitPort();
+	//int state = 0;
+	//state = mycserialport.InitPort();
 	//cout << "state 1: " << state << endl;
-	state = mycserialport.OpenListenThread();
+	//state = mycserialport.OpenListenThread();
 }
 
 MainWindow::~MainWindow()
@@ -1756,7 +1756,7 @@ void MainWindow::on_actionGetParemeter_triggered()
 		double intercept1 = ymean - slope1 * xmean; //截距
 		double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
 
-															//写入配置文件
+		//写入配置文件
 		Config().Set("Line Fitting", "k", slope1);
 		Config().Set("Line Fitting", "b", intercept1);
 		Config().Set("Line Fitting", "s", r_square1);
@@ -1775,8 +1775,7 @@ void MainWindow::on_actionGetParemeter_triggered()
 	{
 		QMessageBox::warning(NULL, "参数识别错误", e.what());
 		return;
-	}
-	
+	}	
 }
 
 void MainWindow::on_actiontakephoto_triggered()
@@ -1837,3 +1836,105 @@ void MainWindow::onGetFrame(const CFrame &pFrame)
 
 	return;
 }
+
+//最小二乘拟合相关函数定义----------------------
+//代码参考连接https://www.jianshu.com/p/2e7a5347b56c
+//主函数，这里将数据拟合成二次曲线
+int MainWindow::polyfit(vector<Point> points)
+{
+	double coefficient[5];
+	memset(coefficient, 0, sizeof(double) * Num_of_blocks);
+	vector<double> vx, vy;
+	for (int i = 0; i<points.size(); i++)
+	{
+		vx.push_back(points[i].x);
+		vy.push_back(points[i].y);
+	}
+	EMatrix(vx, vy, Num_of_blocks, 3, coefficient);
+	printf("拟合方程为：y = %lf + %lfx + %lfx^2 \n", coefficient[1], coefficient[2], coefficient[3]);
+	return 0;
+}
+//累加
+double MainWindow::sum(vector<double> Vnum, int n)
+{
+	double dsum = 0;
+	for (int i = 0; i<n; i++)
+	{
+		dsum += Vnum[i];
+	}
+	return dsum;
+}
+//乘积和
+double MainWindow::MutilSum(vector<double> Vx, vector<double> Vy, int n)
+{
+	double dMultiSum = 0;
+	for (int i = 0; i<n; i++)
+	{
+		dMultiSum += Vx[i] * Vy[i];
+	}
+	return dMultiSum;
+}
+//ex次方和
+double MainWindow::RelatePow(vector<double> Vx, int n, int ex)
+{
+	double ReSum = 0;
+	for (int i = 0; i<n; i++)
+	{
+		ReSum += pow(Vx[i], ex);
+	}
+	return ReSum;
+}
+//x的ex次方与y的乘积的累加
+double MainWindow::RelateMutiXY(vector<double> Vx, vector<double> Vy, int n, int ex)
+{
+	double dReMultiSum = 0;
+	for (int i = 0; i<n; i++)
+	{
+		dReMultiSum += pow(Vx[i], ex)*Vy[i];
+	}
+	return dReMultiSum;
+}
+//计算方程组的增广矩阵
+void MainWindow::EMatrix(vector<double> Vx, vector<double> Vy, int n, int ex, double coefficient[])
+{
+	for (int i = 1; i <= ex; i++)
+	{
+		for (int j = 1; j <= ex; j++)
+		{
+			Em[i][j] = RelatePow(Vx, n, i + j - 2);
+		}
+		Em[i][ex + 1] = RelateMutiXY(Vx, Vy, n, i - 1);
+	}
+	Em[1][1] = n;
+	CalEquation(ex, coefficient);
+}
+//求解方程
+void MainWindow::CalEquation(int exp, double coefficient[])
+{
+	for (int k = 1; k<exp; k++) //消元过程
+	{
+		for (int i = k + 1; i<exp + 1; i++)
+		{
+			double p1 = 0;
+
+			if (Em[k][k] != 0)
+				p1 = Em[i][k] / Em[k][k];
+
+			for (int j = k; j<exp + 2; j++)
+				Em[i][j] = Em[i][j] - Em[k][j] * p1;
+		}
+	}
+	coefficient[exp] = Em[exp][exp + 1] / Em[exp][exp];
+	for (int l = exp - 1; l >= 1; l--)   //回代求解
+		coefficient[l] = (Em[l][exp + 1] - F(coefficient, l + 1, exp)) / Em[l][l];
+}
+//供CalEquation函数调用
+double MainWindow::F(double c[], int l, int m)
+{
+	double sum = 0;
+	for (int i = l; i <= m; i++)
+		sum += Em[l - 1][i] * c[i];
+	return sum;
+}
+//原文：https://blog.csdn.net/lsh_2013/article/details/46697625 
+//最小二乘拟合相关函数定义----------------------

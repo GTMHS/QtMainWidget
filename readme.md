@@ -188,15 +188,22 @@
 
 ## 知识补充
 
-// QVariant转QString
+**QVariant转QString**
+
 https://blog.csdn.net/soulwyb/article/details/100010074
-QVariant qv;
-QString qs = qv.toString();
+
+    QVariant qv;
+    QString qs = qv.toString();
  
-// QString 转 QVariant
+**QString 转 QVariant**
  
-QString qs;
-QVariant qv(qs);
+    QString qs;
+    QVariant qv(qs);
+
+**Qt使用多线程的一些心得——2.继承QObject的多线程使用方法**
+
+https://blog.csdn.net/czyt1988/article/details/71194457
+里面提到了弹窗报错`QueuedConnection`的问题
 
 
 ## 目前存在的问题
