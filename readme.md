@@ -204,6 +204,8 @@ https://blog.csdn.net/soulwyb/article/details/100010074
 
 https://blog.csdn.net/czyt1988/article/details/71194457
 里面提到了弹窗报错`QueuedConnection`的问题
+https://www.cnblogs.com/coolcpp/p/qt-thread.html
+https://blog.csdn.net/u012372584/article/details/80509217
 
 
 ## 目前存在的问题

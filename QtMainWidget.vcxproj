@@ -203,6 +203,7 @@
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\mainwindow.cpp" />
     <ClCompile Include="Src\MySerialport.cpp" />
+    <ClCompile Include="Src\MyThread.cpp" />
     <ClCompile Include="Src\parameterssetting.cpp" />
     <ClCompile Include="Src\takephoto.cpp" />
   </ItemGroup>
@@ -238,6 +239,7 @@
   <ItemGroup>
     <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h" />
     <ClInclude Include="release\moc_predefs.h" />
+    <QtMoc Include="Src\MyThread.h" />
     <QtMoc Include="Src\alertwindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Config.h" />
@@ -296,6 +298,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

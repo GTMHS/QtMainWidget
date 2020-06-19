@@ -64,16 +64,6 @@ void MainWindow::init_parameters() {
 	////fileName = "../Config/conf.ini";
 	//fileName = "conf.ini";
 
-	//QSettings settings(fileName, QSettings::IniFormat);
-	//settings.setIniCodec("UTF-8");
-	//settings.setValue("systemCfg/mode", mode);
-	//settings.setValue("server/ip", "10.10.64.115");
-	//Config().Set("user", "name", "test");
-	//QString qstrname = Config().Get("user", "name").toString();
-	//Config().Set("systemCfg", "mode", 1);
-	//Config().Set("server", "ip", "10.10.64.115");
-	//Config().Set("server", "netmask", "255.255.255.0");
-
 	s = Config().Get("Line Fitting", "s").toDouble();
 	b = Config().Get("Line Fitting", "b").toDouble();
 	k = Config().Get("Line Fitting", "k").toDouble();
@@ -91,13 +81,20 @@ void MainWindow::init_parameters() {
 	rect_of_image.width = Config().Get("Image Rect", "width").toInt();
 	rect_of_image.height = Config().Get("Image Rect", "height").toInt();
 
-	//串口嘞
-	//MyCSerialPort mycserialport;
-	////外部设备初始化及监听
-	//int state = 0;
-	//state = mycserialport.InitPort();
-	//cout << "state 1: " << state << endl;
-	//state = mycserialport.OpenListenThread();
+	//subthread = new QThread(this);
+	//m_MyThread = new MyThread();
+	//m_MyThread->moveToThread(subthread);
+	//connect(subthread, SIGNAL(finished()), m_MyThread, SLOT(deleteLater()));//https://blog.csdn.net/naibozhuan3744/article/details/81201502?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.nonecase
+	//connect(subthread, SIGNAL(started()), m_MyThread, SLOT(startThreadSlot()));
+	//connect(this, &MainWindow::StartThread, m_MyThread, &MyThread::MyWork);
+	//connect(m_MyThread, SIGNAL(&MyThread::signal_back), this, SLOT(&MainWindow::on_pushButton_2_clicked));
+	//connect(m_MyThread, SIGNAL(&MyThread::signal_back), this, SLOT(&MainWindow::on_pushButton_2_clicked));
+
+	//qDebug() << "the main thread number:" << QThread::currentThread();
+
+	//connect(this, &MainWindow::destoryed, this, &MainWindow::CloseWidget);   //左上角窗口关闭
+	mycserialport.InitPort();
+	mycserialport.OpenListenThread();
 }
 
 MainWindow::~MainWindow()
@@ -167,10 +164,11 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			Config().Set("Count", "sum_of_wrong", sum_of_wrong);
 			Beep(1000, 1000);
 			cout << "不合格" << endl << endl;
+			//emit StartThread();
 			//弹窗报警,2秒自动关闭
 			//alertWindow = new AlertWindow;
 			//alertWindow->startTimer();
-			//alertWindow->show();
+			//alertWindow->exec();
 			//output file
 			//imwrite(wrong_filename, src_mat);
 			//run_database(current_time, "不合格");
@@ -1455,6 +1453,39 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
 
+	//alertWindow = new AlertWindow;
+	//alertWindow->startTimer();
+	//alertWindow->exec();
+	//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+	//int count = 0;
+	//while (revFlag != true) {
+	//	revFlag = mycserialport.WriteData(uc, 6);
+	//	if (revFlag)
+	//		ui->lcdNumber->display("SUCCEED");
+	//	Sleep(50);
+	//	count++;
+	//	if (count >= 3) {
+	//		cout << "未收到下位机确认信息!" << endl;
+	//		//连续发三次，三次握手,返回动作执行成功
+	//		count = 0;
+	//		break;
+	//	}
+	//}
+	//revFlag = false;
+	//emit StartThread();
+	//多线程启动---------------------------------
+	//if (subthread->isRunning() == true) 
+	//	return;
+	//m_MyThread->setFlag(false);
+	////start the child thread    
+	//subthread->start();
+	////启动了线程，但是并没有进入线程
+	////必须通过信号/槽的方式进入子线程
+	////直接通过m_MyThread->Mywork()是不行的，这样MyWork()中的线程就是主线程
+	//emit StartThread();
+	//---------------------------------
+
+	//-------------------------------------------------------------------------------
 	//clock_t startTime, startTime1, endTime;
 	//startTime = clock();
 	//alertWindow = new AlertWindow;
@@ -1466,12 +1497,10 @@ void MainWindow::on_pushButton_clicked()
 	//string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 	//QString st = QString::fromStdString(s);
 	//ui->label_3->setText(st);
-
 	//不需要摄像头，本地文件测试函数用
 	//testRun();
 
 	//----------------------------上下互斥-------------------------------------------
-
 	//连接摄像头实时监测用
 	//打开相机
 	ICameraPtr cameraSptr;
@@ -1508,6 +1537,8 @@ void MainWindow::on_pushButton_clicked()
 			QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 		}
 	}
+
+	//-------------------------------------------------------------------------------
 }
 //关闭相机
 void MainWindow::on_pushButton_2_clicked()
@@ -1783,60 +1814,6 @@ void MainWindow::on_actiontakephoto_triggered()
      on_actionSavePic_triggered();
 }
 
-//----------------------没有用到的函数---------------------------------------
-bool MainWindow::setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl)
-{
-	//设置触发源为软触发
-	CEnumNode enumNode = sptrAcquisitionCtl->triggerSource();
-	bool bRet = enumNode.setValueBySymbol("Software");
-	if (bRet != true)
-	{
-		printf("set trigger source fail.\n");
-		return false;
-	}
-
-	//设置触发器
-	enumNode = sptrAcquisitionCtl->triggerSelector();
-	bRet = enumNode.setValueBySymbol("FrameStart");
-	if (bRet != true)
-	{
-		printf("set trigger selector fail.\n");
-		return false;
-	}
-
-	//设置触发模式
-	enumNode = sptrAcquisitionCtl->triggerMode();
-	bRet = enumNode.setValueBySymbol("On");
-	if (bRet != true)
-	{
-		printf("set trigger mode fail.\n");
-		return false;
-	}
-	return true;
-}
-
-void MainWindow::onGetFrame(const CFrame &pFrame)
-{
-	// 标准输出换行
-	printf("\r\n");
-
-	//判断帧的有效性
-	bool isValid = pFrame.valid();
-	if (!isValid)
-	{
-		printf("frame is invalid!\n");
-		return;
-	}
-	else
-	{
-		uint64_t blockId = pFrame.getBlockId();
-		printf("blockId = %d.\n", blockId);
-		isGrabbingFlag = false;
-	}
-
-	return;
-}
-
 //最小二乘拟合相关函数定义----------------------
 //代码参考连接https://www.jianshu.com/p/2e7a5347b56c
 //主函数，这里将数据拟合成二次曲线
@@ -1938,3 +1915,58 @@ double MainWindow::F(double c[], int l, int m)
 }
 //原文：https://blog.csdn.net/lsh_2013/article/details/46697625 
 //最小二乘拟合相关函数定义----------------------
+
+
+//----------------------没有用到的函数---------------------------------------
+bool MainWindow::setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl)
+{
+	//设置触发源为软触发
+	CEnumNode enumNode = sptrAcquisitionCtl->triggerSource();
+	bool bRet = enumNode.setValueBySymbol("Software");
+	if (bRet != true)
+	{
+		printf("set trigger source fail.\n");
+		return false;
+	}
+
+	//设置触发器
+	enumNode = sptrAcquisitionCtl->triggerSelector();
+	bRet = enumNode.setValueBySymbol("FrameStart");
+	if (bRet != true)
+	{
+		printf("set trigger selector fail.\n");
+		return false;
+	}
+
+	//设置触发模式
+	enumNode = sptrAcquisitionCtl->triggerMode();
+	bRet = enumNode.setValueBySymbol("On");
+	if (bRet != true)
+	{
+		printf("set trigger mode fail.\n");
+		return false;
+	}
+	return true;
+}
+
+void MainWindow::onGetFrame(const CFrame &pFrame)
+{
+	// 标准输出换行
+	printf("\r\n");
+
+	//判断帧的有效性
+	bool isValid = pFrame.valid();
+	if (!isValid)
+	{
+		printf("frame is invalid!\n");
+		return;
+	}
+	else
+	{
+		uint64_t blockId = pFrame.getBlockId();
+		printf("blockId = %d.\n", blockId);
+		isGrabbingFlag = false;
+	}
+
+	return;
+}

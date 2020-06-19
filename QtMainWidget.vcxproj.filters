@@ -67,6 +67,9 @@
     <ClCompile Include="Src\alertwindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\MyThread.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -101,6 +104,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Src\alertwindow.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Src\MyThread.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -173,9 +179,9 @@
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="x64\Release\labelImg\labelImg.exe.manifest" />
+    <ResourceCompile Include="QtMainWidget.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="QtMainWidget.rc" />
+    <Text Include="config" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,8 @@
 #pragma once
 #include <Windows.h>
+//ด๚ย๋ภดิด
+//https://blog.csdn.net/lh1611/article/details/5561826?utm_source=blogxgwz2
+
 class MyCSerialPort
 {
 public:

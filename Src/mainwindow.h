@@ -7,7 +7,6 @@
 #include <QCryptographicHash>
 #include <qfile.h>
 #include "QProcess"
-//#include <QtXlsx>
 
 #include "GenICam/System.h"
 #include "GenICam/ParameterNode.h"
@@ -15,7 +14,6 @@
 #include "Media/ImageConvert.h"
 #include "MessageQue.h"
 #include <QElapsedTimer>
-
 
 #include <opencv2/core.hpp>
 #include <opencv2\highgui.hpp>
@@ -28,20 +26,15 @@
 #include <sstream>
 #include <fstream>
 
-
 #include <Src\parameterssetting.h>
 #include <Src\takephoto.h>
-#include <Src\MySerialport.h>
 #include <Src\Config.h>
 #include <Src\alertwindow.h>
+#include <Src\MySerialport.h>
 
-//#include "xlsxdocument.h"
-//#include "xlsxchartsheet.h"
-//#include "xlsxcellrange.h"
-//#include "xlsxchart.h"
-//#include "xlsxrichstring.h"
-//#include "xlsxworkbook.h"
-//using namespace QXlsx;
+#include "mythread.h"
+#include <QThread>
+
 
 using namespace cv;
 using namespace dnn;
@@ -153,6 +146,7 @@ public:
 
 signals:
 	void sendData(double, double, double);
+	void StartThread();
 
 private slots:
     void on_pushButton_clicked();
@@ -192,6 +186,9 @@ private:
 	ParametersSetting *para;
 	TakePhoto *takephoto;
 	AlertWindow *alertWindow;
+	MyThread * m_MyThread;
+	QThread * subthread;
+
 	//串口类
 	MyCSerialPort mycserialport;
 
