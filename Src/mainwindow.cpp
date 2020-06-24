@@ -89,12 +89,39 @@ void MainWindow::init_parameters() {
 	//connect(this, &MainWindow::StartThread, m_MyThread, &MyThread::MyWork);
 	//connect(m_MyThread, SIGNAL(&MyThread::signal_back), this, SLOT(&MainWindow::on_pushButton_2_clicked));
 	//connect(m_MyThread, SIGNAL(&MyThread::signal_back), this, SLOT(&MainWindow::on_pushButton_2_clicked));
-
 	//qDebug() << "the main thread number:" << QThread::currentThread();
-
 	//connect(this, &MainWindow::destoryed, this, &MainWindow::CloseWidget);   //左上角窗口关闭
 	mycserialport.InitPort();
 	mycserialport.OpenListenThread();
+
+	//状态栏显示信息https://blog.csdn.net/theRookie1/article/details/84751548
+	//QLabel *locationLabel;
+	//locationLabel = new QLabel("July");
+	//locationLabel->setAlignment(Qt::AlignCenter);
+	//locationLabel->setMinimumSize(locationLabel->sizeHint());
+	//QLabel *aixLabel;
+	//aixLabel = new QLabel("“CTRL + H” for help");
+	//Optional
+	//statusBar()->setStyleSheet(QString("QStatusBar::item{ border: 0px }")); // 设置不显示label的边框
+	//statusBar()->setSizeGripEnabled(false); //设置是否显示右边的大小控制点
+	//statusBar()->addWidget(locationLabel);
+	//statusBar()->addWidget(aixLabel, 1);
+
+	QLabel *per1 = new QLabel();
+	QLabel *per2 = new QLabel("上海九格电气有限公司", this);
+	QPixmap image; //定义一张图
+	image.load("jiuge.jpg");//加载
+	per1->clear();//清空
+	per1->setPixmap(image);//加载到Label标签
+	per1->setScaledContents(true);
+	per1->setFixedSize(25, 25);
+	per1->show();//显示
+	statusBar()->addPermanentWidget(per1); //现实永久信息
+	statusBar()->addPermanentWidget(per2);
+
+	//QLabel *per3 = new QLabel("Ready3", this);
+	//statusBar()->insertPermanentWidget(2, per3);
+	//statusBar()->showMessage("Status is here…", 3000); // 显示临时信息，时间3秒钟.
 }
 
 MainWindow::~MainWindow()
@@ -266,13 +293,13 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	//string imagefile = "D:\\Pic\\";
-	string imagefile = "E:\\pic\\";
+	string imagefile = "D:\\Pic\\";
+	//string imagefile = "E:\\pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <2070; i++) {
+		for (int i = 1; i <5; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic (" << i << ").bmp";
 			string infile = ss.str();			
@@ -317,10 +344,11 @@ void MainWindow::testRun() {
 				cout << "不合格" << endl << endl;
 				ss << imagefile << "wrong-" << i << ".bmp";
 				imwrite(ss.str(), image_for_write);
-				//弹窗报警
-				alertWindow = new AlertWindow;
-				alertWindow->startTimer();
-				alertWindow->show();
+				ui->label_7->setText("图书标记位置和数量正确");
+				////弹窗报警
+				//alertWindow = new AlertWindow;
+				//alertWindow->startTimer();
+				//alertWindow->show();
 
 			}
 			endTime = clock();
@@ -484,174 +512,174 @@ string MainWindow::get_datetime()
 //功能主函数
 bool MainWindow::bookdetection(Mat imagefile) {
 	
-	//Config().Set("Log", "Function BookDetection", "BookDetection执行");
-	////string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
-	//String modelConfiguration = "D:/yolov3.cfg";
-	//String model_label_Weights = "D:/yolov3-voc_9000.weights";
-	////识别黑色标志，返回黑色方格的矩形信息保存在boxes中
-	//vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
-	//Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
-	////排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
-	//sort(boxes.begin(), boxes.end(), sortFun);
-	//vector<Point> points;
-	//int max_point_x = 0, max_point_y = 0;
-	//double average_piexl_value = 0;
-	////for循环获取每个黑块的中点，并存储到points中
-	//for (int i = 0; i < boxes.size(); i++) {
-	//	points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
+	Config().Set("Log", "Function BookDetection", "BookDetection执行");
+	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
+	String modelConfiguration = "D:/yolov3.cfg";
+	String model_label_Weights = "D:/yolov3-voc_9000.weights";
+	//识别黑色标志，返回黑色方格的矩形信息保存在boxes中
+	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
+	Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
+	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
+	sort(boxes.begin(), boxes.end(), sortFun);
+	vector<Point> points;
+	int max_point_x = 0, max_point_y = 0;
+	double average_piexl_value = 0;
+	//for循环获取每个黑块的中点，并存储到points中
+	for (int i = 0; i < boxes.size(); i++) {
+		points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
+	}
+	//if (boxes.size() < block_nums) {
+	//	int this_boxes_size = boxes.size();
+	//	//计算各中点的相对位置
+	//	for (int i = 0; i <= points.size(); i++) {
+	//		//如果当前框的中点与下一个框的中点的相对位置的y相差＜5，则认为此框的位置正确
+	//		if (abs(abs(points[i].y - points[i + 1].y) - relative_locations[i].y) <= 10) {
+	//			cout << "Correct point" << i << endl;
+	//			continue;
+	//		}
+	//		//否则，有误，是否是缺失？
+	//		else
+	//		{
+	//			//;如果是缺失，则补一个框。
+	//			//找到下一个框的左上角位置,x是从大到小，y是从小到大
+	//			int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width;
+	//			int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height;
+	//			Rect r = Rect(x_1, y_1, locations[i + 1].width, locations[i + 1].height);
+	//			average_piexl_value = average_piexl_value / boxes.size() + 10;
+	//			Mat imagefile1 = imagefile(r);
+	//			double value = 0;
+	//			for (int i = 0; i < imagefile1.rows; ++i)
+	//				for (int j = 0; j < imagefile1.cols; ++j)
+	//					value += imagefile1.at<uchar>(i, j);
+	//			value = value / (imagefile1.cols*imagefile1.rows);
+	//			if (value < average_piexl_value)
+	//			{
+	//				this_boxes_size++;
+	//				rectangle(imagefile, r, Scalar(255, 178, 50), 2);
+	//				cout << "缺失框位置像素正确" << endl;
+	//				imwrite(outfile, imagefile);
+	//				cout << "文件写入：" + outfile << endl << endl;
+	//				if (this_boxes_size < points.size()) 
+	//					continue;
+	//				else
+	//					return 1;
+	//			}
+	//			else
+	//				//cout << "缺失框位置像素有误!" << endl;
+	//				continue;
+	//				//return false;				
+	//		}
+	//	}
+	//	return 1;
 	//}
-	////if (boxes.size() < block_nums) {
-	////	int this_boxes_size = boxes.size();
-	////	//计算各中点的相对位置
-	////	for (int i = 0; i <= points.size(); i++) {
-	////		//如果当前框的中点与下一个框的中点的相对位置的y相差＜5，则认为此框的位置正确
-	////		if (abs(abs(points[i].y - points[i + 1].y) - relative_locations[i].y) <= 10) {
-	////			cout << "Correct point" << i << endl;
-	////			continue;
-	////		}
-	////		//否则，有误，是否是缺失？
-	////		else
-	////		{
-	////			//;如果是缺失，则补一个框。
-	////			//找到下一个框的左上角位置,x是从大到小，y是从小到大
-	////			int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width;
-	////			int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height;
-	////			Rect r = Rect(x_1, y_1, locations[i + 1].width, locations[i + 1].height);
-	////			average_piexl_value = average_piexl_value / boxes.size() + 10;
-	////			Mat imagefile1 = imagefile(r);
-	////			double value = 0;
-	////			for (int i = 0; i < imagefile1.rows; ++i)
-	////				for (int j = 0; j < imagefile1.cols; ++j)
-	////					value += imagefile1.at<uchar>(i, j);
-	////			value = value / (imagefile1.cols*imagefile1.rows);
-	////			if (value < average_piexl_value)
-	////			{
-	////				this_boxes_size++;
-	////				rectangle(imagefile, r, Scalar(255, 178, 50), 2);
-	////				cout << "缺失框位置像素正确" << endl;
-	////				imwrite(outfile, imagefile);
-	////				cout << "文件写入：" + outfile << endl << endl;
-	////				if (this_boxes_size < points.size()) 
-	////					continue;
-	////				else
-	////					return 1;
-	////			}
-	////			else
-	////				//cout << "缺失框位置像素有误!" << endl;
-	////				continue;
-	////				//return false;				
-	////		}
-	////	}
-	////	return 1;
-	////}
-	//
-	////cout << "本书黑色标记数量： " << boxes.size() << endl;
-	//int this_block_nums = boxes.size();
-	//int val = 0;
-	////if (this_block_nums > block_nums) {
-	////	for (int i = 0; i < boxes.size(); i++) {
-	////		//if (boxes[i].width > 100) {
-	////		//	boxes.erase(boxes.begin() + i);
-	////		//}
-	////	}
-	////	//if (boxes.size() == block_nums) {
-	////	//	return 1;
-	////	//}
-	////}	
-	////if (boxes.size() < block_nums) {
-	////	//计算各中点的相对位置
-	////	for (int i = 0; i <= points.size(); i++) {
-	////		//如果当前框的中点与下一个框的中点的相对位置的y相差＜5，则认为此框的位置正确
-	////		if (abs(abs(points[i].y - points[i + 1].y) - relative_locations[i].y) <= 10) {
-	////			cout << "Correct point" << i << endl;
-	////			continue;
-	////		}
-	////		//否则，有误，是否是缺失？
-	////		else
-	////		{
-	////			//;如果是缺失，则补一个框。
-	////			////找到下一个框的左上角位置,x是从大到小，y是从小到大
-	////			//int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width;
-	////			//int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height;
-	////			//按照y从小到大的顺序排序
-	////			int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width + 0.5*locations[i].width;
-	////			int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height + 0.5*locations[i].height;
-	////			Rect r = Rect(x_1, y_1, locations[i + 1].width, locations[i + 1].height);
-	////			average_piexl_value = average_piexl_value / boxes.size() + 10;
-	////			Mat imagefile1 = imagefile(r);
-	////			double value = 0;
-	////			//循环遍历补得黑框中的所有像素计算平局灰度值
-	////			for (int i = 0; i < imagefile1.rows; ++i) for (int j = 0; j < imagefile1.cols; ++j) value += imagefile1.at<uchar>(i, j);
-	////			value = value / (imagefile1.cols*imagefile1.rows);
-	////			if (value < average_piexl_value)
-	////			{  
-	////				rectangle(imagefile, r, Scalar(255, 108, 50), 2);
-	////				cout << "缺失框位置像素正确" << endl;
-	////				boxes.push_back(r);
-	////				continue;
-	////			}
-	////			else
-	////			{
-	////				cout << "缺失框位置像素有误!" << endl;
-	////				continue;
-	////			}
-	////		}
-	////	}			
-	////}
-	////ui->textEdit->append("this_block_nums is " + boxes.size());
+	
+	//cout << "本书黑色标记数量： " << boxes.size() << endl;
+	int this_block_nums = boxes.size();
+	int val = 0;
+	//if (this_block_nums > block_nums) {
+	//	for (int i = 0; i < boxes.size(); i++) {
+	//		//if (boxes[i].width > 100) {
+	//		//	boxes.erase(boxes.begin() + i);
+	//		//}
+	//	}
+	//	//if (boxes.size() == block_nums) {
+	//	//	return 1;
+	//	//}
+	//}	
+	//if (boxes.size() < block_nums) {
+	//	//计算各中点的相对位置
+	//	for (int i = 0; i <= points.size(); i++) {
+	//		//如果当前框的中点与下一个框的中点的相对位置的y相差＜5，则认为此框的位置正确
+	//		if (abs(abs(points[i].y - points[i + 1].y) - relative_locations[i].y) <= 10) {
+	//			cout << "Correct point" << i << endl;
+	//			continue;
+	//		}
+	//		//否则，有误，是否是缺失？
+	//		else
+	//		{
+	//			//;如果是缺失，则补一个框。
+	//			////找到下一个框的左上角位置,x是从大到小，y是从小到大
+	//			//int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width;
+	//			//int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height;
+	//			//按照y从小到大的顺序排序
+	//			int x_1 = points[i].x - relative_locations[i].x - 0.5*locations[i + 1].width + 0.5*locations[i].width;
+	//			int y_1 = points[i].y + relative_locations[i].y - 0.5*locations[i + 1].height + 0.5*locations[i].height;
+	//			Rect r = Rect(x_1, y_1, locations[i + 1].width, locations[i + 1].height);
+	//			average_piexl_value = average_piexl_value / boxes.size() + 10;
+	//			Mat imagefile1 = imagefile(r);
+	//			double value = 0;
+	//			//循环遍历补得黑框中的所有像素计算平局灰度值
+	//			for (int i = 0; i < imagefile1.rows; ++i) for (int j = 0; j < imagefile1.cols; ++j) value += imagefile1.at<uchar>(i, j);
+	//			value = value / (imagefile1.cols*imagefile1.rows);
+	//			if (value < average_piexl_value)
+	//			{  
+	//				rectangle(imagefile, r, Scalar(255, 108, 50), 2);
+	//				cout << "缺失框位置像素正确" << endl;
+	//				boxes.push_back(r);
+	//				continue;
+	//			}
+	//			else
+	//			{
+	//				cout << "缺失框位置像素有误!" << endl;
+	//				continue;
+	//			}
+	//		}
+	//	}			
+	//}
+	//ui->textEdit->append("this_block_nums is " + boxes.size());
 
-	////if (Num_of_blocks == this_block_nums) {
-	////	ui->label_3->setText("Correct");
-	////	LinearFitting(points, k, b, s);
-	////	return true;
-	////}
-	////else {
-	////	ui->label_3->setText("Wrong");
-	////	return false;
-	////}
-
-	//string outfile;
-	//switch (this_block_nums)
-	//{
-	//case 11:
-	//	cout << "黑色标志点数量正确" << endl;
-	//	//imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "正常");
-	//	//emit SendUpdateLCDMsg(1);
-	//	return LinearFitting(points,0.403, -359, 0.985);
-	//case 12:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-	//	cout << "黑色标志点数为12" << endl;
-	//	outfile = "E:\\20200511\\12-" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "正常");
-	//	//emit SendUpdateLCDMsg(1);
-	//	return LinearFitting(points, k, b, s);
-	//case 10:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-	//	cout << "黑色标志点数为10" << endl;
-	//	outfile = "E:\\20200511\\少" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "异常");
-	//	//emit SendUpdateLCDMsg(2);
-	//	return LinearFitting(points, k,b,s) && 0;
-	//default:
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
-	//	cout << "黑色标志数量错误：  " << this_block_nums << endl;
-	//	outfile = "E:\\20200511\\有误" + get_datetime() + ".bmp";
-	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	//	imwrite(outfile, imagefile);
-	//	//cout << "文件写入：" + outfile << endl;
-	//	run_database(get_datetime(), "异常");
+	//if (Num_of_blocks == this_block_nums) {
+	//	ui->label_3->setText("Correct");
+	//	LinearFitting(points, k, b, s);
+	//	return true;
+	//}
+	//else {
 	//	ui->label_3->setText("Wrong");
-	//	//emit SendUpdateLCDMsg(2);
-	//	return 0;
+	//	return false;
 	//}
+
+	string outfile;
+	switch (this_block_nums)
+	{
+	case 11:
+		cout << "黑色标志点数量正确" << endl;
+		//imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "正常");
+		//emit SendUpdateLCDMsg(1);
+		return LinearFitting(points,0.403, -359, 0.985);
+	case 12:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+		cout << "黑色标志点数为12" << endl;
+		outfile = "E:\\20200511\\12-" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "正常");
+		//emit SendUpdateLCDMsg(1);
+		return LinearFitting(points, k, b, s);
+	case 10:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+		cout << "黑色标志点数为10" << endl;
+		outfile = "E:\\20200511\\少" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "异常");
+		//emit SendUpdateLCDMsg(2);
+		return LinearFitting(points, k,b,s) && 0;
+	default:
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
+		cout << "黑色标志数量错误：  " << this_block_nums << endl;
+		outfile = "E:\\20200511\\有误" + get_datetime() + ".bmp";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		imwrite(outfile, imagefile);
+		//cout << "文件写入：" + outfile << endl;
+		run_database(get_datetime(), "异常");
+		ui->label_3->setText("Wrong");
+		//emit SendUpdateLCDMsg(2);
+		return 0;
+	}
 
 	return false;
 }

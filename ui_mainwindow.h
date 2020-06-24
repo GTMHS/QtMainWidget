@@ -428,7 +428,7 @@ public:
         label_5->setText(QApplication::translate("MainWindow", "\346\255\243\347\241\256\346\200\273\346\225\260", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "\351\224\231\350\257\257\346\200\273\346\225\260", nullptr));
         menutest->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
-        menutest_2->setTitle(QApplication::translate("MainWindow", "\346\227\245\345\270\270\344\275\277\347\224\250", nullptr));
+        menutest_2->setTitle(QApplication::translate("MainWindow", "\345\270\270\347\224\250\345\212\237\350\203\275", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\260\344\271\246\350\256\255\347\273\203", nullptr));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi

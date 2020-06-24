@@ -172,6 +172,7 @@
     <Image Include="Img\多线程错误.png" />
     <Image Include="Img\多线程错误2.jpg" />
     <Image Include="book_128px.ico" />
+    <Image Include="..\..\Pic\Pic (1).bmp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />

@@ -282,6 +282,7 @@
     <None Include="x64\Release\Config\conf.ini" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Pic\Pic (1).bmp" />
     <Image Include="book.ico" />
     <Image Include="book_128px.ico" />
     <Image Include="Img\1.png" />

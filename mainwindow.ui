@@ -380,7 +380,7 @@
    </widget>
    <widget class="QMenu" name="menutest_2">
     <property name="title">
-     <string>日常使用</string>
+     <string>常用功能</string>
     </property>
     <addaction name="actiontakephoto"/>
     <addaction name="actionCut"/>
