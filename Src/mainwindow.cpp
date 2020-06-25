@@ -199,7 +199,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			//output file
 			//imwrite(wrong_filename, src_mat);
 			//run_database(current_time, "不合格");
-			unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
+			unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
 			int count = 0;
 			while (revFlag != true) {
 				revFlag = mycserialport.WriteData(uc, 6);
@@ -515,7 +515,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	Config().Set("Log", "Function BookDetection", "BookDetection执行");
 	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
-	String model_label_Weights = "D:/yolov3-voc_9000.weights";
+	String model_label_Weights = "D:/yolov3_voc_10000.weights";
 	//识别黑色标志，返回黑色方格的矩形信息保存在boxes中
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
 	Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
@@ -1779,7 +1779,7 @@ void MainWindow::on_actionGetParemeter_triggered()
 		Mat img = imread("Train/image/Pic.bmp");
 		//img = img(rect_of_image);
 		String modelConfiguration = "D:/yolov3.cfg";
-		String model_label_Weights = "D:/yolov3-voc_9000.weights";
+		String model_label_Weights = "D:/yolov3_voc_10000.weights";
 
 		vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
 		//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
