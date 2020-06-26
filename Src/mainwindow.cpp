@@ -185,39 +185,39 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	{
 		startTime = clock();
 		//QMessageBox::information(NULL, "img channels", QString::number(out.channels()));
-		if (!bookdetection(out))//识别判断
-		{
-			ui->lcdNumber_3->display(++sum_of_wrong);
-			Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-			Beep(1000, 1000);
-			cout << "不合格" << endl << endl;
-			//emit StartThread();
-			//弹窗报警,2秒自动关闭
-			//alertWindow = new AlertWindow;
-			//alertWindow->startTimer();
-			//alertWindow->exec();
-			//output file
-			//imwrite(wrong_filename, src_mat);
-			//run_database(current_time, "不合格");
-			unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
-			int count = 0;
-			while (revFlag != true) {
-				revFlag = mycserialport.WriteData(uc, 6);
-				Sleep(50);
-				count++;
-				if (count >= 3) {
-					//cout << "未收到下位机确认信息!" << endl;
-					//连续发三次，三次握手,返回动作执行成功
-					count = 0;
-					break;
-				}
-			}
-			revFlag = false;
-		}
-		else {
-			ui->lcdNumber->display(++sum_of_correct);
-			Config().Set("Count", "sum_of_correct", sum_of_correct);
-		}
+		//if (!bookdetection(out))//识别判断
+		//{
+		//	ui->lcdNumber_3->display(++sum_of_wrong);
+		//	Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+		//	Beep(1000, 1000);
+		//	cout << "不合格" << endl << endl;
+		//	//emit StartThread();
+		//	//弹窗报警,2秒自动关闭
+		//	//alertWindow = new AlertWindow;
+		//	//alertWindow->startTimer();
+		//	//alertWindow->exec();
+		//	//output file
+		//	//imwrite(wrong_filename, src_mat);
+		//	//run_database(current_time, "不合格");
+		//	unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
+		//	int count = 0;
+		//	while (revFlag != true) {
+		//		revFlag = mycserialport.WriteData(uc, 6);
+		//		Sleep(50);
+		//		count++;
+		//		if (count >= 3) {
+		//			//cout << "未收到下位机确认信息!" << endl;
+		//			//连续发三次，三次握手,返回动作执行成功
+		//			count = 0;
+		//			break;
+		//		}
+		//	}
+		//	revFlag = false;
+		//}
+		//else {
+		//	ui->lcdNumber->display(++sum_of_correct);
+		//	Config().Set("Count", "sum_of_correct", sum_of_correct);
+		//}
 		endTime = clock();
 		string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
 		QString st = QString::fromStdString(s);
@@ -299,7 +299,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <5; i++) {
+		for (int i = 1; i <20; i++) {
 			startTime1 = clock();
 			ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
 			string infile = ss.str();			
@@ -344,7 +344,7 @@ void MainWindow::testRun() {
 				cout << "不合格" << endl << endl;
 				ss << imagefile << "wrong-" << i << ".bmp";
 				imwrite(ss.str(), image_for_write);
-				ui->label_7->setText("图书标记位置和数量正确");
+				//ui->label_7->setText("图书标记位置和数量正确");
 				////弹窗报警
 				//alertWindow = new AlertWindow;
 				//alertWindow->startTimer();
@@ -1480,26 +1480,7 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
 
-	//alertWindow = new AlertWindow;
-	//alertWindow->startTimer();
-	//alertWindow->exec();
-	//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x0d,0x0d };
-	//int count = 0;
-	//while (revFlag != true) {
-	//	revFlag = mycserialport.WriteData(uc, 6);
-	//	if (revFlag)
-	//		ui->lcdNumber->display("SUCCEED");
-	//	Sleep(50);
-	//	count++;
-	//	if (count >= 3) {
-	//		cout << "未收到下位机确认信息!" << endl;
-	//		//连续发三次，三次握手,返回动作执行成功
-	//		count = 0;
-	//		break;
-	//	}
-	//}
-	//revFlag = false;
-	//emit StartThread();
+
 	//多线程启动---------------------------------
 	//if (subthread->isRunning() == true) 
 	//	return;
@@ -1513,57 +1494,46 @@ void MainWindow::on_pushButton_clicked()
 	//---------------------------------
 
 	//-------------------------------------------------------------------------------
-	//clock_t startTime, startTime1, endTime;
-	//startTime = clock();
-	//alertWindow = new AlertWindow;
-	//alertWindow->startTimer();
-	//alertWindow->show();
-	//startTime1 = clock();
-	//endTime = clock();
-	////ui->label_3->setText("");
-	//string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
-	//QString st = QString::fromStdString(s);
-	//ui->label_3->setText(st);
 	//不需要摄像头，本地文件测试函数用
-	//testRun();
+	testRun();
 
 	//----------------------------上下互斥-------------------------------------------
 	//连接摄像头实时监测用
 	//打开相机
-	ICameraPtr cameraSptr;
-	//发现设备
-	CSystem &systemObj = CSystem::getInstance();
-	TVector<ICameraPtr> vCameraPtrList;
-	bool bRet = systemObj.discovery(vCameraPtrList);
+	//ICameraPtr cameraSptr;
+	////发现设备
+	//CSystem &systemObj = CSystem::getInstance();
+	//TVector<ICameraPtr> vCameraPtrList;
+	//bool bRet = systemObj.discovery(vCameraPtrList);
 
-	if (!bRet || 0 == vCameraPtrList.size())
-	{
-		QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		ui->pushButton->setEnabled(true);
-		ui->pushButton_2->setEnabled(false);
-		ui->pushButton_3->setEnabled(false);
-		ui->pushButton_4->setEnabled(false);
-		return;
-	}
-	else {
-		try {
-			CameraCheck();
-			bool camera_open = CameraOpen();
-			CameraStart();
-			ui->label_3->setText("相机连接成功！");
-			//SetExposeTime(10000);
-			//SetAdjustPlus(5);
-			CameraChangeTrig(trigLine);
-			//CameraChangeTrig(trigContinous);
-			//ui->label_2->setEnabled(false);
-			//ui->label_2->setVisible(false);
-			ui->pushButton_3->setEnabled(false);
-			ui->pushButton_4->setEnabled(false);
-		}
-		catch (Exception e) {
-			QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		}
-	}
+	//if (!bRet || 0 == vCameraPtrList.size())
+	//{
+	//	QMessageBox::warning(NULL, "warning", "发现设备失败\n", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//	ui->pushButton->setEnabled(true);
+	//	ui->pushButton_2->setEnabled(false);
+	//	ui->pushButton_3->setEnabled(false);
+	//	ui->pushButton_4->setEnabled(false);
+	//	return;
+	//}
+	//else {
+	//	try {
+	//		CameraCheck();
+	//		bool camera_open = CameraOpen();
+	//		CameraStart();
+	//		ui->label_3->setText("相机连接成功！");
+	//		//SetExposeTime(10000);
+	//		//SetAdjustPlus(5);
+	//		CameraChangeTrig(trigLine);
+	//		//CameraChangeTrig(trigContinous);
+	//		//ui->label_2->setEnabled(false);
+	//		//ui->label_2->setVisible(false);
+	//		ui->pushButton_3->setEnabled(false);
+	//		ui->pushButton_4->setEnabled(false);
+	//	}
+	//	catch (Exception e) {
+	//		QMessageBox::warning(NULL, "warning in open camera", e.what(), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	//	}
+	//}
 
 	//-------------------------------------------------------------------------------
 }
@@ -1691,7 +1661,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 			rect_mask.height = img.rows - rect_mask.y;
 		}
 		QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
-		Config().Set("Image Rect", "Book Name", "书名");
+		//Config().Set("Image Rect", "Book Name", "书名");
 		Config().Set("Image Rect", "x", rect_mask.x);
 		Config().Set("Image Rect", "y", rect_mask.y);
 		Config().Set("Image Rect", "width", rect_mask.width);
