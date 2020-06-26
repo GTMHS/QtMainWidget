@@ -293,7 +293,7 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "D:\\Pic\\";
+	string imagefile = "D:\\20200626\\";
 	//string imagefile = "E:\\pic\\";
 	try
 	{
@@ -301,7 +301,7 @@ void MainWindow::testRun() {
 		Mat image_for_write;
 		for (int i = 1; i <5; i++) {
 			startTime1 = clock();
-			ss << imagefile <<"Pic (" << i << ").bmp";
+			ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
 			string infile = ss.str();			
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
@@ -628,60 +628,59 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	//}
 	//ui->textEdit->append("this_block_nums is " + boxes.size());
 
-	//if (Num_of_blocks == this_block_nums) {
-	//	ui->label_3->setText("Correct");
-	//	LinearFitting(points, k, b, s);
-	//	return true;
-	//}
-	//else {
-	//	ui->label_3->setText("Wrong");
-	//	return false;
-	//}
-
-	string outfile;
-	switch (this_block_nums)
-	{
-	case 11:
-		cout << "黑色标志点数量正确" << endl;
-		//imwrite(outfile, imagefile);
-		//cout << "文件写入：" + outfile << endl;
-		run_database(get_datetime(), "正常");
-		//emit SendUpdateLCDMsg(1);
-		return LinearFitting(points,0.403, -359, 0.985);
-	case 12:
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-		cout << "黑色标志点数为12" << endl;
-		outfile = "E:\\20200511\\12-" + get_datetime() + ".bmp";
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		imwrite(outfile, imagefile);
-		//cout << "文件写入：" + outfile << endl;
-		run_database(get_datetime(), "正常");
-		//emit SendUpdateLCDMsg(1);
-		return LinearFitting(points, k, b, s);
-	case 10:
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
-		cout << "黑色标志点数为10" << endl;
-		outfile = "E:\\20200511\\少" + get_datetime() + ".bmp";
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		imwrite(outfile, imagefile);
-		//cout << "文件写入：" + outfile << endl;
-		run_database(get_datetime(), "异常");
-		//emit SendUpdateLCDMsg(2);
-		return LinearFitting(points, k,b,s) && 0;
-	default:
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
-		cout << "黑色标志数量错误：  " << this_block_nums << endl;
-		outfile = "E:\\20200511\\有误" + get_datetime() + ".bmp";
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		imwrite(outfile, imagefile);
-		//cout << "文件写入：" + outfile << endl;
-		run_database(get_datetime(), "异常");
+	if (Num_of_blocks == this_block_nums) {
+		ui->label_3->setText("Correct");
+		LinearFitting(points, k, b, s);
+		return true;
+	}
+	else {
 		ui->label_3->setText("Wrong");
-		//emit SendUpdateLCDMsg(2);
-		return 0;
+		return false;
 	}
 
-	return false;
+	//string outfile;
+	//switch (this_block_nums)
+	//{
+	//case 11:
+	//	cout << "黑色标志点数量正确" << endl;
+	//	//imwrite(outfile, imagefile);
+	//	//cout << "文件写入：" + outfile << endl;
+	//	run_database(get_datetime(), "正常");
+	//	//emit SendUpdateLCDMsg(1);
+	//	return LinearFitting(points,0.403, -359, 0.985);
+	//case 12:
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+	//	cout << "黑色标志点数为12" << endl;
+	//	outfile = "E:\\20200511\\12-" + get_datetime() + ".bmp";
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	//	imwrite(outfile, imagefile);
+	//	//cout << "文件写入：" + outfile << endl;
+	//	run_database(get_datetime(), "正常");
+	//	//emit SendUpdateLCDMsg(1);
+	//	return LinearFitting(points, k, b, s);
+	//case 10:
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_RED);
+	//	cout << "黑色标志点数为10" << endl;
+	//	outfile = "E:\\20200511\\少" + get_datetime() + ".bmp";
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	//	imwrite(outfile, imagefile);
+	//	//cout << "文件写入：" + outfile << endl;
+	//	run_database(get_datetime(), "异常");
+	//	//emit SendUpdateLCDMsg(2);
+	//	return LinearFitting(points, k,b,s) && 0;
+	//default:
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
+	//	cout << "黑色标志数量错误：  " << this_block_nums << endl;
+	//	outfile = "E:\\20200511\\有误" + get_datetime() + ".bmp";
+	//	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	//	imwrite(outfile, imagefile);
+	//	//cout << "文件写入：" + outfile << endl;
+	//	run_database(get_datetime(), "异常");
+	//	ui->label_3->setText("Wrong");
+	//	//emit SendUpdateLCDMsg(2);
+	//	return 0;
+	//}
+	//return false;
 }
 
 vector<Rect> MainWindow::detect_image(Mat frame, string modelWeights, string modelConfiguration) {
