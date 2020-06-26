@@ -1699,7 +1699,8 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 		Config().Set("Image Rect", "height", rect_mask.height);
 
 		img = img(rect_mask);
-		imshow("裁剪后的图书", img);
+		cv::namedWindow("裁剪后的图书", CV_WINDOW_NORMAL);
+		cv::imshow("裁剪后的图书", img);
 		imwrite("Train/image/Pic.bmp", img);
 	}
 	else
