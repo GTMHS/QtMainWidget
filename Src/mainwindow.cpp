@@ -1660,8 +1660,6 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 		if (rect_mask.y + rect_mask.height > img.rows) {
 			rect_mask.height = img.rows - rect_mask.y;
 		}
-		QRectF qrectf = QRectF(rect_mask.x, rect_mask.y, rect_mask.width, rect_mask.height);
-		//Config().Set("Image Rect", "Book Name", "ÊéÃû");
 		Config().Set("Image Rect", "x", rect_mask.x);
 		Config().Set("Image Rect", "y", rect_mask.y);
 		Config().Set("Image Rect", "width", rect_mask.width);
@@ -1718,8 +1716,6 @@ void MainWindow::on_actionCut_2_triggered()
 void MainWindow::on_actionPara_triggered()
 {
 	para = new ParametersSetting;
-	//connect(this, SIGNAL(sendData(double, double, double, int)), para, SLOT(recevieData(double, double, double)));	
-	//emit sendData(k, b, s);
 	connect(para, SIGNAL(sendDataToMainWidget(double, double, double)), this, SLOT(recevieDataFromSubWin(double, double, double, int)));
 	para->show();
 }

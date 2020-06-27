@@ -5,15 +5,6 @@
 Config::Config()
 {	
 	m_qstrFileName = QCoreApplication::applicationDirPath() + "/Config/conf.ini";
-	//if (qstrfilename.isEmpty())
-	//{
-	//	m_qstrFileName = QCoreApplication::applicationDirPath() + "/Src/conf.ini";
-	//}
-	//else
-	//{
-	//	m_qstrFileName = qstrfilename;
-	//}
-
 	m_psetting = new QSettings(m_qstrFileName, QSettings::IniFormat);
 	qDebug() << m_qstrFileName;
 }
