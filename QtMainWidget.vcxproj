@@ -297,6 +297,7 @@
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
     <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
+    <Library Include="Depends\x64\vs2013shared\python37.lib" />
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
   </ItemGroup>
   <ItemGroup>
