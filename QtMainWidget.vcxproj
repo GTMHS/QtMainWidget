@@ -74,11 +74,11 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;D:\Program Files\MiniAnaconda\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Program Files\opencv3.4.6\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Program Files\opencv3.4.6\opencv\build\include;D:\Program Files\opencv3.4.6\opencv\build\include\opencv;D:\Program Files\opencv3.4.6\opencv\build\include\opencv2;./Include;D:\Program Files\MiniAnaconda\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Program Files\opencv3.4.6\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
@@ -103,7 +103,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opencv_world346.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world346.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;Depends\x64\vs2013shared\python37.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\QT\QT5.12.0\5.12.0\MSVC2015_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -158,7 +158,7 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opencv_world346d.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world346d.lib;Depends\x64\vs2013shared\MVSDKmd.lib;Depends\x64\vs2013shared\VideoRender.lib;Depends\x64\vs2013shared\ImageConvert.lib;Depends\x64\vs2013shared\python37.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\QT\QT5.12.0\5.12.0\MSVC2015_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -282,7 +282,8 @@
     <None Include="x64\Release\Config\conf.ini" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Pic\Pic (1).bmp" />
+    <Image Include="..\Pic\Pic (1)-cut.png" />
+    <Image Include="..\Pic\Pic (1).bmp" />
     <Image Include="book.ico" />
     <Image Include="book_128px.ico" />
     <Image Include="Img\1.png" />
@@ -291,6 +292,7 @@
     <Image Include="Img\多线程错误.png" />
     <Image Include="Img\多线程错误2.jpg" />
     <Image Include="Img\日常使用.jpg" />
+    <Image Include="jiuge-new.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
