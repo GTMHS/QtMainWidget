@@ -141,18 +141,16 @@ void MainWindow::init_parameters() {
 	//statusBar()->addPermanentWidget(per1); //现实永久信息
 	//statusBar()->addPermanentWidget(per2);
 
-	image.load("Pic (1).bmp");
-	ui->label->setPixmap(image);
-
-	image.load("Pic (1)-cut.png");
-	ui->label_2->setPixmap(image);
-
-	ui->label_3->setText("20200705 09:36:47 古汉语常用字字典");
-	ui->label_7->setText("标志点和顺序正确，参数正确，装订正确！");
-
-	ui->lcdNumber->display(2598);
-	ui->lcdNumber_2->display(2602);
-	ui->lcdNumber_3->display(4);
+	//作假宣传用
+	//image.load("Pic (1).bmp");
+	//ui->label->setPixmap(image);
+	//image.load("Pic (1)-cut.png");
+	//ui->label_2->setPixmap(image);
+	//ui->label_3->setText("20200705 09:36:47 古汉语常用字字典");
+	//ui->label_7->setText("标志点和顺序正确，参数正确，装订正确！");
+	//ui->lcdNumber->display(2598);
+	//ui->lcdNumber_2->display(2602);
+	//ui->lcdNumber_3->display(4);
 
 	//QLabel *per3 = new QLabel("Ready3", this);
 	//statusBar()->insertPermanentWidget(2, per3);
