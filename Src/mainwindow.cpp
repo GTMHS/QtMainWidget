@@ -59,11 +59,6 @@ MainWindow::MainWindow(QWidget *parent) :
 //参数初始化
 void MainWindow::init_parameters() {
 
-	//QString fileName;
-	////fileName = QCoreApplication::applicationDirPath();
-	////fileName = "../Config/conf.ini";
-	//fileName = "conf.ini";
-
 	s = Config().Get("Line Fitting", "s").toDouble();
 	b = Config().Get("Line Fitting", "b").toDouble();
 	k = Config().Get("Line Fitting", "k").toDouble();
@@ -73,9 +68,6 @@ void MainWindow::init_parameters() {
 	sum_of_correct = Config().Get("Count", "sum_of_correct").toInt();
 	sum_of_wrong = Config().Get("Count", "sum_of_wrong").toInt();
 
-	//Mat mask = read_mask();
-	//Rect reck_mask = mask_boundingRect(mask);
-	//rect_of_image = reck_mask;
 	rect_of_image.x = Config().Get("Image Rect", "x").toInt();
 	rect_of_image.y = Config().Get("Image Rect", "y").toInt();
 	rect_of_image.width = Config().Get("Image Rect", "width").toInt();
@@ -159,6 +151,7 @@ void MainWindow::init_parameters() {
 
 MainWindow::~MainWindow()
 {
+
 	CameraClose();
     delete ui;
 }
@@ -182,18 +175,6 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		image = QImage(pRgbFrameBuf, nWidth, nHeight, QImage::Format_RGB888);
 	}
 
-
-	if (strTriggerSource == "Software")
-	{
-		ui->label_7->setText("Software");
-	}
-	
-	//显示整幅图片
-	//QImage imageScale = image.scaled(QSize(ui->label->width(), ui->label->height()));
-	//QPixmap pixmap = QPixmap::fromImage(imageScale);
-	//ui->label->setPixmap(pixmap);
-	//free(pRgbFrameBuf);
-
 	QPixmap pixmap = QPixmap::fromImage(image);
 	int w = ui->label->width();
 	int h = ui->label->height();
@@ -213,11 +194,15 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	CEnumNode nodeEnum(m_pCamera, "TriggerSource");
 	CString strTriggerSource;
 	nodeEnum.getValueSymbol(strTriggerSource);
+	if (strTriggerSource == "Software")
+	{
+		ui->label_7->setText("Software");
+	}
 	//CEnumNode nodeEnum2(m_pCamera, "TriggerMode");
 	//CString strTriggerMode;
 	//nodeEnum2.getValueSymbol(strTriggerMode);
 	if (strTriggerSource == "Line1") {
-		ui->label_7->setText("Line1");
+		//ui->label_7->setText("Line1");
 		//label2显示裁剪之后的照片
 		Mat img = QImage2cvMat(image);
 		Pic_to_Save = img;
@@ -237,6 +222,14 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		try
 		{
 			startTime = clock();
+#ifdef OPENCV
+			std::vector<bbox_t> result_vec = detector.detect(out);
+			for (auto &i : result_vec) {
+				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
+			}
+
+#endif // OPENCV
+
 			if (!bookdetection(out))//识别判断
 			{
 				ui->lcdNumber_3->display(++sum_of_wrong);
@@ -569,7 +562,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	Config().Set("Log", "Function BookDetection", "BookDetection执行");
 	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
-	String model_label_Weights = "D:/yolov3_10000.weights";
+	String model_label_Weights = "D:/yolov3_final.weights";
 	//识别黑色标志，返回黑色方格的矩形信息保存在boxes中
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
 	Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
@@ -1579,6 +1572,10 @@ void MainWindow::on_pushButton_clicked()
 			//SetAdjustPlus(5);
 			//CameraChangeTrig(trigLine);
 			CameraChangeTrig(trigContinous);
+			CEnumNode nodeEnum(m_pCamera, "TriggerSource");
+			//CString strTriggerSource;
+			//nodeEnum.getValueSymbol(strTriggerSource);
+			nodeEnum.setValueBySymbol("Software");
 			//ui->label_2->setEnabled(false);
 			//ui->label_2->setVisible(false);
 			ui->pushButton_3->setEnabled(true);
@@ -1625,6 +1622,10 @@ void MainWindow::on_pushButton_4_clicked()
 	ui->pushButton_4->setEnabled(false);
 	//恢复相机为持续拉流
 	CameraChangeTrig(trigContinous);
+	CEnumNode nodeEnum(m_pCamera, "TriggerSource");
+	//CString strTriggerSource;
+	//nodeEnum.getValueSymbol(strTriggerSource);
+	nodeEnum.setValueBySymbol("Software");
 }
 //保存新照片
 void MainWindow::on_actionSavePic_triggered()
@@ -1799,7 +1800,7 @@ void MainWindow::on_actionGetParemeter_triggered()
 		Mat img = imread("Train/image/Pic.bmp");
 		//img = img(rect_of_image);
 		String modelConfiguration = "D:/yolov3.cfg";
-		String model_label_Weights = "D:/yolov3_10000.weights";
+		String model_label_Weights = "D:/yolov3_final.weights";
 
 		vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
 		//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排

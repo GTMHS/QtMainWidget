@@ -239,6 +239,7 @@
   <ItemGroup>
     <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h" />
     <ClInclude Include="release\moc_predefs.h" />
+    <ClInclude Include="Src\yolo_v2_class.hpp" />
     <QtMoc Include="Src\MyThread.h" />
     <QtMoc Include="Src\alertwindow.h" />
     <ClInclude Include="resource.h" />
@@ -280,6 +281,7 @@
     <None Include="release\VideoRender.dll" />
     <None Include="sum.exe" />
     <None Include="x64\Release\Config\conf.ini" />
+    <None Include="x64\Release\yolo_cpp_dll.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Pic\Pic (1)-cut.png" />

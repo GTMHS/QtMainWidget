@@ -35,6 +35,8 @@
 #include "mythread.h"
 #include <QThread>
 
+#include "Src\yolo_v2_class.hpp"
+
 
 using namespace cv;
 using namespace dnn;
@@ -188,7 +190,7 @@ private:
 	AlertWindow *alertWindow;
 	MyThread * m_MyThread;
 	QThread * subthread;
-
+	Detector detector = Detector("yolo-voc.cfg", "yolo-voc.weights");
 	//串口类
 	MyCSerialPort mycserialport;
 

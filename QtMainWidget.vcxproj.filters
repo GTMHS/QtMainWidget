@@ -129,6 +129,9 @@
     <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\yolo_v2_class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
@@ -162,6 +165,7 @@
     <None Include="debug\VideoRender.dll" />
     <None Include="debug\ImageConvert.dll" />
     <None Include="x64\Release\Config\conf.ini" />
+    <None Include="x64\Release\yolo_cpp_dll.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />
