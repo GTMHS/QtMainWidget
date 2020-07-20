@@ -222,17 +222,24 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		try
 		{
 			startTime = clock();
-//#ifdef OPENCV
-//			std::vector<bbox_t> result_vec = detector.detect(out);
-//			for (auto &i : result_vec) {
-//				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
-//			}
-//
-//#endif // OPENCV
-
-			if (!bookdetection(out))//识别判断
+			vector<Point> points;
+#ifdef OPENCV
+			std::vector<bbox_t> result_vec = detector.detect(out);
+			for (auto &i : result_vec) {
+				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
+				points.push_back(Point(i.x + i.w*0.5, i.y + i.h*0.5));
+			}
+			ui->lcdNumber_3->display(++sum_of_wrong);
+			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+			if (result_vec.size() == Num_of_blocks && LinearFitting(points, k, b, s))
 			{
-				ui->lcdNumber_3->display(++sum_of_wrong);
+				ui->label_3->setText("Correct");
+				ui->lcdNumber->display(++sum_of_correct);
+				Config().Set("Count", "sum_of_correct", sum_of_correct);
+				return true;
+			}
+			else {
+				ui->label_3->setText("Wrong");
 				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
 				//Beep(1000, 1000);
 				//cout << "不合格" << endl << endl;
@@ -258,11 +265,44 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 				//	}
 				//}
 				//revFlag = false;
+				return false;
 			}
-			else {
-				ui->lcdNumber->display(++sum_of_correct);
-				Config().Set("Count", "sum_of_correct", sum_of_correct);
-			}
+#endif // OPENCV
+			
+			
+			//if (!bookdetection(out))//识别判断
+			//{
+			//	ui->lcdNumber_3->display(++sum_of_wrong);
+			//	Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+			//	//Beep(1000, 1000);
+			//	//cout << "不合格" << endl << endl;
+			//	//emit StartThread();
+			//	//弹窗报警,2秒自动关闭
+			//	//alertWindow = new AlertWindow;
+			//	//alertWindow->startTimer();
+			//	//alertWindow->exec();
+			//	//output file
+			//	//imwrite(wrong_filename, src_mat);
+			//	//run_database(current_time, "不合格");
+			//	//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
+			//	//int count = 0;
+			//	//while (revFlag != true) {
+			//	//	revFlag = mycserialport.WriteData(uc, 6);
+			//	//	Sleep(50);
+			//	//	count++;
+			//	//	if (count >= 3) {
+			//	//		//cout << "未收到下位机确认信息!" << endl;
+			//	//		//连续发三次，三次握手,返回动作执行成功
+			//	//		count = 0;
+			//	//		break;
+			//	//	}
+			//	//}
+			//	//revFlag = false;
+			//}
+			//else {
+			//	ui->lcdNumber->display(++sum_of_correct);
+			//	Config().Set("Count", "sum_of_correct", sum_of_correct);
+			//}
 			endTime = clock();
 			string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
@@ -559,7 +599,7 @@ string MainWindow::get_datetime()
 //功能主函数
 bool MainWindow::bookdetection(Mat imagefile) {
 	
-	Config().Set("Log", "Function BookDetection", "BookDetection执行");
+	//Config().Set("Log", "Function BookDetection", "BookDetection执行");
 	//string outfile = "E:\\pic\\label\\" + get_datetime() + ".bmp";
 	String modelConfiguration = "D:/yolov3.cfg";
 	String model_label_Weights = "D:/yolov3_final.weights";
