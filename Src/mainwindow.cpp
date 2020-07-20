@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#define OPENCV
 #define DEFAULT_SHOW_RATE (30)
 #define TIMESTAMPFREQUENCY 125000000	//大华相机的时间戳频率固定为125,000,000Hz
 bool revFlag = false;
@@ -180,17 +181,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	int h = ui->label->height();
 	ui->label->setPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio));
 	//free(pRgbFrameBuf);
-	ui->lcdNumber_2->display(++total_number);
-	Config().Set("Count", "Count", total_number);
 	
-	//计数功能 每增加一百个就写入一次
-	if (0 == total_number % 100) {
-		//参考连接https://www.cnblogs.com/findumars/p/7252854.html
-		ofstream outFile;
-		outFile.open("count.csv", ios::app); // 打开模式可省略，此处用的是添加模式
-		outFile << get_datetime() << ',' << "总数" << ',' << total_number << ',' << "正确总数" << ',' << sum_of_correct << ',' << "错误总数" << ',' << sum_of_wrong << endl;
-		outFile.close();
-	}
 	CEnumNode nodeEnum(m_pCamera, "TriggerSource");
 	CString strTriggerSource;
 	nodeEnum.getValueSymbol(strTriggerSource);
@@ -202,8 +193,18 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	//CString strTriggerMode;
 	//nodeEnum2.getValueSymbol(strTriggerMode);
 	if (strTriggerSource == "Line1") {
-		//ui->label_7->setText("Line1");
-		//label2显示裁剪之后的照片
+
+		ui->lcdNumber_2->display(++total_number);
+		Config().Set("Count", "Count", total_number);
+		//计数功能 每增加一百个就写入一次
+		if (0 == total_number % 100) {
+			//参考连接https://www.cnblogs.com/findumars/p/7252854.html
+			ofstream outFile;
+			outFile.open("count.csv", ios::app); // 打开模式可省略，此处用的是添加模式
+			outFile << get_datetime() << ',' << "总数" << ',' << total_number << ',' << "正确总数" << ',' << sum_of_correct << ',' << "错误总数" << ',' << sum_of_wrong << endl;
+			outFile.close();
+		}
+
 		Mat img = QImage2cvMat(image);
 		Pic_to_Save = img;
 		if (true == Mode_of_trig_soft) {
@@ -241,33 +242,34 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			else {
 				ui->label_3->setText("Wrong");
 				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-				//Beep(1000, 1000);
-				//cout << "不合格" << endl << endl;
-				//emit StartThread();
-				//弹窗报警,2秒自动关闭
-				//alertWindow = new AlertWindow;
-				//alertWindow->startTimer();
-				//alertWindow->exec();
-				//output file
-				//imwrite(wrong_filename, src_mat);
-				//run_database(current_time, "不合格");
-				//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
-				//int count = 0;
-				//while (revFlag != true) {
-				//	revFlag = mycserialport.WriteData(uc, 6);
-				//	Sleep(50);
-				//	count++;
-				//	if (count >= 3) {
-				//		//cout << "未收到下位机确认信息!" << endl;
-				//		//连续发三次，三次握手,返回动作执行成功
-				//		count = 0;
-				//		break;
-				//	}
-				//}
-				//revFlag = false;
+				
 				return false;
 			}
 #endif // OPENCV
+			//Beep(1000, 1000);
+			//cout << "不合格" << endl << endl;
+			//emit StartThread();
+			//弹窗报警,2秒自动关闭
+			//alertWindow = new AlertWindow;
+			//alertWindow->startTimer();
+			//alertWindow->exec();
+			//output file
+			//imwrite(wrong_filename, src_mat);
+			//run_database(current_time, "不合格");
+			//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
+			//int count = 0;
+			//while (revFlag != true) {
+			//	revFlag = mycserialport.WriteData(uc, 6);
+			//	Sleep(50);
+			//	count++;
+			//	if (count >= 3) {
+			//		//cout << "未收到下位机确认信息!" << endl;
+			//		//连续发三次，三次握手,返回动作执行成功
+			//		count = 0;
+			//		break;
+			//	}
+			//}
+			//revFlag = false;
 			
 			
 			//if (!bookdetection(out))//识别判断
