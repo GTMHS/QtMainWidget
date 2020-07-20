@@ -222,13 +222,13 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		try
 		{
 			startTime = clock();
-#ifdef OPENCV
-			std::vector<bbox_t> result_vec = detector.detect(out);
-			for (auto &i : result_vec) {
-				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
-			}
-
-#endif // OPENCV
+//#ifdef OPENCV
+//			std::vector<bbox_t> result_vec = detector.detect(out);
+//			for (auto &i : result_vec) {
+//				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
+//			}
+//
+//#endif // OPENCV
 
 			if (!bookdetection(out))//Ê¶±ðÅÐ¶Ï
 			{
