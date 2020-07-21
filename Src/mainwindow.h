@@ -194,7 +194,7 @@ private:
 	//串口类
 	MyCSerialPort mycserialport;
 
-	Detector detector = Detector("yolo-voc.cfg", "yolo-voc.weights");
+	//Detector detector = Detector("yolo-voc.cfg", "yolo-voc.weights");
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	
 	Dahua::GenICam::IStreamSourcePtr m_pStreamSource;					// 流对象
