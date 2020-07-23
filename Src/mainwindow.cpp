@@ -381,7 +381,7 @@ bool sortFun(Rect p1, Rect p2);
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
-	stringstream ss;
+	stringstream ss; 
 	string imagefile = "D:\\20200716\\";
 	//string imagefile = "E:\\pic\\";
 	try
