@@ -381,17 +381,18 @@ bool sortFun(Rect p1, Rect p2);
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
-	stringstream ss; 
-	string imagefile = "D:\\20200716\\";
+	stringstream ss;
+	string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
 	//string imagefile = "E:\\pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <200; i++) {
+		for (int i = 4268; i <5318; i++) {
+			ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
-			ss << imagefile << "Pic" << i << ".bmp";
+			ss << imagefile << "Pic_blockId#" << i <<".bmp";
 
 			string infile = ss.str();			
 			QString infile2 = QString::fromStdString(infile);
@@ -428,13 +429,17 @@ void MainWindow::testRun() {
 			Config().Set("Log", "Function Show Image", "显示图片2成功");
 			waitKey(100);
 			ss.str("");
-			ui->lcdNumber_2->display(i);
+			ui->lcdNumber_2->display(++total_number);
+			Config().Set("Count", "Count", total_number);
 			if (!bookdetection(image_for_write))//识别判断
 			{
+				ui->label_7->setText("装订有误！");
 				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
 				ss << imagefile << "wrong-" << i << ".bmp";
 				imwrite(ss.str(), image_for_write);
+				ui->lcdNumber_3->display(++sum_of_wrong);
+				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
 				//ui->label_7->setText("图书标记位置和数量正确");
 				////弹窗报警
 				//alertWindow = new AlertWindow;
@@ -444,8 +449,9 @@ void MainWindow::testRun() {
 			}
 			else
 			{
-				ui->label_7->setText("治国理政 装订正确！");
-				ui->lcdNumber->display(i);
+				ui->label_7->setText("装订正确！");
+				ui->lcdNumber->display(++sum_of_correct);
+				Config().Set("Count", "sum_of_correct", sum_of_correct);
 			}
 			endTime = clock();
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
