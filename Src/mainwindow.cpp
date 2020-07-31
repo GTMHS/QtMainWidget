@@ -388,7 +388,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 4268; i <5318; i++) {
+		for (int i = 8; i <656; i++) {
 			ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
@@ -434,17 +434,12 @@ void MainWindow::testRun() {
 			if (!bookdetection(image_for_write))//识别判断
 			{
 				ui->label_7->setText("装订有误！");
-				Beep(1000, 1000);
 				cout << "不合格" << endl << endl;
 				ss << imagefile << "wrong-" << i << ".bmp";
 				imwrite(ss.str(), image_for_write);
 				ui->lcdNumber_3->display(++sum_of_wrong);
 				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-				//ui->label_7->setText("图书标记位置和数量正确");
-				////弹窗报警
-				//alertWindow = new AlertWindow;
-				//alertWindow->startTimer();
-				//alertWindow->show();
+
 
 			}
 			else
