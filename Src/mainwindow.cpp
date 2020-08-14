@@ -402,8 +402,8 @@ void MainWindow::testRun() {
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
 			ss << imagefile << "Pic (" << i <<").bmp";
-			string infile = ss.str();
-						
+			
+			string infile = ss.str();						
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
 			QImage* img = new QImage;
