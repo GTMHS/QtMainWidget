@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define OPENCV
+
 #define DEFAULT_SHOW_RATE (30)
 #define TIMESTAMPFREQUENCY 125000000	//大华相机的时间戳频率固定为125,000,000Hz
 bool revFlag = false;
@@ -38,10 +38,10 @@ MainWindow::MainWindow(QWidget *parent) :
 		//MessageBoxA(NULL, "Create Display Thread Failed.", "", 0);
 		//return FALSE;
 	}
-	ui->pushButton->setEnabled(true);
-	ui->pushButton_2->setEnabled(false);
-	ui->pushButton_3->setEnabled(false);
-	ui->pushButton_4->setEnabled(false);
+	//ui->pushButton->setEnabled(true);
+	//ui->pushButton_2->setEnabled(false);
+	//ui->pushButton_3->setEnabled(false);
+	//ui->pushButton_4->setEnabled(false);
 
 	ui->splitter->setStretchFactor(0, 4);
 	ui->splitter->setStretchFactor(1, 1);	
@@ -87,6 +87,7 @@ void MainWindow::init_parameters() {
 	mycserialport.InitPort();
 	mycserialport.OpenListenThread();
 
+	detector =new Detector("D://yolov3.cfg", "D://yolov3_final.weights");
 	//状态栏显示信息https://blog.csdn.net/theRookie1/article/details/84751548
 	//QLabel *locationLabel;
 	//locationLabel = new QLabel("July");
@@ -270,41 +271,47 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			//	}
 			//}
 			//revFlag = false;
+			image_t img_t;
+			img_t.w = nWidth;
+			img_t.h = nHeight;
+			img_t.data = (float *)pRgbFrameBuf;
+
+			vector<bbox_t> result_vec = detector->detect(img_t);
+			ui->label_3->setText(QString::number(result_vec.size()));
 			
-			
-			if (!bookdetection(out))//识别判断
-			{
-				ui->lcdNumber_3->display(++sum_of_wrong);
-				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-				//Beep(1000, 1000);
-				//cout << "不合格" << endl << endl;
-				//emit StartThread();
-				//弹窗报警,2秒自动关闭
-				//alertWindow = new AlertWindow;
-				//alertWindow->startTimer();
-				//alertWindow->exec();
-				//output file
-				//imwrite(wrong_filename, src_mat);
-				//run_database(current_time, "不合格");
-				//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
-				//int count = 0;
-				//while (revFlag != true) {
-				//	revFlag = mycserialport.WriteData(uc, 6);
-				//	Sleep(50);
-				//	count++;
-				//	if (count >= 3) {
-				//		//cout << "未收到下位机确认信息!" << endl;
-				//		//连续发三次，三次握手,返回动作执行成功
-				//		count = 0;
-				//		break;
-				//	}
-				//}
-				//revFlag = false;
-			}
-			else {
-				ui->lcdNumber->display(++sum_of_correct);
-				Config().Set("Count", "sum_of_correct", sum_of_correct);
-			}
+			//if (!bookdetection(out))//识别判断
+			//{
+			//	ui->lcdNumber_3->display(++sum_of_wrong);
+			//	Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+			//	//Beep(1000, 1000);
+			//	//cout << "不合格" << endl << endl;
+			//	//emit StartThread();
+			//	//弹窗报警,2秒自动关闭
+			//	//alertWindow = new AlertWindow;
+			//	//alertWindow->startTimer();
+			//	//alertWindow->exec();
+			//	//output file
+			//	//imwrite(wrong_filename, src_mat);
+			//	//run_database(current_time, "不合格");
+			//	//unsigned char uc[] = { 0x7e,0x01,0x55,0x55,0x55,0x55 };
+			//	//int count = 0;
+			//	//while (revFlag != true) {
+			//	//	revFlag = mycserialport.WriteData(uc, 6);
+			//	//	Sleep(50);
+			//	//	count++;
+			//	//	if (count >= 3) {
+			//	//		//cout << "未收到下位机确认信息!" << endl;
+			//	//		//连续发三次，三次握手,返回动作执行成功
+			//	//		count = 0;
+			//	//		break;
+			//	//	}
+			//	//}
+			//	//revFlag = false;
+			//}
+			//else {
+			//	ui->lcdNumber->display(++sum_of_correct);
+			//	Config().Set("Count", "sum_of_correct", sum_of_correct);
+			//}
 			endTime = clock();
 			string s = get_datetime() + "运行时间: " + to_string((double)(endTime - startTime) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
@@ -377,87 +384,95 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 }
 
 bool sortFun(Rect p1, Rect p2);
+//#define OPENCV
+
 //用于测试本地图片文件
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
-	//string imagefile = "E:\\pic\\";
+	//string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
+	string imagefile = "D:\\Pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 4268; i <5318; i++) {
-			ui->label_7->setText("");
+		for (int i = 1; i <10; i++) {
+			//ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
-			ss << imagefile << "Pic_blockId#" << i <<".bmp";
-
-			string infile = ss.str();			
+			ss << imagefile << "Pic (" << i <<").bmp";
+			string infile = ss.str();
+						
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
-			Config().Set("Log", "FileName", infile2);
-			//QString filename(infile2);
 			QImage* img = new QImage;
 			if (!(img->load(infile2))) //加载图像
 			{
-				Config().Set("Log", "Function Load Image", "加载图片失败");
-				QMessageBox::information(this,tr("OPEN FAILED"),tr("OPEN FAILED!"));
+				QMessageBox::information(this,tr("加载图像 FAILED"),tr("加载图像 FAILED!"));
 				delete img;
 				return;
 			}
 			ui->label->setPixmap(QPixmap::fromImage(*img));
 			delete img;
-			Config().Set("Log", "Function Load Image", "加载图片成功");
-			cout << infile << endl;
-			image_for_write = imread(infile);			
-			image_for_write = image_for_write(rect_of_image);
-			Config().Set("Log", "Function Cut Image", "加载图片成功");
-			QImage Img;
-			Mat Rgb;
-			if (image_for_write.channels() == 3)//RGB Img
-			{
-				cv::cvtColor(image_for_write, Rgb, CV_BGR2RGB);//颜色空间转换
-				Img = QImage((const uchar*)(Rgb.data), Rgb.cols, Rgb.rows, Rgb.cols * Rgb.channels(), QImage::Format_RGB888);
-			}
-			else//Gray Img
-			{
-				Img = QImage((const uchar*)(image_for_write.data), image_for_write.cols, image_for_write.rows, image_for_write.cols*image_for_write.channels(), QImage::Format_Indexed8);
-			}
-			ui->label_2->setPixmap(QPixmap::fromImage(Img));
-			Config().Set("Log", "Function Show Image", "显示图片2成功");
-			waitKey(100);
-			ss.str("");
+			
+			//image_for_write = imread(infile);			
+			//image_for_write = image_for_write(rect_of_image);
+			//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(image_for_write)));
+			//QImage Img;
+			//Mat Rgb;
+			//if (image_for_write.channels() == 3)//RGB Img
+			//{
+			//	cv::cvtColor(image_for_write, Rgb, CV_BGR2RGB);//颜色空间转换
+			//	Img = QImage((const uchar*)(Rgb.data), Rgb.cols, Rgb.rows, Rgb.cols * Rgb.channels(), QImage::Format_RGB888);
+			//}
+			//else//Gray Img
+			//{
+			//	Img = QImage((const uchar*)(image_for_write.data), image_for_write.cols, image_for_write.rows, image_for_write.cols*image_for_write.channels(), QImage::Format_Indexed8);
+			//}
+			//ui->label_2->setPixmap(QPixmap::fromImage(Img));
+			
 			ui->lcdNumber_2->display(++total_number);
-			Config().Set("Count", "Count", total_number);
-			if (!bookdetection(image_for_write))//识别判断
-			{
-				ui->label_7->setText("装订有误！");
-				Beep(1000, 1000);
-				cout << "不合格" << endl << endl;
-				ss << imagefile << "wrong-" << i << ".bmp";
-				imwrite(ss.str(), image_for_write);
-				ui->lcdNumber_3->display(++sum_of_wrong);
-				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-				//ui->label_7->setText("图书标记位置和数量正确");
-				////弹窗报警
-				//alertWindow = new AlertWindow;
-				//alertWindow->startTimer();
-				//alertWindow->show();
 
-			}
-			else
-			{
-				ui->label_7->setText("装订正确！");
-				ui->lcdNumber->display(++sum_of_correct);
-				Config().Set("Count", "sum_of_correct", sum_of_correct);
-			}
+			//---------------------这句话会报错！！！！异常闪退------------------------
+			//Config().Set("Count", "Count", total_number);
+			//con->Set("Count", "Count", total_number);
+
+			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			//if (!bookdetection(image_for_write))//识别判断
+			//{
+			//	ui->label_7->setText("装订有误！");
+			//	Beep(1000, 1000);
+			//	cout << "不合格" << endl << endl;
+			//	ss << imagefile << "wrong-" << i << ".bmp";
+			//	imwrite(ss.str(), image_for_write);
+			//	ui->lcdNumber_3->display(++sum_of_wrong);
+			//	Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+			//}
+			//else
+			//{
+			//	ui->label_7->setText("装订正确！");
+			//	ui->lcdNumber->display(++sum_of_correct);
+			//	Config().Set("Count", "sum_of_correct", sum_of_correct);
+			//}
+			//==============================================
+			//detector->detect(infile, 0.9);
+#ifdef OPENCV
+			cv::Mat mat_img = cv::imread(infile);
+			std::vector<bbox_t> result_vec = detector->detect(mat_img);
+			//draw_boxes(mat_img, result_vec);
+#else
+			std::vector<bbox_t> result_vec = detector->detect(ss.str());
+#endif
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+			ui->label_3->setText(QString::number(result_vec.size()));
+
 			endTime = clock();
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
 			ui->label_3->setText(st);
-			//cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
+			cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
 			ss.str("");
 			waitKey(1000);
 		}
@@ -1582,7 +1597,6 @@ void MainWindow::on_pushButton_clicked()
 	ui->pushButton_2->setEnabled(true);
 	ui->pushButton_3->setEnabled(true);
 
-
 	//多线程启动---------------------------------
 	//if (subthread->isRunning() == true) 
 	//	return;
@@ -2020,57 +2034,3 @@ double MainWindow::F(double c[], int l, int m)
 //原文：https://blog.csdn.net/lsh_2013/article/details/46697625 
 //最小二乘拟合相关函数定义----------------------
 
-
-//----------------------没有用到的函数---------------------------------------
-bool MainWindow::setSoftTriggerConf(IAcquisitionControlPtr sptrAcquisitionCtl)
-{
-	//设置触发源为软触发
-	CEnumNode enumNode = sptrAcquisitionCtl->triggerSource();
-	bool bRet = enumNode.setValueBySymbol("Software");
-	if (bRet != true)
-	{
-		printf("set trigger source fail.\n");
-		return false;
-	}
-
-	//设置触发器
-	enumNode = sptrAcquisitionCtl->triggerSelector();
-	bRet = enumNode.setValueBySymbol("FrameStart");
-	if (bRet != true)
-	{
-		printf("set trigger selector fail.\n");
-		return false;
-	}
-
-	//设置触发模式
-	enumNode = sptrAcquisitionCtl->triggerMode();
-	bRet = enumNode.setValueBySymbol("On");
-	if (bRet != true)
-	{
-		printf("set trigger mode fail.\n");
-		return false;
-	}
-	return true;
-}
-
-void MainWindow::onGetFrame(const CFrame &pFrame)
-{
-	// 标准输出换行
-	printf("\r\n");
-
-	//判断帧的有效性
-	bool isValid = pFrame.valid();
-	if (!isValid)
-	{
-		printf("frame is invalid!\n");
-		return;
-	}
-	else
-	{
-		uint64_t blockId = pFrame.getBlockId();
-		printf("blockId = %d.\n", blockId);
-		isGrabbingFlag = false;
-	}
-
-	return;
-}

@@ -43,6 +43,10 @@ using namespace dnn;
 using namespace std;
 
 #define WHITE_COLOR Vec3b(255, 255, 255)
+//#ifndef OPENCV
+//#define OPENCV
+//#endif // !OPENCV
+
 
 class CFrameInfo : public Dahua::Memory::CBlock
 {
@@ -194,7 +198,11 @@ private:
 	//串口类
 	MyCSerialPort mycserialport;
 
-	//Detector detector = Detector("yolo-voc.cfg", "yolo-voc.weights");
+	//检测类
+	Detector *detector;
+	//配置文件类
+	Config *con;
+
 	Dahua::Infra::TVector<Dahua::GenICam::ICameraPtr> m_vCameraPtrList;	// 发现的相机列表
 	Dahua::GenICam::ICameraPtr m_pCamera;								// 当前相机，默认为列表中的第一个相机	
 	Dahua::GenICam::IStreamSourcePtr m_pStreamSource;					// 流对象
@@ -227,7 +235,6 @@ private:
 
 	//图书检测
 	bool bookdetection(Mat image_in);
-
 	void testRun();
 	/**
 	* @brief 将 QImage 的类型图像转换为 cv::Mat 类型
