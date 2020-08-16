@@ -2,7 +2,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 #define DEFAULT_SHOW_RATE (30)
 #define TIMESTAMPFREQUENCY 125000000	//大华相机的时间戳频率固定为125,000,000Hz
 bool revFlag = false;
@@ -157,7 +156,7 @@ MainWindow::~MainWindow()
 	CameraClose();
     delete ui;
 }
-
+#define OPENCV 
 bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWidth, int nHeight, uint64_t pixelFormat)
 {
 	QImage image;
@@ -226,26 +225,26 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			startTime = clock();
 			vector<Point> points;
 //#ifdef OPENCV
-//			std::vector<bbox_t> result_vec = detector.detect(out);
-//			for (auto &i : result_vec) {
-//				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
-//				points.push_back(Point(i.x + i.w*0.5, i.y + i.h*0.5));
-//			}
-//			ui->lcdNumber_3->display(++sum_of_wrong);
-//			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
-//			if (result_vec.size() == Num_of_blocks && LinearFitting(points, k, b, s))
-//			{
-//				ui->label_3->setText("Correct");
-//				ui->lcdNumber->display(++sum_of_correct);
-//				Config().Set("Count", "sum_of_correct", sum_of_correct);
-//				return true;
-//			}
-//			else {
-//				ui->label_3->setText("Wrong");
-//				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
-//				
-//				return false;
-//			}
+			std::vector<bbox_t> result_vec = detector->detect(out);
+			for (auto &i : result_vec) {
+				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
+				points.push_back(Point(i.x + i.w*0.5, i.y + i.h*0.5));
+			}
+			ui->lcdNumber_3->display(++sum_of_wrong);
+			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(out)));
+			if (result_vec.size() == Num_of_blocks && LinearFitting(points, k, b, s))
+			{
+				ui->label_3->setText("Correct");
+				ui->lcdNumber->display(++sum_of_correct);
+				Config().Set("Count", "sum_of_correct", sum_of_correct);
+				return true;
+			}
+			else {
+				ui->label_3->setText("Wrong");
+				Config().Set("Count", "sum_of_wrong", sum_of_wrong);
+				
+				return false;
+			}
 //#endif // OPENCV
 			//Beep(1000, 1000);
 			//cout << "不合格" << endl << endl;
@@ -275,9 +274,6 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 			img_t.w = nWidth;
 			img_t.h = nHeight;
 			img_t.data = (float *)pRgbFrameBuf;
-
-			vector<bbox_t> result_vec = detector->detect(img_t);
-			ui->label_3->setText(QString::number(result_vec.size()));
 			
 			//if (!bookdetection(out))//识别判断
 			//{
@@ -384,7 +380,6 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 }
 
 bool sortFun(Rect p1, Rect p2);
-//#define OPENCV
 
 //用于测试本地图片文件
 void MainWindow::testRun() {

@@ -43,10 +43,6 @@ using namespace dnn;
 using namespace std;
 
 #define WHITE_COLOR Vec3b(255, 255, 255)
-//#ifndef OPENCV
-//#define OPENCV
-//#endif // !OPENCV
-
 
 class CFrameInfo : public Dahua::Memory::CBlock
 {
