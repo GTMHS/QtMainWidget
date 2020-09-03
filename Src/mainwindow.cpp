@@ -156,7 +156,7 @@ MainWindow::~MainWindow()
 	CameraClose();
     delete ui;
 }
-#define OPENCV 
+//#define OPENCV 
 bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWidth, int nHeight, uint64_t pixelFormat)
 {
 	QImage image;
@@ -224,7 +224,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 		{
 			startTime = clock();
 			vector<Point> points;
-//#ifdef OPENCV
+#ifdef OPENCV
 			std::vector<bbox_t> result_vec = detector->detect(out);
 			for (auto &i : result_vec) {
 				cv::rectangle(out, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
@@ -245,7 +245,7 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 				
 				return false;
 			}
-//#endif // OPENCV
+#endif // OPENCV
 			//Beep(1000, 1000);
 			//cout << "²»ºÏ¸ñ" << endl << endl;
 			//emit StartThread();
@@ -386,19 +386,20 @@ void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	//string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
-	string imagefile = "D:\\Pic\\";
+	string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
+
+	//string imagefile = "D:\\Pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 1; i <10; i++) {
+		for (int i = 4268; i <4270; i++) {
 			//ui->label_7->setText("");
 			startTime1 = clock();
-			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";
-			ss << imagefile << "Pic (" << i <<").bmp";
+			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";Pic_blockId#4268.bmp
+			ss << imagefile << "Pic_blockId#" << i <<".bmp";
 			
-			string infile = ss.str();						
+			string infile = ss.str();
 			QString infile2 = QString::fromStdString(infile);
 			ui->label_3->setText(infile2);
 			QImage* img = new QImage;
@@ -455,18 +456,25 @@ void MainWindow::testRun() {
 #ifdef OPENCV
 			cv::Mat mat_img = cv::imread(infile);
 			std::vector<bbox_t> result_vec = detector->detect(mat_img);
-			//draw_boxes(mat_img, result_vec);
+			draw_boxes(mat_img, result_vec);
 #else
 			std::vector<bbox_t> result_vec = detector->detect(ss.str());
 #endif
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 			ui->label_3->setText(QString::number(result_vec.size()));
+			if (result_vec.size() == 25) {
+				ui->lcdNumber->display(++sum_of_correct);
+			}
+			else
+			{
+				ui->lcdNumber_3->display(++sum_of_wrong);
 
+			}
 			endTime = clock();
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
-			ui->label_3->setText(st);
+			ui->label_7->setText(st);
 			cout << "The run time is: " << (double)(endTime - startTime1) / CLOCKS_PER_SEC << "s" << endl << endl;
 			ss.str("");
 			waitKey(1000);
