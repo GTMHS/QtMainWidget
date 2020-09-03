@@ -166,6 +166,7 @@
     <None Include="debug\ImageConvert.dll" />
     <None Include="x64\Release\Config\conf.ini" />
     <None Include="x64\Release\yolo_cpp_dll.dll" />
+    <None Include="CodeMap1.dgml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />

@@ -250,6 +250,7 @@
     <ClInclude Include="Src\MessageQue.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CodeMap1.dgml" />
     <None Include="database.exe" />
     <None Include="debug\ImageConvert.dll" />
     <None Include="debug\VideoRender.dll" />
