@@ -379,21 +379,24 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	return true;
 }
 
-bool sortFun(Rect p1, Rect p2);
+bool sortFun(bbox_t p1, bbox_t p2) {
+	return p1.y + 0.5*p1.h < p2.y + 0.5* p2.h;
+}
 
 //用于测试本地图片文件
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
 	startTime = clock();
 	stringstream ss;
-	string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
+	//string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
+	string imagefile = "F:\\pic\\";
 
 	//string imagefile = "D:\\Pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 4268; i <4270; i++) {
+		for (int i = 4464; i <4470; i++) {
 			//ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";Pic_blockId#4268.bmp
@@ -461,16 +464,48 @@ void MainWindow::testRun() {
 			std::vector<bbox_t> result_vec = detector->detect(ss.str());
 #endif
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-			ui->label_3->setText(QString::number(result_vec.size()));
-			if (result_vec.size() == 25) {
+			int this_blocl_size = result_vec.size();
+			sort(result_vec.begin(), result_vec.end(), sortFun);
+			vector<Point> points;
+			int max_point_x = 0, max_point_y = 0;
+			double average_piexl_value = 100;
+			//for循环获取每个黑块的中点，并存储到points中
+			for (int i = 0; i < this_blocl_size; i++) {
+				points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
+			}
+			
+			if (this_blocl_size == Num_of_blocks && LinearFitting(points,k,b,s)) {
 				ui->lcdNumber->display(++sum_of_correct);
+				ui->label_3->setText("装订正确");
 			}
-			else
-			{
-				ui->lcdNumber_3->display(++sum_of_wrong);
-
+			else {
+				for (size_t i = 0; i < this_blocl_size-1; i++) {
+					if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 3 &&
+						abs(points[i + 1].y - points[i].y - re_locations[i].y) < 3 &&
+						abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
+						continue;
+					else
+					{
+						int x = points[i].x + re_locations[i].x;
+						int y = points[i].y + re_locations[i].y;
+						//循环遍历补得黑框中的所有像素计算平局灰度值
+						int value = 0;
+						Mat imagefile1 = imread(ss.str());
+						for (int i = x; i < ab_locations[i].width; ++i) for (int j = y; j < ab_locations[i].height; ++j) value += imagefile1.at<uchar>(i, j);
+						value = value / (ab_locations[i].width*ab_locations[i].height);
+						if (value < average_piexl_value)
+						{  
+							continue;
+						}
+						else
+						{
+							cout << "缺失框位置像素有误!" << endl;
+							break;
+						}
+					}
+				}
 			}
+			ui->lcdNumber_3->display(++sum_of_wrong);
 			endTime = clock();
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
 			QString st = QString::fromStdString(s);
@@ -485,8 +520,7 @@ void MainWindow::testRun() {
 		cout << e.what() << endl;
 		throw;
 	}
-	endTime = clock();
-	cout << "The run time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << endl << endl;
+
 }
 
 //OpenCV Mat与QImage相互转换函数
@@ -640,7 +674,7 @@ bool MainWindow::bookdetection(Mat imagefile) {
 	vector<Rect> boxes = detect_image(imagefile, model_label_Weights, modelConfiguration);
 	Config().Set("Log", "Function detect_image return", "detect_image 返回成功");
 	//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
-	sort(boxes.begin(), boxes.end(), sortFun);
+	//sort(boxes.begin(), boxes.end(), sortFun);
 	vector<Point> points;
 	int max_point_x = 0, max_point_y = 0;
 	double average_piexl_value = 0;
@@ -930,9 +964,7 @@ vector<String> MainWindow::getOutputsNames(const Net& net)
 //-----------------------------------
 
 //用于识别到的黑框的位置排序
-bool sortFun(Rect p1, Rect p2) {
-	return p1.y + 0.5*p1.height < p2.y + 0.5* p2.height;
-}
+
 wstring MainWindow::string2tchar(const string& s)
 {
 	int len;
@@ -1869,19 +1901,32 @@ void MainWindow::on_actionGetParemeter_triggered()
 {
 	try
 	{
-		Mat img = imread("Train/image/Pic.bmp");
-		//img = img(rect_of_image);
-		String modelConfiguration = "D:/yolov3.cfg";
-		String model_label_Weights = "D:/yolov3_final.weights";
+		//Mat img = imread("Train/image/Pic.bmp");
+		////img = img(rect_of_image);
+		//String modelConfiguration = "D:/yolov3.cfg";
+		//String model_label_Weights = "D:/yolov3_final.weights";
 
-		vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
+		//vector<Rect> boxes = detect_image(img, model_label_Weights, modelConfiguration);
+
+		std::vector<bbox_t> boxes = detector->detect("Train/image/Pic.bmp");
 		//排序，根据得到的方框的中点的纵坐标进行排序，按照y从小到大的顺序排
 		sort(boxes.begin(), boxes.end(), sortFun);
 		vector<Point> points;
 
 		//for循环获取每个黑块的中点，并存储到points中
 		for (int i = 0; i < boxes.size(); i++) {
-			points.push_back(Point(boxes[i].x + 0.5*boxes[i].width, boxes[i].y + 0.5*boxes[i].height));
+			points.push_back(Point(boxes[i].x + 0.5*boxes[i].w, boxes[i].y + 0.5*boxes[i].h));
+			//ab_locations.push_back(Rect(boxes[i].x, boxes[i].y, boxes[i].w, boxes[i].h));
+		}
+		relative_location r;
+		for (int i = 1; i < points.size(); i++) {
+			int x = points[i].x - points[i-1].x;
+			int y = points[i].y - points[i - 1].y;
+			double k = y / x;
+			r.x = x;
+			r.y = y;
+			r.k = k;
+			re_locations.push_back(r);
 		}
 
 		int length = points.size();

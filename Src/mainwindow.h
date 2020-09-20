@@ -78,6 +78,15 @@ namespace Ui {
 class MainWindow;
 }
 
+struct relative_location
+{
+	int x;
+	int y;
+	int width;
+	int height;
+	double k;
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -97,8 +106,13 @@ public:
 	int Num_of_blocks = 0;
 	//图书的位置
 	QRect Qrect_of_image;
-	//Qt 与 OPenCV中的Rect不通用，装换一下
+	//Qt 与 OPenCV中的Rect不通用，转换一下
 	Rect rect_of_image = Rect(Qrect_of_image.x(), Qrect_of_image.y(), Qrect_of_image.width(), Qrect_of_image.height());
+	//用于保存各个中点相对位置关系
+	vector<relative_location> re_locations;
+	//保存各个黑块的位置信息
+	vector<Rect> ab_locations;
+
 	//用于计时
 	clock_t startTime, startTime1, endTime;
 	//bool revFlag = false;
