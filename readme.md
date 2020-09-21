@@ -260,6 +260,14 @@ https://blog.csdn.net/soulwyb/article/details/100010074
     QString qs;
     QVariant qv(qs);
 
+
+**1.QString转换String**
+
+string s = qstr.toStdString();
+
+**2.String转换QString**
+
+QString qstr2 = QString::fromStdString(s);
 **Qt使用多线程的一些心得——2.继承QObject的多线程使用方法**
 
 https://blog.csdn.net/czyt1988/article/details/71194457

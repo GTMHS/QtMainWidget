@@ -56,6 +56,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+void SplitString(const string& s, vector<string>& v, const string& c)
+{
+	string::size_type pos1, pos2;
+	pos2 = s.find(c);
+	pos1 = 0;
+	while (string::npos != pos2)
+	{
+		v.push_back(s.substr(pos1, pos2 - pos1));
+
+		pos1 = pos2 + c.size();
+		pos2 = s.find(c, pos1);
+	}
+	if (pos1 != s.length())
+		v.push_back(s.substr(pos1));
+}
 //参数初始化
 void MainWindow::init_parameters() {
 
@@ -72,6 +87,17 @@ void MainWindow::init_parameters() {
 	rect_of_image.y = Config().Get("Image Rect", "y").toInt();
 	rect_of_image.width = Config().Get("Image Rect", "width").toInt();
 	rect_of_image.height = Config().Get("Image Rect", "height").toInt();
+	relative_location tempxyk;
+	vector<string> v;
+	
+	for (int i = 0; i < Num_of_blocks; i++) {
+		string xyk = Config().Get("relative_location", QString::number(i)).toString().toStdString();
+		SplitString(xyk, v, " "); //可按多个字符来分隔;
+		tempxyk.x = stoi(v[0]);
+		tempxyk.y = stoi(v[1]);
+		tempxyk.k = stod(v[2]);
+		re_locations.push_back(tempxyk);
+	}
 
 	//subthread = new QThread(this);
 	//m_MyThread = new MyThread();
@@ -1926,7 +1952,9 @@ void MainWindow::on_actionGetParemeter_triggered()
 			r.x = x;
 			r.y = y;
 			r.k = k;
+			QString s = QString::number(x) + " " + QString::number(y) + " " + QString::number(k);
 			re_locations.push_back(r);
+			Config().Set("relative_location", QString::number(i), s);
 		}
 
 		int length = points.size();
