@@ -74,24 +74,26 @@ void SplitString(const string& s, vector<string>& v, const string& c)
 //参数初始化
 void MainWindow::init_parameters() {
 
-	s = Config().Get("Line Fitting", "s").toDouble();
-	b = Config().Get("Line Fitting", "b").toDouble();
-	k = Config().Get("Line Fitting", "k").toDouble();
-	Num_of_blocks = Config().Get("Line Fitting", "n").toInt();
+	s = Config().Get("Line_Fitting", "s").toDouble();
+	b = Config().Get("Line_Fitting", "b").toDouble();
+	k = Config().Get("Line_Fitting", "k").toDouble();
+	Num_of_blocks = Config().Get("Line_Fitting", "n").toInt();
 
 	total_number = Config().Get("Count", "Count").toInt();
 	sum_of_correct = Config().Get("Count", "sum_of_correct").toInt();
 	sum_of_wrong = Config().Get("Count", "sum_of_wrong").toInt();
 
-	rect_of_image.x = Config().Get("Image Rect", "x").toInt();
-	rect_of_image.y = Config().Get("Image Rect", "y").toInt();
-	rect_of_image.width = Config().Get("Image Rect", "width").toInt();
-	rect_of_image.height = Config().Get("Image Rect", "height").toInt();
+	rect_of_image.x = Config().Get("Image_Rect", "x").toInt();
+	rect_of_image.y = Config().Get("Image_Rect", "y").toInt();
+	rect_of_image.width = Config().Get("Image_Rect", "width").toInt();
+	rect_of_image.height = Config().Get("Image_Rect", "height").toInt();
 	relative_location tempxyk;
 	vector<string> v;
 	
 	for (int i = 0; i < Num_of_blocks; i++) {
 		string xyk = Config().Get("relative_location", QString::number(i)).toString().toStdString();
+		if (xyk == "")
+			break;
 		SplitString(xyk, v, " "); //可按多个字符来分隔;
 		tempxyk.x = stoi(v[0]);
 		tempxyk.y = stoi(v[1]);
@@ -459,10 +461,8 @@ void MainWindow::testRun() {
 			
 			ui->lcdNumber_2->display(++total_number);
 
-			//---------------------这句话会报错！！！！异常闪退------------------------
-			//Config().Set("Count", "Count", total_number);
-			//con->Set("Count", "Count", total_number);
-
+			
+			Config().Set("Count", "Count", total_number);
 			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			//if (!bookdetection(image_for_write))//识别判断
 			//{
@@ -490,47 +490,56 @@ void MainWindow::testRun() {
 			std::vector<bbox_t> result_vec = detector->detect(ss.str());
 #endif
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-			int this_blocl_size = result_vec.size();
+			int this_block_size = result_vec.size();
 			sort(result_vec.begin(), result_vec.end(), sortFun);
 			vector<Point> points;
 			int max_point_x = 0, max_point_y = 0;
 			double average_piexl_value = 100;
 			//for循环获取每个黑块的中点，并存储到points中
-			for (int i = 0; i < this_blocl_size; i++) {
+			for (int i = 0; i < this_block_size; i++) {
 				points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
 			}
 			
-			if (this_blocl_size == Num_of_blocks && LinearFitting(points,k,b,s)) {
-				ui->lcdNumber->display(++sum_of_correct);
-				ui->label_3->setText("装订正确");
+			if (this_block_size > Num_of_blocks)
+			{
+				ui->label_3->setText("装订错误," + QString::number(this_block_size));
+				
 			}
 			else {
-				for (size_t i = 0; i < this_blocl_size-1; i++) {
-					if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 3 &&
-						abs(points[i + 1].y - points[i].y - re_locations[i].y) < 3 &&
-						abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
-						continue;
-					else
-					{
-						int x = points[i].x + re_locations[i].x;
-						int y = points[i].y + re_locations[i].y;
-						//循环遍历补得黑框中的所有像素计算平局灰度值
-						int value = 0;
-						Mat imagefile1 = imread(ss.str());
-						for (int i = x; i < ab_locations[i].width; ++i) for (int j = y; j < ab_locations[i].height; ++j) value += imagefile1.at<uchar>(i, j);
-						value = value / (ab_locations[i].width*ab_locations[i].height);
-						if (value < average_piexl_value)
-						{  
+				if (this_block_size == Num_of_blocks && LinearFitting(points, k, b, s)) {
+					ui->lcdNumber->display(++sum_of_correct);
+					ui->label_3->setText("装订正确");
+				}
+				else {
+
+					for (size_t i = 0; i < this_block_size - 1; i++) {
+						if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 3 &&
+							abs(points[i + 1].y - points[i].y - re_locations[i].y) < 3 &&
+							abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
 							continue;
-						}
 						else
 						{
-							cout << "缺失框位置像素有误!" << endl;
-							break;
+							int x = points[i].x + re_locations[i].x;
+							int y = points[i].y + re_locations[i].y;
+							//循环遍历补得黑框中的所有像素计算平局灰度值
+							int value = 0;
+							Mat imagefile1 = imread(ss.str());
+							for (int i = x; i < ab_locations[i].width; ++i) for (int j = y; j < ab_locations[i].height; ++j) value += imagefile1.at<uchar>(i, j);
+							value = value / (ab_locations[i].width*ab_locations[i].height);
+							if (value < average_piexl_value)
+							{
+								continue;
+							}
+							else
+							{
+								cout << "缺失框位置像素有误!" << endl;
+								break;
+							}
 						}
 					}
 				}
 			}
+
 			ui->lcdNumber_3->display(++sum_of_wrong);
 			endTime = clock();
 			string s = "The run time is: " + to_string((double)(endTime - startTime1) / CLOCKS_PER_SEC) + "s";
@@ -1843,12 +1852,12 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 			rect_mask.width = img.cols - rect_mask.x;
 		}
 		if (rect_mask.y + rect_mask.height > img.rows) {
-			rect_mask.height = img.rows - rect_mask.y;
+			rect_mask.height = abs(img.rows - rect_mask.y);
 		}
-		Config().Set("Image Rect", "x", rect_mask.x);
-		Config().Set("Image Rect", "y", rect_mask.y);
-		Config().Set("Image Rect", "width", rect_mask.width);
-		Config().Set("Image Rect", "height", rect_mask.height);
+		Config().Set("Image_Rect", "x", rect_mask.x);
+		Config().Set("Image_Rect", "y", rect_mask.y);
+		Config().Set("Image_Rect", "width", rect_mask.width);
+		Config().Set("Image_Rect", "height", rect_mask.height);
 
 		img = img(rect_mask);
 		cv::namedWindow("裁剪后的图书", CV_WINDOW_NORMAL);
@@ -1882,7 +1891,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 	//	// hProcess所代表的进程在5秒内结束
 	//	cout << "MyThreadProc1 >>> WaitForSingleObject signaled\n" << endl;
 	//	ui->label->setText("裁剪已完成");
-	//	Config().Set("Image Rect", "Image Rect", "1236");
+	//	Config().Set("Image_Rect", "Image_Rect", "1236");
 	//	break;
 	//case WAIT_TIMEOUT:
 	//	// 等待时间超过5秒
@@ -1982,10 +1991,10 @@ void MainWindow::on_actionGetParemeter_triggered()
 		double r_square1 = sumxy * sumxy / (sumx2 * sumy2); //相关系数
 
 		//写入配置文件
-		Config().Set("Line Fitting", "k", slope1);
-		Config().Set("Line Fitting", "b", intercept1);
-		Config().Set("Line Fitting", "s", r_square1);
-		Config().Set("Line Fitting", "n", length);
+		Config().Set("Line_Fitting", "k", slope1);
+		Config().Set("Line_Fitting", "b", intercept1);
+		Config().Set("Line_Fitting", "s", r_square1);
+		Config().Set("Line_Fitting", "n", length);
 
 		//把参数更新到类属性变量中
 		Num_of_blocks = length;
