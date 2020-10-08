@@ -87,14 +87,16 @@ void MainWindow::init_parameters() {
 	rect_of_image.y = Config().Get("Image_Rect", "y").toInt();
 	rect_of_image.width = Config().Get("Image_Rect", "width").toInt();
 	rect_of_image.height = Config().Get("Image_Rect", "height").toInt();
-	relative_location tempxyk;
-	vector<string> v;
 	
-	for (int i = 0; i < Num_of_blocks; i++) {
+	
+	
+	for (int i = 1; i <= Num_of_blocks; i++) {
 		string xyk = Config().Get("relative_location", QString::number(i)).toString().toStdString();
 		if (xyk == "")
 			break;
+		vector<string> v;
 		SplitString(xyk, v, " "); //可按多个字符来分隔;
+		relative_location tempxyk;
 		tempxyk.x = stoi(v[0]);
 		tempxyk.y = stoi(v[1]);
 		tempxyk.k = stod(v[2]);
@@ -111,10 +113,11 @@ void MainWindow::init_parameters() {
 	//connect(m_MyThread, SIGNAL(&MyThread::signal_back), this, SLOT(&MainWindow::on_pushButton_2_clicked));
 	//qDebug() << "the main thread number:" << QThread::currentThread();
 	//connect(this, &MainWindow::destoryed, this, &MainWindow::CloseWidget);   //左上角窗口关闭
-	mycserialport.InitPort();
-	mycserialport.OpenListenThread();
+	
+	//mycserialport.InitPort();
+	//mycserialport.OpenListenThread();
 
-	detector =new Detector("D://yolov3.cfg", "D://yolov3_final.weights");
+	detector =new Detector("D://yolov3.cfg", "D://yolov3_final.weights", 0);
 	//状态栏显示信息https://blog.csdn.net/theRookie1/article/details/84751548
 	//QLabel *locationLabel;
 	//locationLabel = new QLabel("July");
@@ -411,6 +414,16 @@ bool sortFun(bbox_t p1, bbox_t p2) {
 	return p1.y + 0.5*p1.h < p2.y + 0.5* p2.h;
 }
 
+
+void MainWindow::draw_boxes(cv::Mat mat_img, std::vector<bbox_t> result_vec) {
+	for (auto &i : result_vec) {
+		cv::rectangle(mat_img, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
+	}
+	//ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(mat_img)));
+	//cv::imshow("window name", mat_img);
+	//cv::waitKey(0);
+}
+
 //用于测试本地图片文件
 void MainWindow::testRun() {
 	clock_t startTime, startTime1, endTime;
@@ -424,7 +437,7 @@ void MainWindow::testRun() {
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 4464; i <4470; i++) {
+		for (int i = 4465; i <4500; i++) {
 			//ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";Pic_blockId#4268.bmp
@@ -459,9 +472,7 @@ void MainWindow::testRun() {
 			//}
 			//ui->label_2->setPixmap(QPixmap::fromImage(Img));
 			
-			ui->lcdNumber_2->display(++total_number);
-
-			
+			ui->lcdNumber_2->display(++total_number);			
 			Config().Set("Count", "Count", total_number);
 			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			//if (!bookdetection(image_for_write))//识别判断
@@ -484,11 +495,13 @@ void MainWindow::testRun() {
 			//detector->detect(infile, 0.9);
 #ifdef OPENCV
 			cv::Mat mat_img = cv::imread(infile);
-			std::vector<bbox_t> result_vec = detector->detect(mat_img);
+			mat_img = mat_img(rect_of_image);
+			std::vector<bbox_t> result_vec = detector->detect(mat_img,0.9);
 			draw_boxes(mat_img, result_vec);
 #else
 			std::vector<bbox_t> result_vec = detector->detect(ss.str());
 #endif
+			
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			int this_block_size = result_vec.size();
 			sort(result_vec.begin(), result_vec.end(), sortFun);
@@ -496,49 +509,53 @@ void MainWindow::testRun() {
 			int max_point_x = 0, max_point_y = 0;
 			double average_piexl_value = 100;
 			//for循环获取每个黑块的中点，并存储到points中
-			for (int i = 0; i < this_block_size; i++) {
-				points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
-			}
-			
-			if (this_block_size > Num_of_blocks)
-			{
-				ui->label_3->setText("装订错误," + QString::number(this_block_size));
-				
-			}
-			else {
-				if (this_block_size == Num_of_blocks && LinearFitting(points, k, b, s)) {
-					ui->lcdNumber->display(++sum_of_correct);
-					ui->label_3->setText("装订正确");
-				}
-				else {
+			ui->label_3->setText(QString::number(this_block_size));
 
-					for (size_t i = 0; i < this_block_size - 1; i++) {
-						if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 3 &&
-							abs(points[i + 1].y - points[i].y - re_locations[i].y) < 3 &&
-							abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
-							continue;
-						else
-						{
-							int x = points[i].x + re_locations[i].x;
-							int y = points[i].y + re_locations[i].y;
-							//循环遍历补得黑框中的所有像素计算平局灰度值
-							int value = 0;
-							Mat imagefile1 = imread(ss.str());
-							for (int i = x; i < ab_locations[i].width; ++i) for (int j = y; j < ab_locations[i].height; ++j) value += imagefile1.at<uchar>(i, j);
-							value = value / (ab_locations[i].width*ab_locations[i].height);
-							if (value < average_piexl_value)
-							{
-								continue;
-							}
-							else
-							{
-								cout << "缺失框位置像素有误!" << endl;
-								break;
-							}
-						}
-					}
-				}
-			}
+			//for (int i = 0; i < this_block_size; i++) {
+			//	//rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
+			//	points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
+			//}
+			//
+			//if (this_block_size > Num_of_blocks)
+			//{
+			//	ui->label_3->setText("装订错误," + QString::number(this_block_size));
+			//	
+			//}
+			//else {
+			//	if (this_block_size == Num_of_blocks && LinearFitting(points, k, b, s)) {
+			//		ui->lcdNumber->display(++sum_of_correct);
+			//		ui->label_3->setText("装订正确");
+			//	}
+			//	else {
+			//		for (size_t i = 0; i < this_block_size - 1; i++) {
+			//			if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 5 &&
+			//				abs(points[i].y - points[i + 1].y - re_locations[i].y) < 5 &&
+			//				abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
+			//				continue;
+			//			else
+			//			{
+			//				int x = points[i].x + re_locations[i].x;
+			//				int y = points[i].y + re_locations[i].y;
+			//				//循环遍历补得黑框中的所有像素计算平局灰度值
+			//				int value = 0;
+			//				Mat imagefile1 = imread(ss.str());
+			//				for (int i = x; i < ab_locations[i].width; ++i) 
+			//					for (int j = y; j < ab_locations[i].height; ++j) 
+			//						value += imagefile1.at<uchar>(i, j);
+			//				value = value / (ab_locations[i].width*ab_locations[i].height);
+			//				if (value < average_piexl_value)
+			//				{
+			//					continue;
+			//				}
+			//				else
+			//				{
+			//					cout << "缺失框位置像素有误!" << endl;
+			//					break;
+			//				}
+			//			}
+			//		}
+			//	}
+			//}
 
 			ui->lcdNumber_3->display(++sum_of_wrong);
 			endTime = clock();

@@ -285,8 +285,6 @@
     <None Include="x64\Release\yolo_cpp_dll.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Pic\Pic (1)-cut.png" />
-    <Image Include="..\Pic\Pic (1).bmp" />
     <Image Include="book.ico" />
     <Image Include="book_128px.ico" />
     <Image Include="Img\1.png" />

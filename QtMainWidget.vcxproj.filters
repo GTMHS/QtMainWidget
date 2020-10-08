@@ -178,8 +178,6 @@
     <Image Include="Img\多线程错误2.jpg" />
     <Image Include="book_128px.ico" />
     <Image Include="jiuge-new.jpg" />
-    <Image Include="..\Pic\Pic (1).bmp" />
-    <Image Include="..\Pic\Pic (1)-cut.png" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />

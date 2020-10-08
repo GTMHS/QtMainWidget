@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#define OPENCV
 #include <QMainWindow>
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -282,6 +283,7 @@ private:
 	void run_train();
 	Mat read_mask();
 	Rect mask_boundingRect(Mat mask);
+	void draw_boxes(cv::Mat, std::vector<bbox_t>);
 
 	void init_parameters();
 
