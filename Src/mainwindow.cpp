@@ -56,21 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-void SplitString(const string& s, vector<string>& v, const string& c)
-{
-	string::size_type pos1, pos2;
-	pos2 = s.find(c);
-	pos1 = 0;
-	while (string::npos != pos2)
-	{
-		v.push_back(s.substr(pos1, pos2 - pos1));
-
-		pos1 = pos2 + c.size();
-		pos2 = s.find(c, pos1);
-	}
-	if (pos1 != s.length())
-		v.push_back(s.substr(pos1));
-}
 //参数初始化
 void MainWindow::init_parameters() {
 
@@ -183,7 +168,6 @@ void MainWindow::init_parameters() {
 
 MainWindow::~MainWindow()
 {
-
 	CameraClose();
     delete ui;
 }
@@ -410,11 +394,6 @@ bool MainWindow::ShowImage(uint8_t* pRgbFrameBuf, int pRgbFrameBufSize, int nWid
 	return true;
 }
 
-bool sortFun(bbox_t p1, bbox_t p2) {
-	return p1.y + 0.5*p1.h < p2.y + 0.5* p2.h;
-}
-
-
 void MainWindow::draw_boxes(cv::Mat mat_img, std::vector<bbox_t> result_vec) {
 	for (auto &i : result_vec) {
 		cv::rectangle(mat_img, cv::Rect(i.x, i.y, i.w, i.h), cv::Scalar(50, 200, 50), 3);
@@ -498,6 +477,7 @@ void MainWindow::testRun() {
 			mat_img = mat_img(rect_of_image);
 			std::vector<bbox_t> result_vec = detector->detect(mat_img,0.9);
 			draw_boxes(mat_img, result_vec);
+			ui->label_2->setPixmap(QPixmap::fromImage(cvMat2QImage(mat_img)));
 #else
 			std::vector<bbox_t> result_vec = detector->detect(ss.str());
 #endif
@@ -511,51 +491,51 @@ void MainWindow::testRun() {
 			//for循环获取每个黑块的中点，并存储到points中
 			ui->label_3->setText(QString::number(this_block_size));
 
-			//for (int i = 0; i < this_block_size; i++) {
-			//	//rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
-			//	points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
-			//}
-			//
-			//if (this_block_size > Num_of_blocks)
-			//{
-			//	ui->label_3->setText("装订错误," + QString::number(this_block_size));
-			//	
-			//}
-			//else {
-			//	if (this_block_size == Num_of_blocks && LinearFitting(points, k, b, s)) {
-			//		ui->lcdNumber->display(++sum_of_correct);
-			//		ui->label_3->setText("装订正确");
-			//	}
-			//	else {
-			//		for (size_t i = 0; i < this_block_size - 1; i++) {
-			//			if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 5 &&
-			//				abs(points[i].y - points[i + 1].y - re_locations[i].y) < 5 &&
-			//				abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
-			//				continue;
-			//			else
-			//			{
-			//				int x = points[i].x + re_locations[i].x;
-			//				int y = points[i].y + re_locations[i].y;
-			//				//循环遍历补得黑框中的所有像素计算平局灰度值
-			//				int value = 0;
-			//				Mat imagefile1 = imread(ss.str());
-			//				for (int i = x; i < ab_locations[i].width; ++i) 
-			//					for (int j = y; j < ab_locations[i].height; ++j) 
-			//						value += imagefile1.at<uchar>(i, j);
-			//				value = value / (ab_locations[i].width*ab_locations[i].height);
-			//				if (value < average_piexl_value)
-			//				{
-			//					continue;
-			//				}
-			//				else
-			//				{
-			//					cout << "缺失框位置像素有误!" << endl;
-			//					break;
-			//				}
-			//			}
-			//		}
-			//	}
-			//}
+			for (int i = 0; i < this_block_size; i++) {
+				//rectangle(frame, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), Scalar(255, 178, 50), 2);
+				points.push_back(Point(result_vec[i].x + 0.5*result_vec[i].w, result_vec[i].y + 0.5*result_vec[i].h));
+			}
+			
+			if (this_block_size > Num_of_blocks)
+			{
+				ui->label_3->setText("装订错误," + QString::number(this_block_size));
+				
+			}
+			else {
+				if (this_block_size == Num_of_blocks && LinearFitting(points, k, b, s)) {
+					ui->lcdNumber->display(++sum_of_correct);
+					ui->label_3->setText("装订正确");
+				}
+				else {
+					for (size_t i = 0; i < this_block_size - 1; i++) {
+						if (abs(points[i + 1].x - points[i].x - re_locations[i].x) < 5 &&
+							abs(points[i].y - points[i + 1].y - re_locations[i].y) < 5 &&
+							abs((points[i + 1].x - points[i].x) / points[i + 1].y - points[i].y - re_locations[i].k) < 0.01)
+							continue;
+						else
+						{
+							int x = points[i].x + re_locations[i].x;
+							int y = points[i].y + re_locations[i].y;
+							//循环遍历补得黑框中的所有像素计算平局灰度值
+							int value = 0;
+							Mat imagefile1 = imread(ss.str());
+							for (int i = x; i < ab_locations[i].width; ++i) 
+								for (int j = y; j < ab_locations[i].height; ++j) 
+									value += imagefile1.at<uchar>(i, j);
+							value = value / (ab_locations[i].width*ab_locations[i].height);
+							if (value < average_piexl_value)
+							{
+								continue;
+							}
+							else
+							{
+								cout << "缺失框位置像素有误!" << endl;
+								break;
+							}
+						}
+					}
+				}
+			}
 
 			ui->lcdNumber_3->display(++sum_of_wrong);
 			endTime = clock();
@@ -695,6 +675,7 @@ bool MainWindow::LinearFitting(const vector<Point> points, double slope, double 
 	}
 
 }
+
 //返回日期-时间字符串
 string MainWindow::get_datetime()
 {
@@ -1861,7 +1842,7 @@ void MainWindow::on_actionOpenCutWindow_triggered()
 		Mat mask = read_mask();
 		Rect rect_mask = mask_boundingRect(mask);
 		Mat img = imread("Train/image/Pic.bmp");
-		if (rect_mask.x < 0) {
+		if (rect_mask.x < 0 || rect_mask.x >= 3072) {
 			rect_mask.x = 0;
 		}
 		if (rect_mask.x + rect_mask.width > img.cols)
@@ -2033,6 +2014,7 @@ void MainWindow::on_actiontakephoto_triggered()
 {
      on_actionSavePic_triggered();
 }
+
 
 //最小二乘拟合相关函数定义----------------------
 //代码参考连接https://www.jianshu.com/p/2e7a5347b56c

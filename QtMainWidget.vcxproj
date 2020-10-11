@@ -199,6 +199,7 @@
     <ClCompile Include="release\moc_parameterssetting.cpp" />
     <ClCompile Include="release\moc_takephoto.cpp" />
     <ClCompile Include="Src\alertwindow.cpp" />
+    <ClCompile Include="Src\common.cpp" />
     <ClCompile Include="Src\Config.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\mainwindow.cpp" />
@@ -239,6 +240,7 @@
   <ItemGroup>
     <ClInclude Include="F:\code\python\labelImg\dist\labelImg\Include\pyconfig.h" />
     <ClInclude Include="release\moc_predefs.h" />
+    <ClInclude Include="Src\common.h" />
     <ClInclude Include="Src\yolo_v2_class.hpp" />
     <QtMoc Include="Src\MyThread.h" />
     <QtMoc Include="Src\alertwindow.h" />

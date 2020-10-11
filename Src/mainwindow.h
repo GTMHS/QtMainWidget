@@ -32,6 +32,7 @@
 #include <Src\Config.h>
 #include <Src\alertwindow.h>
 #include <Src\MySerialport.h>
+#include "common.h"
 
 #include "mythread.h"
 #include <QThread>
