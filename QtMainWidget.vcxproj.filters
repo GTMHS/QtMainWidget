@@ -173,6 +173,7 @@
     <None Include="x64\Release\Config\conf.ini" />
     <None Include="x64\Release\yolo_cpp_dll.dll" />
     <None Include="CodeMap1.dgml" />
+    <None Include="周报.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\1.png" />

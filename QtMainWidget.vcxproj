@@ -285,6 +285,7 @@
     <None Include="sum.exe" />
     <None Include="x64\Release\Config\conf.ini" />
     <None Include="x64\Release\yolo_cpp_dll.dll" />
+    <None Include="周报.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="book.ico" />
