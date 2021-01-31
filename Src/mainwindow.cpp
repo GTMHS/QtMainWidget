@@ -160,6 +160,7 @@ void MainWindow::init_parameters() {
 	//ui->lcdNumber->display(2598);
 	//ui->lcdNumber_2->display(2602);
 	//ui->lcdNumber_3->display(4);
+	//end×÷¼ÙÐû´«ÓÃ
 
 	//QLabel *per3 = new QLabel("Ready3", this);
 	//statusBar()->insertPermanentWidget(2, per3);
@@ -409,18 +410,20 @@ void MainWindow::testRun() {
 	startTime = clock();
 	stringstream ss;
 	//string imagefile = "C:\\Users\\30923\\MVviewer\\pictures\\A3600MG18_3L05FEDPAK00028\\";
-	string imagefile = "F:\\pic\\";
+	//string imagefile = "G:\\20200716\\";
+	string imagefile = "\\\\DESKTOP-davidol\\F\\Pic×Öµä\\";
 
 	//string imagefile = "D:\\Pic\\";
 	try
 	{
 		string outfile;
 		Mat image_for_write;
-		for (int i = 4465; i <4500; i++) {
+		for (int i = 17; i <20; i++) {
 			//ui->label_7->setText("");
 			startTime1 = clock();
 			//ss << imagefile <<"Pic_2020_06_26 (" << i << ").bmp";Pic_blockId#4268.bmp
-			ss << imagefile << "Pic_blockId#" << i <<".bmp";
+			//ss << imagefile << "Pic_blockId#" << i <<".bmp";
+			ss << imagefile << "Pic(" << i << ").bmp";
 			
 			string infile = ss.str();
 			QString infile2 = QString::fromStdString(infile);

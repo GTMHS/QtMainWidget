@@ -184,12 +184,15 @@
     <Image Include="Img\多线程错误2.jpg" />
     <Image Include="book_128px.ico" />
     <Image Include="jiuge-new.jpg" />
+    <Image Include="Img\888fce73d934292054322549c8387a3.png" />
+    <Image Include="Img\QQ截图20200502083111.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Depends\x64\vs2013shared\ImageConvert.lib" />
     <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
     <Library Include="Depends\x64\vs2013shared\python37.lib" />
+    <Library Include="Depends\x64\vs2013shared\yolo_cpp_dll.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />

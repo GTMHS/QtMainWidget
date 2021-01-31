@@ -127,22 +127,33 @@ https://github.com/GTMHS/QtMainWidget
     
     参考的解决方案：在显示图片的位置`label`固定框处一个位置，让用户自动调整，把图书放在蓝框中。
 
+    **把调用其他exe程序封装成一个类？统一使用一个调用方法来调用？**
+
 4. ~~执行其他的命令时闪退，图书拍照、识别参数。图书拍照采用的是设置了一个参数，点击按钮之后将参数改为true，拍照保存图片，并将参数改为false。有时候能用有时候就会闪退。相机采用的是连续拉流。~~
 
     现在相机打开之后就是用的硬件触发，拍照同样采用的是弹窗按钮，然后硬件触发之后会保存触发之后拍的照片。近期拍照功能未使用过。
 
     识别参数是用训练好的模型去识别当前这本书，然后将识别到的数量和拟合的直线的参数保存起来，同时传给类内属性参数
 
-5. labelImg.exe 打不开，闪退（SHELLEXECUTEINFO 不能打开命令行？）。之前是直接打开标记软件，可以打开，现在在py文件中添加了复制文件，就不能打开了。但是直接双击labelImg是可以打开的。
+5. ~~labelImg.exe 打不开，闪退（SHELLEXECUTEINFO 不能打开命令行？）。之前是直接打开标记软件，可以打开，现在在py文件中添加了复制文件，就不能打开了。但是直接双击labelImg是可以打开的。
 
-    最近此功能也未用过，不知具体情况。
+    最近此功能也未用过，不知具体情况。~~
+
+    20210131测试labelImg在x64 Release下可以打开。
+
 
 6. 软件大小自适应问题。屏幕窗口大小适宜问题，缩放屏幕图片大小调整问题。
 7. 参数的自动拟合，自动修正功能。能够自动修正参数信息，提供给用户是否要自动修复参数。
 8. 相机工作时在采用硬件触发的情况下，会出现拍照模糊的情况，需要联系技术支持询问具体原因。
 9. 更改了yolo识别检测的方式之后，程序报错！不能使用`#define`下定义的函数，只能使用外部函数，尝试将相机采集的图片保存为文本然后去检测？整个识别时间从700ms提升至70-ms。
-10. config下的配置文件会增大，不知具体原因，需要跟进.
-11. 图像裁剪之后得到的图片的位置不对，需要跟进，重新计算下图像位置
+
+10. config下的配置文件会增大，不知具体原因，需要跟进。
+    
+    **问题未复现，暂未解决**
+
+11. 画完模板之后读取模板图像，得到的位置信息有偏差，未曾找到原因。（图像裁剪之后得到的图片的位置不对，需要跟进，重新计算下图像位置）
+12. 模型训练的步骤还未加进去。以及后续的使用工作。
+
 ----
 ## 设计思想
 1. 使用templateEditor.exe标记出一本书的模板，然后去识别出各个黑块的位置和相对位置信息，以及拟合的k/b/s。
@@ -223,11 +234,19 @@ https://www.cnblogs.com/dongh/p/6868638.html
 
 查找依赖dll
 
+找到vs安装目录下的dumpbin.exe 然后使用命令
+
+    dumpbin /dependents QtMainWidget.exe
+
+例如
+
     D:\Program Files (x86)\Microsoft Visual Studio 14.0>dumpbin /dependents D:\Code\QtMainWidget\x64\Release\QtMainWidget.exe
 
 卸载的路径
 
     C：Windows\System32\Msiexec.exe
+本例中缺少的依赖dll如下
+
 *debug*
 
     opencv_world346d.dll
@@ -274,12 +293,14 @@ https://www.cnblogs.com/dongh/p/6868638.html
     MSVCP120.dll
     需要再加上yolo的dll
 
+此外，还需要安装vc库VC_redist
+
 生成的exe安装之后报错0xc000007b，不缺少依赖项
 https://jingyan.baidu.com/article/375c8e1997252e25f2a22936.html
 需要安装VC_redist.x64.exe vccredist.exe C++ 2013/C++2015的库
 
 ### 关于yolo_cpp_dll.dll
-此dll是识别中的关键，依赖于[yolo](https://github.com/AlexeyAB/darknet),在 `How to use Yolo as DLL and SO libraries`中写了如何得到dll，根据电脑显卡，自行生成dll文件放到exe同目录下
+此dll是识别中的关键，依赖于[yolo](https://github.com/AlexeyAB/darknet#how-to-use-yolo-as-dll-and-so-libraries),在 `How to use Yolo as DLL and SO libraries`中写了如何得到dll，根据电脑显卡，自行生成dll文件放到exe同目录下
 
 
 ----

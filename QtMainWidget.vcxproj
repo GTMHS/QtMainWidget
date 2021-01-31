@@ -290,8 +290,10 @@
     <Image Include="book.ico" />
     <Image Include="book_128px.ico" />
     <Image Include="Img\1.png" />
+    <Image Include="Img\888fce73d934292054322549c8387a3.png" />
     <Image Include="Img\bug.png" />
     <Image Include="Img\dailyuse.jpg" />
+    <Image Include="Img\QQ截图20200502083111.jpg" />
     <Image Include="Img\多线程错误.png" />
     <Image Include="Img\多线程错误2.jpg" />
     <Image Include="Img\日常使用.jpg" />
@@ -302,6 +304,7 @@
     <Library Include="Depends\x64\vs2013shared\MVSDKmd.lib" />
     <Library Include="Depends\x64\vs2013shared\python37.lib" />
     <Library Include="Depends\x64\vs2013shared\VideoRender.lib" />
+    <Library Include="Depends\x64\vs2013shared\yolo_cpp_dll.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QtMainWidget.rc" />
