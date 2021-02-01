@@ -162,6 +162,10 @@
 
 # <center>开发文档</center>
 
+## 开发环境
+* Windows 10 1909 
+* visual studio 2015 专业版
+* Qt 5.12
 ## 默认配置项
 
 * 配置文件检查`Config/conf.ini`，存储串口信息
